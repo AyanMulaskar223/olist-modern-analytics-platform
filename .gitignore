@@ -1,0 +1,67 @@
+
+
+# Data
+01_data_sources/raw_sample_files/*.csv
+01_data_sources/raw_sample_files/*.parquet
+01_data_sources/raw_sample_files/*.json
+# ----------------------
+# 1. SECRETS & SECURITY (CRITICAL)
+# ----------------------
+.env
+.env.*
+secrets.json
+azure_keys.txt
+*.pem
+
+# ----------------------
+# 2. PYTHON & VIRTUAL ENV
+# ----------------------
+# Never commit your installed libraries, only requirements.txt
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ----------------------
+# 3. DATA & LOCAL FILES
+# ----------------------
+# Mac OS junk
+.DS_Store
+
+# Large Data Files (We use Azure for this, not GitHub)
+*.csv
+*.json
+*.parquet
+*.xlsx
+*.zip
+
+# EXCEPTION: Allow the empty placeholder file so folders exist
+!01_data_sources/raw_sample_files/.gitkeep
+
+# ----------------------
+# 4. DBT (DATA BUILD TOOL)
+# ----------------------
+# Compiled SQL files (generated automatically)
+target/
+dbt_packages/
+logs/
+dbt_modules/
+
+# ----------------------
+# 5. POWER BI
+# ----------------------
+# Binary files are huge and bad for Git. We use .pbip instead.
+*.pbix
+
+# Power BI Project local user settings (don't commit your local layout)
+*.pbip.user.json
+.pbip.user.json
+localSettings.json
+
+# ----------------------
+# 6. IDE SETTINGS
+# ----------------------
+.vscode/
+.idea/
+*.code-workspace
