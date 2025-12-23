@@ -26,27 +26,37 @@ This project migrates a legacy, manual CSV reporting process to a **Modern Data 
 
 The platform follows a **Batch ELT (Extract, Load, Transform)** architecture designed for scalability and cost-efficiency.
 
-```mermaid
 flowchart LR
-    %% Modern ELT architecture (transform inside Snowflake; raw is immutable)
+%% 1. Source System
+A[Azure Blob Storage\nRaw CSV Files]
 
-    A[Azure Blob Storage\nRaw CSV Files] -->|COPY INTO (Snowflake)| B[(Snowflake RAW\nImmutable landing)]
-
-    subgraph SNOWFLAKE[Snowflake]
+    %% 2. Snowflake Environment (The "Box")
+    subgraph SNOWFLAKE[Snowflake Data Warehouse]
         direction LR
 
-        B -->|dbt models| C[(STAGING\nstg_* cleans & types)]
-        C -->|dbt models| D[(INTERMEDIATE\nint_* business logic)]
-        D -->|dbt models| E[(MARTS\nStar Schema: dim_* & fct_*)]
+        %% Nodes defined inside the subgraph appear inside the box
+        B[(RAW DB\nImmutable landing)]
+        C[(STAGING\nstg_* cleans & types)]
+        D[(INTERMEDIATE\nint_* business logic)]
+        E[(MARTS\nStar Schema: dim_* & fct_*)]
 
-        %% Quality gates
-        C -.->|dbt tests\nnot_null • unique • relationships| Q[Data Quality]
-        D -.->|dbt tests\naccepted_values • relationships| Q
-        E -.->|dbt tests\nfct/dim integrity| Q
+        %% Relationships inside Snowflake
+        B -->|dbt models| C
+        C -->|dbt models| D
+        D -->|dbt models| E
     end
 
-    E -->|Power BI (DirectQuery)\nPresentation only| F[Power BI Dashboard]
-```
+    %% 3. Connections & Quality
+    A -->|"COPY INTO (Ingestion)"| B
+
+    %% Quality Gate (Floating node)
+    Q>Data Quality Checks\ndbt tests]
+    C -.->|not_null\nunique| Q
+    D -.->|relationships\naccepted_values| Q
+    E -.->|referential\nintegrity| Q
+
+    %% 4. Consumption
+    E -->|"Power BI (DirectQuery)"| F[Power BI\nDashboard]
 
 **Notes**
 
