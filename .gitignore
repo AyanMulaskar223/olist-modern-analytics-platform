@@ -65,3 +65,8 @@ localSettings.json
 .vscode/
 .idea/
 *.code-workspace
+
+# ----------------------
+# 7. LOCAL NOTES
+# ----------------------
+dlc.md
