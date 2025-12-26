@@ -124,10 +124,6 @@ Build a **single source of truth analytics platform** that enables stakeholders 
 | Q8                | On-Time Delivery %            | % delivered on/before estimated date            | orders                          |
 | Q9                | Cancellation/Unavailable Rate | % orders with status in (canceled, unavailable) | orders                          |
 
-> Note: If payments are recorded at the order level (not item level), seller/category revenue attribution requires allocation logic via `order_items` (e.g., proportional by item price). Define and document the chosen rule.
-
----
-
 ## 9. Assumptions & Constraints
 
 - **Eligibility rule (default):** only `delivered` orders contribute to revenue KPIs
