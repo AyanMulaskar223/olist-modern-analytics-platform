@@ -38,6 +38,8 @@ __pycache__/
 
 # EXCEPTION: Allow the empty placeholder file so folders exist
 !01_data_sources/raw_sample_files/.gitkeep
+!01_data_sources/raw_sample_files/**
+
 
 # ----------------------
 # 4. DBT (DATA BUILD TOOL)
