@@ -1,0 +1,35 @@
+[sqlfluff]
+# 1. Global Settings
+dialect = snowflake
+# Use 'jinja' for now; switch to 'dbt' in Phase 3
+templater = jinja
+max_line_length = 120
+exclude_rules = L031
+
+# 2. Paths to Ignore (Don't lint generated code)
+ignore = target, dbt_packages, .dbt, .venv
+
+[sqlfluff:indentation]
+indent_unit = space
+tab_space_size = 4
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+# Enforce trailing commas (better for git diffs)
+line_position = trailing
+
+[sqlfluff:rules:capitalisation.keywords]
+# SELECT, FROM, WHERE
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+# order_id, customer_email
+capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.table]
+# Must use 'AS' (e.g. FROM table AS t)
+aliasing = explicit
+
+[sqlfluff:rules:references.special_chars]
+additional_allowed_characters = "$"
+# Allow using special chars in identifiers if needed (Snowflake specific)

@@ -1,6 +1,6 @@
 /*==============================================================================
   01_infrastructure.sql - Olist Modern Analytics Platform
-  
+
   Creates: Resource monitors, warehouses, databases, schemas, raw tables
   Phase: 2 - Data Acquisition & Ingestion
   Run as: SYSADMIN
@@ -13,7 +13,7 @@ CREATE OR REPLACE RESOURCE MONITOR OLIST_MONTHLY_LIMIT
   WITH CREDIT_QUOTA = 100
   FREQUENCY = MONTHLY
   START_TIMESTAMP = IMMEDIATELY
-  TRIGGERS 
+  TRIGGERS
     ON 75 PERCENT DO NOTIFY
     ON 90 PERCENT DO SUSPEND
     ON 100 PERCENT DO SUSPEND_IMMEDIATE;
@@ -25,16 +25,16 @@ CREATE DATABASE IF NOT EXISTS OLIST_COMMON_DB
 CREATE SCHEMA IF NOT EXISTS OLIST_COMMON_DB.GOVERNANCE;
 
 -- Cost center tag: tracks which workload drives spend (Ingestion/Transform/Reporting)
-CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.COST_CENTER 
+CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.COST_CENTER
   COMMENT = 'Workload classification for billing analysis';
 
 -- Environment tag: identifies PROD vs DEV environment
-CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT 
+CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT
   COMMENT = 'DEV | PROD | STAGING environment identifier';
 
 -- Loading warehouse: X-SMALL, 60s suspend, Azure Blob → Snowflake RAW
 CREATE OR REPLACE WAREHOUSE LOADING_WH_XS
-  WITH 
+  WITH
     WAREHOUSE_SIZE = 'X-SMALL'
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE
@@ -44,13 +44,13 @@ CREATE OR REPLACE WAREHOUSE LOADING_WH_XS
     RESOURCE_MONITOR = 'OLIST_MONTHLY_LIMIT'
   COMMENT = 'Raw data ingestion from Azure Blob Storage';
 
-ALTER WAREHOUSE LOADING_WH_XS SET TAG 
+ALTER WAREHOUSE LOADING_WH_XS SET TAG
   OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'INGESTION',
   OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
 
 -- Transform warehouse: X-SMALL, 60s suspend, dbt model execution
 CREATE OR REPLACE WAREHOUSE TRANSFORM_WH_XS
-  WITH 
+  WITH
     WAREHOUSE_SIZE = 'X-SMALL'
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE
@@ -60,13 +60,13 @@ CREATE OR REPLACE WAREHOUSE TRANSFORM_WH_XS
     RESOURCE_MONITOR = 'OLIST_MONTHLY_LIMIT'
   COMMENT = 'dbt transformations (STAGING → INTERMEDIATE → MARTS)';
 
-ALTER WAREHOUSE TRANSFORM_WH_XS SET TAG 
+ALTER WAREHOUSE TRANSFORM_WH_XS SET TAG
   OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'TRANSFORMATION',
   OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
 
 -- Reporting warehouse: X-SMALL, 300s suspend (allows Power BI caching)
 CREATE OR REPLACE WAREHOUSE REPORTING_WH_XS
-  WITH 
+  WITH
     WAREHOUSE_SIZE = 'X-SMALL'
     AUTO_SUSPEND = 300
     AUTO_RESUME = TRUE
@@ -76,7 +76,7 @@ CREATE OR REPLACE WAREHOUSE REPORTING_WH_XS
     RESOURCE_MONITOR = 'OLIST_MONTHLY_LIMIT'
   COMMENT = 'Power BI Import/DirectQuery workloads';
 
-ALTER WAREHOUSE REPORTING_WH_XS SET TAG 
+ALTER WAREHOUSE REPORTING_WH_XS SET TAG
   OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'REPORTING',
   OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
 
@@ -86,11 +86,11 @@ CREATE OR REPLACE DATABASE OLIST_RAW_DB
   COMMENT = 'Raw data landing zone. Source of truth stored in Azure Blob.';
 
 -- Landing schema: external stages, file formats
-CREATE OR REPLACE SCHEMA OLIST_RAW_DB.LANDING 
+CREATE OR REPLACE SCHEMA OLIST_RAW_DB.LANDING
   COMMENT = 'External stages and file format definitions';
 
 -- Olist schema: raw tables loaded via COPY INTO
-CREATE OR REPLACE SCHEMA OLIST_RAW_DB.OLIST 
+CREATE OR REPLACE SCHEMA OLIST_RAW_DB.OLIST
   COMMENT = 'Raw Olist tables loaded via COPY INTO';
 
 -- Analytics database: 1-day retention (Time Travel), dbt-managed production layer
@@ -110,6 +110,6 @@ CREATE OR REPLACE SCHEMA OLIST_ANALYTICS_DB.INTERMEDIATE
 CREATE OR REPLACE SCHEMA OLIST_ANALYTICS_DB.MARTS
   COMMENT = 'dbt marts: star schema for Power BI (TABLEs)';
 
---create a dev database for development and testing for dbt models using clone 
+--create a dev database for development and testing for dbt models using clone
 CREATE OR REPLACE DATABASE OLIST_DEV_DB CLONE OLIST_ANALYTICS_DB
   COMMENT = 'Development and testing database for dbt models using clone';

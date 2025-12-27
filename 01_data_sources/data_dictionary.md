@@ -28,6 +28,7 @@
 | `order_estimated_delivery_date` | timestamp | Estimated delivery | `2017-10-12` | Used for delay metrics |
 
 **Known Issues:**
+
 - Some orders have missing delivery dates
 - Canceled orders exist and must be excluded from revenue
 
@@ -47,6 +48,7 @@
 | `freight_value` | numeric | Shipping cost | `13.29` | Important cost metric |
 
 **Known Issues:**
+
 - Price outliers exist
 - Same order can have multiple items
 
@@ -64,6 +66,7 @@
 | `customer_state` | string | State code | `SP` | Used for region mapping |
 
 **Known Issues:**
+
 - `customer_id` ≠ `customer_unique_id`
 - City naming inconsistencies
 

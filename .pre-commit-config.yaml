@@ -1,0 +1,74 @@
+repos:
+  # ============================================================
+  # 1️⃣ BASIC HYGIENE (Everyone must have this)
+  # ============================================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace # Remove accidental spaces
+      - id: end-of-file-fixer # Ensure newline at EOF
+      - id: check-yaml # Validate YAML files
+      - id: check-json # Validate JSON files
+      - id: check-merge-conflict # Prevent committing conflicts
+      - id: check-added-large-files # 🚫 Block large files
+        args:
+          - '--maxkb=500' # 500KB max (safe for GitHub)
+      - id: detect-private-key # 🚫 Block private keys
+
+  # ============================================================
+  # 2️⃣ SECURITY GUARDRAILS (VERY IMPORTANT)
+  # ============================================================
+  - repo: local
+    hooks:
+      - id: block-env-files
+        name: 🛑 Block .env files
+        entry: 'Do not commit .env files'
+        language: fail
+        files: '^\.env$'
+
+      - id: block-credentials
+        name: 🛑 Block credential-like files
+        entry: 'Credential files detected'
+        language: fail
+        files: '(credentials|secrets|keys)\.(yml|yaml|json|txt)$'
+
+      - id: block-large-csv
+        name: 🚫 Prevent large CSV commits
+        entry: 'Large CSV files are not allowed in Git'
+        language: fail
+        files: '\.csv$'
+        exclude: '^01_data_sources/raw_sample_files/' # Allow small samples only
+
+  # ============================================================
+  # 3️⃣ SQL QUALITY (Snowflake + dbt)
+  # ============================================================
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.0.7
+    hooks:
+      - id: sqlfluff-lint
+        name: SQLFluff Lint (Snowflake + jinja)
+        args:
+          - --dialect
+          - snowflake
+          - --templater
+          - jinja
+        files: ^(03_dbt/|02_snowflake/02_ingestion/).*\.sql$
+      - id: sqlfluff-fix
+        name: SQLFluff Auto-Fix (Snowflake + jinja)
+        args:
+          - --dialect
+          - snowflake
+          - --templater
+          - jinja
+        files: ^(03_dbt/|02_snowflake/02_ingestion/).*\.sql$
+
+  # ============================================================
+  # 5️⃣ DOCUMENTATION QUALITY
+  # ============================================================
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        name: Markdown Lint
+        args:
+          - --fix
