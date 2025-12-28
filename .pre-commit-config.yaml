@@ -3,7 +3,7 @@ repos:
   # 1️⃣ BASIC HYGIENE (Everyone must have this)
   # ============================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace # Remove accidental spaces
       - id: end-of-file-fixer # Ensure newline at EOF
@@ -43,32 +43,32 @@ repos:
   # 3️⃣ SQL QUALITY (Snowflake + dbt)
   # ============================================================
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.0.7
+    rev: 4.0.0a2
     hooks:
       - id: sqlfluff-lint
         name: SQLFluff Lint (Snowflake + jinja)
         args:
-          - --dialect
-          - snowflake
-          - --templater
-          - jinja
-        files: ^(03_dbt/|02_snowflake/02_ingestion/).*\.sql$
+          - --dialect=snowflake
+          - --templater=jinja
+          - --exclude-rules=L031,CP02 # ✅ ADDED: Match .sqlfluff config
+        files: ^(03_dbt/models/|02_snowflake/02_ingestion/|02_snowflake/03_quality_checks/).*\.sql$
+
       - id: sqlfluff-fix
         name: SQLFluff Auto-Fix (Snowflake + jinja)
         args:
-          - --dialect
-          - snowflake
-          - --templater
-          - jinja
-        files: ^(03_dbt/|02_snowflake/02_ingestion/).*\.sql$
+          - --dialect=snowflake
+          - --templater=jinja
+          - --exclude-rules=L031,CP02 # ✅ ADDED: Match .sqlfluff config
+        files: ^(03_dbt/models/|02_snowflake/02_ingestion/|02_snowflake/03_quality_checks/).*\.sql$
 
   # ============================================================
-  # 5️⃣ DOCUMENTATION QUALITY
+  # 4️⃣ DOCUMENTATION QUALITY
   # ============================================================
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.39.0
+    rev: v0.47.0
     hooks:
       - id: markdownlint
         name: Markdown Lint
         args:
           - --fix
+        exclude: '(target/|dbt_packages/|logs/|\.dbt/)' # ✅ ADDED: Skip dbt artifacts
