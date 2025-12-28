@@ -241,8 +241,9 @@ Business process allows 8 distinct order states – this is expected e-commerce 
 
 **Order Statuses:** 8 values (delivered, shipped, processing, canceled, unavailable, invoiced, created, approved). Valid business states.
 
-**Payment Outliers:** 7,981 high-value transactions (7.7% of payments). Normal for e-commerce - electronics, furniture, bulk orders. Will flag but not remove. Source to Target Mapping
+**Payment Outliers:** 7,981 high-value transactions (7.7% of payments). Normal for e-commerce - electronics, furniture, bulk orders. Will flag but not remove.
 
+### Source to Target Mapping
 | Source (Azure Blob) | Target (Snowflake RAW) | Load Method         | Validation  |
 | ------------------- | ---------------------- | ------------------- | ----------- |
 | `customers/*.csv`   | `raw_customers`        | COPY INTO (CSV)     | ✅ Verified |
