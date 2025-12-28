@@ -73,7 +73,8 @@ Validation script: `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sq
 
 **Result:** ✅ No NULL primary keys detected across all tables.
 
----Validation Results
+---
+## Validation Results
 
 ### Critical Checks - All Passed
 
