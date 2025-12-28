@@ -43,7 +43,7 @@ repos:
   # 3️⃣ SQL QUALITY (Snowflake + dbt)
   # ============================================================
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 4.0.0a2
+    rev: 3.2.5
     hooks:
       - id: sqlfluff-lint
         name: SQLFluff Lint (Snowflake + jinja)
