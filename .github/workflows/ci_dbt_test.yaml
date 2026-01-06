@@ -54,12 +54,8 @@ jobs:
       - name: Install dbt Packages
         run: dbt deps
 
-      # 3. Test Connection
-      - name: dbt Debug
-        run: dbt debug --target ci
-
-      # 4. The Main Event: Build everything
-      # --target ci: Uses profiles.yml ci target with CI_SERVICE_ROLE
+      # 3. The Main Event: Build everything
+      # --target ci: Connects using the Env Vars above
       # --full-refresh: Ensures we don't rely on bad old data
       - name: Run dbt Build
         run: dbt build --target ci --full-refresh
