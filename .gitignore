@@ -72,3 +72,4 @@ localSettings.json
 # 7. LOCAL NOTES
 # ----------------------
 context/
+dbt_internal_packages/

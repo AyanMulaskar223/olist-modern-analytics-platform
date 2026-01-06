@@ -1,0 +1,45 @@
+# 03_dbt/profiles.yml
+# dbt Snowflake connection profile for Olist Analytics Platform
+# Place this file in ~/.dbt/profiles.yml OR keep in project root for local dev
+
+olist_snowflake:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}" # e.g., abc12345.central-india.azure
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: ANALYTICS_ROLE # Created in 02_rbac_security.sql
+      database: OLIST_DEV_DB # Development environment
+      warehouse: TRANSFORM_WH_XS # Created in 01_infrastructure.sql
+      schema: staging # Default schema for dev models
+      threads: 4
+      client_session_keep_alive: False
+      query_tag: dbt_dev_{{ env_var('USER', 'unknown') }}
+
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: ANALYTICS_ROLE
+      database: OLIST_ANALYTICS_DB # Production analytics databasedbt
+      warehouse: TRANSFORM_WH_XS
+      schema: staging
+      threads: 8
+      client_session_keep_alive: False
+      query_tag: dbt_prod_{{ env_var('USER', 'unknown') }}
+
+    ci:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: CI_SERVICE_ROLE # Dedicated CI role from 02_rbac_security.sql
+      database: OLIST_ANALYTICS_DB
+      warehouse: TRANSFORM_WH_XS
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'dbt_ci') }}" # Dynamic schema per PR
+      threads: 4
+      client_session_keep_alive: False
+      query_tag: dbt_ci_pr_{{ env_var('GITHUB_RUN_ID', 'local') }}
