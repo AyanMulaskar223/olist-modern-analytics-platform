@@ -1,0 +1,279 @@
+version: 2
+
+sources:
+  - name: olist
+    description: Raw Olist Brazilian e-commerce data from Phase 2 ingestion
+    database: OLIST_RAW_DB
+    schema: OLIST
+    tables:
+      - name: raw_customers
+        description: Customer master data with 1-to-1 relationship to customer_unique_id
+        columns:
+          - name: customer_id
+            description: Primary key - customer surrogate ID
+            tests:
+              - unique
+              - not_null
+          - name: customer_unique_id
+            description: |
+              Customer business key across Olist ecosystem.
+              NOTE: Not unique - customers can have multiple customer_ids (e.g., after moving).
+              This is expected Olist behavior. Use customer_id as primary key for joins.
+            tests:
+              - not_null
+          - name: customer_state
+            description: Customer state code - 27 Brazilian states plus DF
+            tests:
+              - accepted_values:
+                  arguments:
+                    values:
+                      [
+                        'AC',
+                        'AL',
+                        'AP',
+                        'AM',
+                        'BA',
+                        'CE',
+                        'DF',
+                        'ES',
+                        'GO',
+                        'MA',
+                        'MT',
+                        'MS',
+                        'MG',
+                        'PA',
+                        'PB',
+                        'PR',
+                        'PE',
+                        'PI',
+                        'RJ',
+                        'RN',
+                        'RS',
+                        'RO',
+                        'RR',
+                        'SC',
+                        'SP',
+                        'SE',
+                        'TO',
+                      ]
+        config:
+          freshness:
+            warn_after: { count: 7, period: day }
+            error_after: { count: 14, period: day }
+          loaded_at_field: _loaded_at
+
+      - name: raw_orders
+        description: |
+          Order-level fact data. Grain: one row per order.
+          Business Rule: Only 'delivered' orders count toward revenue.
+        columns:
+          - name: order_id
+            description: Primary key - unique order identifier
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            description: Foreign key to dim_customers
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('olist', 'raw_customers')
+                    field: customer_id
+          - name: order_status
+            description: Order fulfillment status with 8 valid values
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values:
+                      [
+                        'delivered',
+                        'canceled',
+                        'shipped',
+                        'processing',
+                        'approved',
+                        'invoiced',
+                        'unavailable',
+                        'created',
+                      ]
+          - name: order_purchase_timestamp
+            description: When customer placed the order
+            tests:
+              - not_null
+        config:
+          freshness:
+            warn_after: { count: 1, period: day }
+            error_after: { count: 2, period: day }
+          loaded_at_field: _loaded_at
+
+      - name: raw_order_items
+        description: |
+          Line-item details per order.
+          Grain: one row per product per order.
+        columns:
+          - name: order_id
+            description: Foreign key to raw_orders
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('olist', 'raw_orders')
+                    field: order_id
+          - name: product_id
+            description: Foreign key to raw_products
+            tests:
+              - relationships:
+                  arguments:
+                    to: source('olist', 'raw_products')
+                    field: product_id
+          - name: seller_id
+            description: Foreign key to raw_sellers
+            tests:
+              - relationships:
+                  arguments:
+                    to: source('olist', 'raw_sellers')
+                    field: seller_id
+        config:
+          loaded_at_field: _loaded_at
+
+      - name: raw_order_payments
+        description: |
+          Payment transactions per order.
+          Cardinality: 1-to-Many (orders can have multiple payment methods).
+        columns:
+          - name: order_id
+            description: Foreign key to raw_orders
+            tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('olist', 'raw_orders')
+                    field: order_id
+          - name: payment_type
+            description: Payment method - credit_card, boleto, debit_card, voucher, or not_defined
+            tests:
+              - accepted_values:
+                  arguments:
+                    values:
+                      [
+                        'credit_card',
+                        'boleto',
+                        'debit_card',
+                        'voucher',
+                        'not_defined',
+                      ]
+        config:
+          loaded_at_field: _loaded_at
+
+      - name: raw_order_reviews
+        description: |
+          Customer ratings and feedback per order loaded from JSON files.
+          NOTE: Tests removed from source - will be added in staging layer after JSON extraction.
+          Column names need proper quoting for Snowflake case sensitivity.
+        config:
+          loaded_at_field: _loaded_at
+
+      - name: raw_products
+        description: Product master data
+        columns:
+          - name: product_id
+            description: Primary key - unique product identifier
+            tests:
+              - unique
+              - not_null
+          - name: product_category_name
+            description: Portuguese product category name
+        config:
+          loaded_at_field: _loaded_at
+
+      - name: raw_sellers
+        description: Seller master data for marketplace vendors
+        columns:
+          - name: seller_id
+            description: Primary key - unique seller identifier
+            tests:
+              - unique
+              - not_null
+          - name: seller_state
+            description: Seller location - 27 Brazilian states
+            tests:
+              - accepted_values:
+                  arguments:
+                    values:
+                      [
+                        'AC',
+                        'AL',
+                        'AP',
+                        'AM',
+                        'BA',
+                        'CE',
+                        'DF',
+                        'ES',
+                        'GO',
+                        'MA',
+                        'MT',
+                        'MS',
+                        'MG',
+                        'PA',
+                        'PB',
+                        'PR',
+                        'PE',
+                        'PI',
+                        'RJ',
+                        'RN',
+                        'RS',
+                        'RO',
+                        'RR',
+                        'SC',
+                        'SP',
+                        'SE',
+                        'TO',
+                      ]
+        config:
+          loaded_at_field: _loaded_at
+
+      - name: raw_geolocation
+        description: Postal code to latitude/longitude mappings for delivery optimization
+        columns:
+          - name: geolocation_zip_code_prefix
+            description: Brazilian CEP postal code prefix
+            tests:
+              - not_null
+          - name: geolocation_state
+            description: State code
+            tests:
+              - accepted_values:
+                  arguments:
+                    values:
+                      [
+                        'AC',
+                        'AL',
+                        'AP',
+                        'AM',
+                        'BA',
+                        'CE',
+                        'DF',
+                        'ES',
+                        'GO',
+                        'MA',
+                        'MT',
+                        'MS',
+                        'MG',
+                        'PA',
+                        'PB',
+                        'PR',
+                        'PE',
+                        'PI',
+                        'RJ',
+                        'RN',
+                        'RS',
+                        'RO',
+                        'RR',
+                        'SC',
+                        'SP',
+                        'SE',
+                        'TO',
+                      ]
+        config:
+          loaded_at_field: _loaded_at
