@@ -1,0 +1,35 @@
+[sqlfluff]
+dialect = snowflake
+templater = dbt
+max_line_length = 120
+exclude_rules = L031, CP02
+
+# 🔧 FIX: Ignore paths relative to 03_dbt/
+ignore = target, dbt_packages, .dbt, .venv, logs, dbt_internal_packages
+
+[sqlfluff:templater:dbt]
+# 🔧 FIX: Tell SQLFluff where dbt project is
+project_dir = .
+profiles_dir = .
+profile = olist_snowflake
+target = dev
+
+[sqlfluff:indentation]
+indent_unit = space
+tab_space_size = 4
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+line_position = trailing
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.table]
+aliasing = explicit
+
+[sqlfluff:rules:references.special_chars]
+additional_allowed_characters = "$"

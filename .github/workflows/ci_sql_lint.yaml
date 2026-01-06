@@ -22,10 +22,13 @@ jobs:
         run: |
           pip install sqlfluff==3.0.0 sqlfluff-templater-dbt==3.0.0 dbt-snowflake==1.11.0
 
-      # 🔧 FIX: Install dbt packages so SQLFluff can resolve refs()
+      # 🔧 FIX: Set working directory for dbt
       - name: Install dbt Dependencies
+        working-directory: ./03_dbt
         run: dbt deps
 
+      # 🔧 FIX: Correct path to models directory
       - name: Lint SQL (with dbt context)
+        working-directory: ./03_dbt
         run: |
           sqlfluff lint models/ --dialect snowflake --templater dbt
