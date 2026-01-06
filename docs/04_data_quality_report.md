@@ -1,25 +1,25 @@
-# Phase 2: Data Quality Validation Report
+# Phase 2 Data Quality Validation Report
 
 **Project:** Olist Modern Analytics Platform  
 **Author:** Ayan Mulaskar  
 **Date:** December 28, 2025  
-**Status:** PASSED - Ready for Phase 3
+**Status:** PASSED
 
 ---
 
 ## Executive Summary
 
-Phase 2 data ingestion completed successfully. All 8 tables loaded from Azure Blob Storage into Snowflake RAW layer with 1.55M total rows. No critical issues detected.
+Phase 2 data ingestion is complete. We successfully loaded 8 tables totaling 1.55M rows from Azure Blob Storage into Snowflake's RAW layer. The validation process identified no critical data quality issues that would block progression to Phase 3.
 
 **Key Findings:**
 
-- Quality Score: 100% (0 critical issues)
-- Load Success Rate: 100%
-- Minor issues: 12 records across 2 categories (0.0008% of data)
-- All referential integrity checks passed
-- Data freshness: < 1 hour
+- Quality Score: 100% on critical checks
+- All tables loaded without failures
+- 12 records flagged for review (0.0008% of total data)
+- Referential integrity verified across all table relationships
+- Data loaded within the last hour, meeting freshness requirements
 
-**Recommendation:** Approved for Phase 3. Minor issues documented below for dbt staging layer.
+**Recommendation:** The data is ready for Phase 3 transformations. Minor data characteristics flagged below will be addressed in the dbt staging layer.
 
 ---
 
@@ -41,39 +41,20 @@ All tables include audit columns: `_source_file`, `_loaded_at`, `_file_row_numbe
 
 ---
 
-## 🔍 Validation Methodology
+## Validation Methodology
 
-### Quality Check Framework
+The validation script (`02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql`) ran in approximately 30 seconds and performed the following checks:
 
-Data quality validation was performed using the script:
-
-- **Location:** `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql`
-- **Execution Time:** ~30 seconds
-- \*Validation Methodology
-
-Validation script: `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql` (execution time: ~30s)
-
-**Checks performed:**
-
-- Primary/foreign key completeness and uniqueness
-- Referential integrity (4 relationships validated)
-- Date logic (no future timestamps, valid sequences)
-- Data format (whitespace, case consistency)
-- Business rules (no negative amounts, categorical validation)
-- Statistical outliers (IQR method)
-- Load freshness (< 24 hour SLA)
-  **Requirement:** All primary keys must be populated (NOT NULL)
-
-| Table           | Primary Key Column | NULL Count | Status  |
-| --------------- | ------------------ | ---------- | ------- |
-| `raw_customers` | `customer_id`      | 0          | ✅ PASS |
-| `raw_orders`    | `order_id`         | 0          | ✅ PASS |
-| `raw_products`  | `product_id`       | 0          | ✅ PASS |
-| `raw_sellers`   | `seller_id`        | 0          | ✅ PASS |
-
-**Result:** ✅ No NULL primary keys detected across all tables.
+- Primary and foreign key completeness and uniqueness
+- Referential integrity across 4 table relationships
+- Date logic validation (future timestamps, event sequences)
+- Text formatting issues (whitespace, inconsistent casing)
+- Business rule validation (negative amounts, valid categories)
+- Statistical outlier detection using IQR method
+- Data freshness verification (24-hour SLA)
 
 ---
+
 ## Validation Results
 
 ### Critical Checks - All Passed
@@ -88,51 +69,20 @@ Validation script: `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sq
 Result: 100% quality score on all critical check
 Zero-value payments may represent:
 
-1. Free orders (promotional campaigns, vouchers)
-2. Returns/refunds processed through payment system
-3. Gift cards or loyalty points redemption
-4. Data entry errors
+- Promotional campaigns or voucher redemptions
+- Return/refund transactions processed through the payment system
+- Loyalty points or gift card payments
+- Potential data entry errors
 
-**Recommendation:**
+These records will be flagged with an `is_zero_payment` indicator in the staging layer. Further investigation with business stakeholders will determine if these represent legitimate business scenarios.
 
-- ✅ **NOT a blocker** – valid business scenario possible
-- Phase 3 Action: Create `stg_order_payments` with flag `is_zero_payment`
-- Business validation: Cross-reference with order status and payment type
-- Document legitimate zero-payment use cases with business stakeholders
+**2. Undefined Payment Types**
 
-**SQL for Investigation (Phase 3):**
+Count: 3 records (0.003% of 103,886 total payments)
 
-```sql
--- Identify zero-payment characteristics
-SELECT
-    op.payment_type,
-    o.order_status,
-    COUNT(*) AS zero_payment_count
-FROM raw_order_payments op
-JOIN raw_orders o ON op.order_id = o.order_id
-WHERE op.payment_value = 0
-GROUP BY op.payment_type, o.order_status;
-```
+Three payment records contain the value 'not_defined' where we expect one of four valid payment types: credit_card, boleto, voucher, or debit_card. This suggests missing or incomplete data from the source system.
 
----
-
-### Issue 2: Invalid Payment Type Categories
-
-**Severity:** 🟡 Medium  
-**Impact:** Low (0.003% of payments)
-
-| Table                | Column         | Invalid Value | Count | Total Rows | Percentage |
-| -------------------- | -------------- | ------------- | ----- | ---------- | ---------- |
-| `raw_order_payments` | `payment_type` | `not_defined` | 3     | 103,886    | 0.003%     |
-
-**Expected Values:**
-
-- `credit_card`
-- `boleto` (Brazilian payment method)
-- `voucher`
-- `debit_card`
-
-**Analysis:**
+In Phase 3, these records will be mapped to 'unknown' in the staging layer. A dbt test will be added to validate that all future payment types match the expected list of accepted values.nalysis:\*\*
 "not_defined" indicates missing or unmapped payment type in source system.
 
 **Recommendation:**
@@ -184,96 +134,26 @@ UPPER(TRIM(customer_state)) AS customer_state_clean
 
 **Observation:** 8 unique order statuses
 
-| Table        | Column         | Unique Values | Status      |
-| ------------ | -------------- | ------------- | ----------- |
-| `raw_orders` | `order_status` | 8             | ✅ Expected |
+| Table | Column | Unique Values | Status |
+| ----- | ------ | ------------- | ------ |
 
-**Expected Statuses:**
+| `Expected Data Characteristics
 
-- `delivered`
-- `shipped`
-- `processing`
-- `canceled`
-- `unavailable`
-- `invoiced`
-- `created`
-- `approved`
+Several data patterns were identified that, while they may appear as anomalies, actually represent normal business characteristics. These do not require remediation.
 
-**Analysis:**
-Business process allows 8 distinct order states – this is expected e-commerce behavior.
+### Mixed Case State Codes
 
-**Phase 3 Action:**
+The customer_state column contains 27 unique values with inconsistent casing (e.g., "SP", "Sp", "sp"). This count is correct—Brazil has 26 states plus one federal district (DF). The mixed casing is typical of raw operational data and will be standardized to uppercase in the staging layer.
 
-- Add dbt test: `accepted_values` for `order_status`
-- Create derived column: `is_completed` (delivered/canceled)
-- Create derived column: `is_active` (processing/shipped/approved)
+### Order Status Variety
 
----
+Eight distinct order statuses are present in the data: delivered, shipped, processing, canceled, unavailable, invoiced, created, and approved. This reflects the actual order lifecycle in the e-commerce system. The staging layer will add derived flags for analytical purposes (such as is_completed and is_active).
 
-### 3. Payment Outliers (High-Value Orders)
+### High-Value Transactions
 
-**Observation:** 7,981 outliers detected using IQR method
+Using the IQR method, 7,981 payment transactions (7.7% of total payments) were flagged as statistical outliers. This is expected for e-commerce data, where high-value purchases of electronics, furniture, or bulk orders create a long-tail distribution. These records represent legitimate transactions and will be retained but flagged for analytical segmentation
 
-| Table                | Column          | Outlier Count | Total Rows | Percentage |
-| -------------------- | --------------- | ------------- | ---------- | ---------- |
-| `raw_order_payments` | `payment_value` | 7,981         | 103,886    | 7.7%       |
-
-**Statistical Profile:**
-
-- DIssues Identified
-
-### Minor Issues (Non-Blocking)
-
-**1. Zero-Value Payments**
-
-- Count: 9 records (0.009% of 103,886 payments)
-- Likely causes: Vouchers, promotional orders, refunds, loyalty points
-- Phase 3 action: Add `is_zero_payment` flag in staging, validate with order_status
-
-**2. Invalid Payment Types**
-
-- Count: 3 records with `payment_type = 'not_defined'` (0.003%)
-- Phase 3 action: Map to 'unknown' in staging, add dbt test for accepted_values
-
-### Expected Data Characteristics
-
-**Mixed Case States:** 27 unique values (26 Brazilian states + DF). Will standardize to uppercase in staging.
-
-**Order Statuses:** 8 values (delivered, shipped, processing, canceled, unavailable, invoiced, created, approved). Valid business states.
-
-**Payment Outliers:** 7,981 high-value transactions (7.7% of payments). Normal for e-commerce - electronics, furniture, bulk orders. Will flag but not remove.
-
-### Source to Target Mapping
-| Source (Azure Blob) | Target (Snowflake RAW) | Load Method         | Validation  |
-| ------------------- | ---------------------- | ------------------- | ----------- |
-| `customers/*.csv`   | `raw_customers`        | COPY INTO (CSV)     | ✅ Verified |
-| `order/*.csv`       | `raw_orders`           | COPY INTO (CSV)     | ✅ Verified |
-| `items/*.parquet`   | `raw_order_items`      | COPY INTO (Parquet) | ✅ Verified |
-| `payments/*.csv`    | `raw_order_payments`   | COPY INTO (CSV)     | ✅ Verified |
-| `products/*.csv`    | `raw_products`         | COPY INTO (CSV)     | ✅ Verified |
-| `sellers/*.csv`     | `raw_sellers`          | COPY INTO (CSV)     | ✅ Verified |
-| `geolocation/*.csv` | `raw_geolocation`      | COPY INTO (CSV)     | ✅ Verified |
-| `reviews/*.json`    | `raw_order_reviews`    | COPY INTO (JSON)    | ✅ Verified |
-
-### Audit Trail Verification
-
-✅ All tables include:
-
-- `_source_file` → Full Azure blob path
-- `_loaded_at` → Load timestamp (UTC)
-- `_file_row_number` → Source file row number
-
-**Validation Query:**
-
-```sql
-SELECT
-    _source_file,
-    MIN(_loaded_at) AS first_load,
-    MAX(_loaded_at) AS last_load,
-    COUNT(*) AS row_count
-FROM OLIST_RAW_DB.OLIST.raw_orders
-GROUP BY _source_file;
-```
+````
 
 ---
 
@@ -334,91 +214,36 @@ GROUP BY _source_file;
 
 ---
 
-## 📚 References
+## References
 
 ### Related Documentation
 
-- [Business Requirements](./00_business_requirements.md) – KPIs and business rules
-- [Architecture Overview](./01_architecture.md) – System design
-- [Azure Storage Setup](./02_azure_storage_setup.md) – Source configuration
-- [Data Dictionary](./02_data_dictionary.md) – Column definitions
-- [ADLC Framework](./05_adlc_framework.md) – Development lifecycle
-- [Snowflake README](../02_snowflake/README.md) – Phase 2 implementation details
+- Business Requirements (00_business_requirements.md)
+- Architecture Overview (01_architecture.md)
+- Azure Storage Setup (02_azure_storage_setup.md)
+- Data Dictionary (03_data_dictionary.md)
+- ADLC Framework (06_adlc_framework.md)
+- Snowflake Implementation (../02_snowflake/README.md)
 
 ### Quality Check Scripts
 
-- **Primary:** `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql`
-- **Extended:** `context/05_raw_data_quality_checks_EXTENDED.sql` (100% column coverage)
+Primary validation: `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql`
+Extended validation: `context/05_raw_data_quality_checks_EXTENDED.sql`
 
 ### Snowflake Objects
 
-- **Database:** `OLIST_RAW_DB`
-- **Schema:** `OLIST_RAW_DB.OLIST`
-- **Warehouse:** `LOADING_WH_XS`
-- **Stage:** `OLIST_RAW_DB.LANDING.AZURE_STAGE`
+- Database: OLIST_RAW_DB
+- Schema: OLIST_RAW_DB.OLIST
+- Warehouse: LOADING_WH_XS
+- Stage: OLIST_RAW_DB.LANDING.AZURE_STAGE
 
 ---
 
-## 📝 Appendix: Validation Queries
+## Appendix: Validation Queries
 
-### Quick Health Check (Run Anytime)
+The following queries can be run to validate data quality after any future loads:
 
-```sql
--- Overall quality summary
-SELECT
-    'raw_orders' AS table_name,
-    COUNT(*) AS total_rows,
-    COUNT(DISTINCT order_id) AS unique_pks,
-    SUM(CASE WHEN order_id IS NULL THEN 1 ELSE 0 END) AS null_pks,
-    SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) AS null_fks,
-    ROUND((1 - (SUM(CASE WHEN order_id IS NULL OR customer_id IS NULL THEN 1 ELSE 0 END) / COUNT(*))) * 100, 2) AS quality_score_pct
-FROM OLIST_RAW_DB.OLIST.raw_orders;
-```
-
-### Data Freshness Check
-
-````sql
--- Quality Score
-
-**Calculation:** `(1 - Critical Issues / Total Rows) × 100`
-
-Critical issues = NULL keys + duplicates + orphaned records + invalid dates
-
-Result: **100%** (0 critical issues across 1.55M rows)
-
-Note: Zero payments and invalid payment types classified as data characteristics, not critical issues.Phase 3 Remediation Plan
-
-**Data Cleaning:**
-- Standardize state codes to uppercase: `UPPER(TRIM(customer_state))`
-- Standardize order statuses to lowercase: `LOWER(TRIM(order_status))`
-- Map 'not_defined' payment types to 'unknown'
-
-**Business Logic:**
-- Add `is_zero_payment` flag
-- Create order value categories (low/medium/high/premium)
-- Flag high-value outliers for analysis
-
-**dbt Tests:**
-- `unique` and `not_null` on all keys
-- `relationships` for foreign keys
-- `accepted_values` for order_status and payment_type
-
----
-
-## Cost & Performance
-
-| Metric | Value |
-|--------|-------|
-| Rows loaded | 1,550,688 |
-| Data size | ~850 MB compressed |
-| Execution time | ~8 minutes |
-| Credits used | 0.13 (~$0.03) |
-| Quality checks | 30 seconds, 0.008 credits |
-| **Total cost** | **~$0.03** |Appendix
-
-### Quick Validation Queries
-
-**Health check:**
+**Health Check:**
 ```sql
 SELECT COUNT(*) AS total_rows,
        COUNT(DISTINCT order_id) AS unique_orders,
@@ -426,7 +251,7 @@ SELECT COUNT(*) AS total_rows,
 FROM OLIST_RAW_DB.OLIST.raw_orders;
 ````
 
-**Investigate zero payments:**
+**Zero Payment Investigation:**
 
 ```sql
 SELECT op.order_id, op.payment_type, o.order_status
@@ -435,24 +260,42 @@ JOIN OLIST_RAW_DB.OLIST.raw_orders o ON op.order_id = o.order_id
 WHERE op.payment_value = 0;
 ```
 
-### References
+---
 
-- Quality check script: `02_snowflake/03_quality_checks/05_raw_data_quality_checks.sql`
-- Extended validation: `context/05_raw_data_quality_checks_EXTENDED.sql`
-- Implementation details: `02_snowflake/README.md`
+## Phase 3 Remediation Plan
+
+The following actions will be taken in Phase 3 to address the identified data characteristics:
+
+**Data Standardization:**
+
+- Uppercase all state codes: `UPPER(TRIM(customer_state))`
+- Lowercase all order statuses: `LOWER(TRIM(order_status))`
+- Map 'not_defined' payment types to 'unknown'
+
+**Business Logic Additions:**
+
+- Create `is_zero_payment` flag for analytical purposes
+- Implement order value categorization (low/medium/high/premium)
+- Flag statistical outliers for segmentation
+
+**dbt Tests:**
+
+- Add `unique` and `not_null` tests on all primary and foreign keys
+- Implement `relationships` tests for referential integrity
+- Create `accepted_values` tests for order_status and payment_type
 
 ---
 
 ## Next Steps
 
-1. Load dbt seeds: `dbt seed`
-2. Create staging models with data cleaning
-3. Implement dbt tests (not_null, unique, relationships, accepted_values)
-4. Build intermediate layer with business logic
-5. Create star schema marts for Power BI
+Phase 3 development will proceed with the following tasks:
+
+1. Load product category translation seed file
+2. Build staging models with data cleaning logic
+3. Implement comprehensive dbt tests
+4. Create intermediate models with business logic
+5. Design star schema marts for Power BI consumption
 
 ---
 
-**Status:** Phase 2 Complete - Approved for Phase 3  
-**Author:** Ayan Mulaskar  
-**Version:** 1.0
+**Report Status:** Final
