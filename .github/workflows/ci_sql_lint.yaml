@@ -1,0 +1,31 @@
+name: CI - SQL Linting (Fast)
+
+on:
+  push:
+    branches: ['feat/**', 'fix/**', 'staging']
+  pull_request:
+    branches: ['main', 'staging']
+
+jobs:
+  lint-sql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install SQLFluff + dbt
+        run: |
+          pip install sqlfluff==3.0.0 sqlfluff-templater-dbt==3.0.0 dbt-snowflake==1.7.0
+
+      # 🔧 FIX: Install dbt packages so SQLFluff can resolve refs()
+      - name: Install dbt Dependencies
+        run: dbt deps
+
+      - name: Lint SQL (with dbt context)
+        run: |
+          sqlfluff lint models/ --dialect snowflake --templater dbt

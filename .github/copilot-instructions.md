@@ -2,10 +2,10 @@
 
 ## 🎯 Project Identity
 
-**Project:** Olist Modern Analytics Platform  
-**Domain:** Brazilian E-commerce Marketplace & Logistics Analytics  
-**Tech Stack:** Azure Blob Storage → Snowflake → dbt → Power BI → GitHub Actions  
-**Current Phase:** Phase 2 (Data Acquisition) ✅ Complete | Phase 3 (dbt Transformations) 🚧 In Progress  
+**Project:** Olist Modern Analytics Platform
+**Domain:** Brazilian E-commerce Marketplace & Logistics Analytics
+**Tech Stack:** Azure Blob Storage → Snowflake → dbt → Power BI → GitHub Actions
+**Current Phase:** Phase 2 (Data Acquisition) ✅ Complete | Phase 3 (dbt Transformations) 🚧 In Progress
 **Architecture Pattern:** Modern Data Stack (MDS) with Medallion Architecture (RAW → STAGING → INTERMEDIATE → MARTS)
 
 ---
@@ -283,7 +283,6 @@ renamed as (
     from source
 ),
 
-filtered as (
     select * from renamed
     where order_status = 'delivered'  -- Business Rule
 )
@@ -578,7 +577,7 @@ repos:
 
 > "Would this pattern be acceptable in a real data engineering team at a mid-sized company?"
 
-If **yes** → proceed  
+If **yes** → proceed
 If **no** → explain why and suggest enterprise alternative
 
 ---
@@ -596,6 +595,6 @@ If **no** → explain why and suggest enterprise alternative
 
 ---
 
-**Maintainer:** Ayan Mulaskar  
-**Last Updated:** December 2025  
+**Maintainer:** Ayan Mulaskar
+**Last Updated:** December 2025
 **Version:** 2.0 (Phase 2 Complete)

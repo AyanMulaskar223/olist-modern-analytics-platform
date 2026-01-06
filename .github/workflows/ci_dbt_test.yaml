@@ -1,0 +1,73 @@
+name: CI - dbt Integration
+
+# TRIGGER: Run only on Pull Requests to Main
+on:
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'models/**'
+      - 'seeds/**'
+      - 'tests/**'
+      - 'dbt_project.yml'
+
+# 💰 PRO FEATURE 1: Concurrency
+# If you push a commit, then realize you made a typo and push again 10 seconds later,
+# this setting KILLS the first run immediately.
+# Result: You don't pay for 2 parallel runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Snowflake Credentials (from GitHub Secrets)
+  SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+  SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+  SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+  SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+  # 🔑 Dynamic Schema: Each PR gets its own isolated sandbox
+  SNOWFLAKE_SCHEMA: 'CI_PR_${{ github.event.number }}'
+
+jobs:
+  integration-test:
+    name: Build & Test (Isolated)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Get the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # ⚡ PRO FEATURE 2: Caching
+      # This remembers the "pip install" from last time so it runs in 10s instead of 2 mins.
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dbt-snowflake
+        run: pip install dbt-snowflake
+
+      # 2. Install Dependencies (Packages)
+      - name: Install dbt Packages
+        run: dbt deps
+
+      # 3. Test Connection
+      - name: dbt Debug
+        run: dbt debug --target ci
+
+      # 4. The Main Event: Build everything
+      # --target ci: Uses profiles.yml ci target with CI_SERVICE_ROLE
+      # --full-refresh: Ensures we don't rely on bad old data
+      - name: Run dbt Build
+        run: dbt build --target ci --full-refresh
+
+      # 🧹 PRO FEATURE 3: Cleanup
+      # If the build succeeds OR fails (always()), delete the temporary schema.
+      # Requires a simple macro in your project (see below).
+      - name: Drop CI Schema
+        if: always()
+        run: |
+          dbt run-operation drop_ci_schema --target ci --args "{schema_name: $SNOWFLAKE_SCHEMA}"
