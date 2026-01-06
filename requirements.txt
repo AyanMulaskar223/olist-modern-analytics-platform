@@ -1,9 +1,5 @@
 # Phase 3: dbt Core Dependencies (NOT dbt-fusion)
 dbt-core==1.11.2
-dbt-snowflake==1.11.0
+dbt-snowflake==1.11.2
 
 # Phase 3: dbt Packages (installed via dbt deps)
-# dbt_utils==1.3.3
-# dbt_expectations==0.10.10
-# codegen==0.14.0
-# audit_helper==0.12.2

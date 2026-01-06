@@ -4,8 +4,8 @@ with orders as (
     select
         order_id,
         order_purchase_timestamp,
-        order_approved_at,
-        order_delivered_customer_date
+        approved_at,
+        delivered_at,
     from {{ ref('stg_olist__orders') }}
 ),
 

@@ -10,7 +10,7 @@ model-paths: ['03_dbt/models']
 analysis-paths: ['03_dbt/analyses']
 test-paths: ['03_dbt/tests']
 seed-paths: ['03_dbt/seeds']
-macro-paths: ['macros', '03_dbt/macros']
+macro-paths: ['macros']
 snapshot-paths: ['03_dbt/snapshots']
 
 # Artifacts

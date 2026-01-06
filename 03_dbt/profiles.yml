@@ -24,7 +24,7 @@ olist_snowflake:
       user: "{{ env_var('SNOWFLAKE_USER') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
       role: ANALYTICS_ROLE
-      database: OLIST_ANALYTICS_DB # Production analytics databasedbt
+      database: OLIST_ANALYTICS_DB # Production analytics database
       warehouse: TRANSFORM_WH_XS
       schema: staging
       threads: 8

@@ -1,8 +1,8 @@
 # Phase 2 Data Quality Validation Report
 
-**Project:** Olist Modern Analytics Platform  
-**Author:** Ayan Mulaskar  
-**Date:** December 28, 2025  
+**Project:** Olist Modern Analytics Platform
+**Author:** Ayan Mulaskar
+**Date:** December 28, 2025
 **Status:** PASSED
 
 ---
@@ -59,11 +59,11 @@ The validation script (`02_snowflake/03_quality_checks/05_raw_data_quality_check
 
 ### Critical Checks - All Passed
 
-**Primary Keys:** No NULLs or duplicates in customer_id, order_id, product_id, seller_id  
-**Foreign Keys:** No NULLs in customer_id, order_id, product_id references  
-**Business Fields:** No NULLs in order_status, order_purchase_timestamp, payment_value  
-**Referential Integrity:** 0 orphaned records across all 4 relationships  
-**Date Logic:** No future timestamps, all sequences valid (purchase → approval → delivery)  
+**Primary Keys:** No NULLs or duplicates in customer_id, order_id, product_id, seller_id
+**Foreign Keys:** No NULLs in customer_id, order_id, product_id references
+**Business Fields:** No NULLs in order_status, order_purchase_timestamp, payment_value
+**Referential Integrity:** 0 orphaned records across all 4 relationships
+**Date Logic:** No future timestamps, all sequences valid (purchase → approval → delivery)
 **Data Format:** No whitespace issues, no negative amounts
 
 Result: 100% quality score on all critical check
@@ -82,7 +82,7 @@ Count: 3 records (0.003% of 103,886 total payments)
 
 Three payment records contain the value 'not_defined' where we expect one of four valid payment types: credit_card, boleto, voucher, or debit_card. This suggests missing or incomplete data from the source system.
 
-In Phase 3, these records will be mapped to 'unknown' in the staging layer. A dbt test will be added to validate that all future payment types match the expected list of accepted values.nalysis:\*\*
+In Phase 3, these records will be mapped to 'unknown' in the staging layer. A dbt test will be added to validate that all future payment types match the expected list of accepted values.
 "not_defined" indicates missing or unmapped payment type in source system.
 
 **Recommendation:**
@@ -134,10 +134,11 @@ UPPER(TRIM(customer_state)) AS customer_state_clean
 
 **Observation:** 8 unique order statuses
 
-| Table | Column | Unique Values | Status |
-| ----- | ------ | ------------- | ------ |
+| Table  | Column       | Unique Values                                                                      | Status   |
+| ------ | ------------ | ---------------------------------------------------------------------------------- | -------- |
+| orders | order_status | delivered, shipped, processing, canceled, unavailable, invoiced, created, approved | Expected |
 
-| `Expected Data Characteristics
+### Expected Data Characteristics
 
 Several data patterns were identified that, while they may appear as anomalies, actually represent normal business characteristics. These do not require remediation.
 
@@ -151,9 +152,11 @@ Eight distinct order statuses are present in the data: delivered, shipped, proce
 
 ### High-Value Transactions
 
-Using the IQR method, 7,981 payment transactions (7.7% of total payments) were flagged as statistical outliers. This is expected for e-commerce data, where high-value purchases of electronics, furniture, or bulk orders create a long-tail distribution. These records represent legitimate transactions and will be retained but flagged for analytical segmentation
+Using the IQR method, 7,981 payment transactions (7.7% of total payments) were flagged as statistical outliers. This is expected for e-commerce data, where high-value purchases of electronics, furniture, or bulk orders create a long-tail distribution. These records represent legitimate transactions and will be retained but flagged for analytical segmentation.
 
-````
+```
+
+```
 
 ---
 
@@ -244,12 +247,13 @@ Extended validation: `context/05_raw_data_quality_checks_EXTENDED.sql`
 The following queries can be run to validate data quality after any future loads:
 
 **Health Check:**
+
 ```sql
 SELECT COUNT(*) AS total_rows,
        COUNT(DISTINCT order_id) AS unique_orders,
        SUM(CASE WHEN order_id IS NULL THEN 1 ELSE 0 END) AS null_pks
 FROM OLIST_RAW_DB.OLIST.raw_orders;
-````
+```
 
 **Zero Payment Investigation:**
 
