@@ -4,10 +4,8 @@ on:
   pull_request:
     branches: ['main']
     paths:
-      - '03_dbt/models/**' # ✅ Fixed path
-      - '03_dbt/seeds/**' # ✅ Fixed path
-      - '03_dbt/tests/**' # ✅ Fixed path
-      - '03_dbt/dbt_project.yml' # ✅ Fixed path
+      - '03_dbt/**'
+      - 'requirements.txt'
       - '.github/workflows/ci_dbt_test.yaml'
 
 concurrency:
@@ -27,6 +25,9 @@ jobs:
   integration-test:
     name: Build & Test (Isolated)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./03_dbt
 
     steps:
       - name: Checkout Code
@@ -38,20 +39,24 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
+      # ✅ FIXED: Install from root requirements.txt
       - name: Install dbt
-        run: pip install -r requirements.txt
+        run: pip install -r ../requirements.txt
 
-      # 🔧 FIX: Run dbt commands from 03_dbt directory
+      # ✅ ADDED: Verify dbt installation
+      - name: Verify dbt Installation
+        run: |
+          dbt --version
+          which dbt
+
       - name: Install dbt Packages
-        working-directory: ./03_dbt
         run: dbt deps
 
       - name: Run dbt Build
-        working-directory: ./03_dbt
         run: dbt build --target ci --full-refresh
 
+      # ✅ IMPROVED: Better error handling
       - name: Drop CI Schema
         if: always()
-        working-directory: ./03_dbt
         run: |
-          dbt run-operation drop_ci_schema --target ci --args "{schema_name: $SNOWFLAKE_SCHEMA}"
+          dbt run-operation drop_ci_schema --target ci --args "{schema_name: $SNOWFLAKE_SCHEMA}" || echo "Schema cleanup skipped (may not exist)"
