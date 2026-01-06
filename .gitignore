@@ -1,9 +1,7 @@
+# ==========================================
+# .gitignore for Olist Modern Analytics Platform
+# ==========================================
 
-
-# Data
-01_data_sources/raw_sample_files/*.csv
-01_data_sources/raw_sample_files/*.parquet
-01_data_sources/raw_sample_files/*.json
 # ----------------------
 # 1. SECRETS & SECURITY (CRITICAL)
 # ----------------------
@@ -36,10 +34,20 @@ __pycache__/
 *.xlsx
 *.zip
 
-# EXCEPTION: Allow the empty placeholder file so folders exist
-!01_data_sources/raw_sample_files/.gitkeep
-!01_data_sources/raw_sample_files/**
+# ✅ EXCEPTION: Allow dbt seed files (small reference data)
+!03_dbt/seeds/*.csv
+!03_dbt/seeds/**/*.csv
 
+# ✅ EXCEPTION: Allow Power BI project files
+!04_powerbi/**/*.json
+!04_powerbi/**/*.pbip
+
+# ✅ EXCEPTION: Allow test fixtures
+!tests/fixtures/*.csv
+!tests/fixtures/*.json
+
+# ✅ EXCEPTION: Allow placeholder files
+!**/.gitkeep
 
 # ----------------------
 # 4. DBT (DATA BUILD TOOL)
@@ -50,31 +58,37 @@ dbt_packages/
 logs/
 dbt_modules/
 
-# ----------------------
-# 5. POWER BI
-# ----------------------
-# Binary files are huge and bad for Git. We use .pbip instead.
-*.pbix
-
-# Power BI Project local user settings (don't commit your local layout)
-*.pbip.user.json
-.pbip.user.json
-localSettings.json
-
-# ----------------------
-# 6. IDE SETTINGS
-# ----------------------
-.vscode/
-.idea/
-*.code-workspace
-
-# ----------------------
-# 7. LOCAL NOTES
-# ----------------------
-context/
-dbt_internal_packages/
 # ✅ EXCEPTION: Allow dbt config files in 03_dbt/
 !03_dbt/dbt_project.yml
 !03_dbt/packages.yml
 !03_dbt/profiles.yml
 !03_dbt/.sqlfluff
+
+# ----------------------
+# 5. IDEs & EDITORS
+# ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ✅ EXCEPTION: Allow VSCode settings for team
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ----------------------
+# 6. OS & SYSTEM FILES
+# ----------------------
+Thumbs.db
+desktop.ini
+*.DS_Store
+
+# ----------------------
+# 7. TEMPORARY & CACHE FILES
+# ----------------------
+*.tmp
+*.bak
+*.log
+
+# ✅ EXCEPTION: Allow logs for debugging
+!logs/.gitkeep

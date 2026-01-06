@@ -1,0 +1,223 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "🛍️ Olist Analytics Platform"
+    }
+  ],
+  "settings": {
+    // ==========================================
+    // 🔧 SQLFluff (SQL Linting & Formatting)
+    // ==========================================
+    "sqlfluff.lintOnSave": true,
+    "sqlfluff.formatOnSave": false,
+    "sqlfluff.executablePath": "${workspaceFolder}/.venv/bin/sqlfluff",
+    "sqlfluff.config": "${workspaceFolder}/.sqlfluff",
+    "sqlfluff.dialect": "snowflake",
+    "sqlfluff.linter.run": "onSave",
+
+    // ==========================================
+    // 🐍 Python Configuration
+    // ==========================================
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}/.venv/lib/python3.12/site-packages"
+    ],
+
+    // ==========================================
+    // 📝 Editor Settings (SQL & YAML)
+    // ==========================================
+    "[sql]": {
+      "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+      "editor.formatOnSave": false,
+      "editor.tabSize": 4,
+      "editor.insertSpaces": true,
+      "editor.wordWrap": "on",
+      "editor.rulers": [80]
+    },
+    "[yaml]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true,
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[markdown]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true,
+      "editor.wordWrap": "on"
+    },
+
+    // ==========================================
+    // 📂 File Associations
+    // ==========================================
+    "files.associations": {
+      "*.yml": "yaml",
+      "*.sql": "sql",
+      "dbt_project.yml": "yaml",
+      "profiles.yml": "yaml",
+      "packages.yml": "yaml"
+    },
+
+    // ==========================================
+    // 🔍 Search & Files
+    // ==========================================
+    "search.exclude": {
+      "**/target": true,
+      "**/dbt_packages": true,
+      "**/dbt_modules": true,
+      "**/logs": true,
+      "**/.venv": true,
+      "**/__pycache__": true,
+      "**/node_modules": true
+    },
+    "files.exclude": {
+      "**/.DS_Store": true,
+      "**/__pycache__": true,
+      "**/dbt_internal_packages": true
+    },
+    "files.watcherExclude": {
+      "**/target/**": true,
+      "**/dbt_packages/**": true,
+      "**/.venv/**": true
+    },
+
+    // ==========================================
+    // 🧪 Testing & Debugging
+    // ==========================================
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.env.osx": {
+      "DBT_PROFILES_DIR": "${workspaceFolder}"
+    },
+
+    // ==========================================
+    // 📊 Git & Version Control
+    // ==========================================
+    "git.ignoreLimitWarning": true,
+    "git.detectSubmodules": true,
+
+    // ==========================================
+    // 🎨 UI Enhancements
+    // ==========================================
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+      "dbt_project.yml": "profiles.yml, packages.yml, .user.yml",
+      "*.sql": "${capture}.yml, _${capture}__models.yml",
+      "README.md": "LICENSE, .gitignore, .python-version"
+    },
+
+    // ==========================================
+    // 🔐 Security & Privacy
+    // ==========================================
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+
+    // ==========================================
+    // 📦 Language-Specific Settings
+    // ==========================================
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [],
+
+    // ==========================================
+    // 🚀 Performance Optimization
+    // ==========================================
+    "files.autoSave": "onFocusChange",
+    "editor.minimap.enabled": false,
+    "editor.suggestSelection": "first",
+    "editor.quickSuggestions": {
+      "strings": true
+    }
+  },
+
+  // ==========================================
+  // 🧩 Recommended Extensions
+  // ==========================================
+  "extensions": {
+    "recommendations": [
+      // SQL & dbt
+      "dorzey.vscode-sqlfluff",
+      "innoverio.vscode-dbt-power-user",
+      "bastienboutonnet.vscode-dbt",
+
+      // Python
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+
+      // YAML & Markdown
+      "redhat.vscode-yaml",
+      "davidanson.vscode-markdownlint",
+
+      // Git & Formatting
+      "eamodio.gitlens",
+      "esbenp.prettier-vscode",
+
+      // Utilities
+      "editorconfig.editorconfig",
+      "streetsidesoftware.code-spell-checker"
+    ]
+  },
+
+  // ==========================================
+  // 🏃 Tasks (Quick Commands)
+  // ==========================================
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "🔧 dbt deps (Install Packages)",
+        "type": "shell",
+        "command": "dbt deps",
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      },
+      {
+        "label": "✅ dbt build (All Models + Tests)",
+        "type": "shell",
+        "command": "dbt build --target dev",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "🧪 dbt test (Run All Tests)",
+        "type": "shell",
+        "command": "dbt test --target dev",
+        "group": "test",
+        "presentation": {
+          "reveal": "always",
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "📊 dbt docs generate",
+        "type": "shell",
+        "command": "dbt docs generate && dbt docs serve",
+        "group": "none",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      },
+      {
+        "label": "🔍 SQLFluff Lint All SQL",
+        "type": "shell",
+        "command": "sqlfluff lint 03_dbt/models/ --dialect snowflake",
+        "group": "test",
+        "presentation": {
+          "reveal": "always",
+          "panel": "shared"
+        }
+      }
+    ]
+  }
+}
