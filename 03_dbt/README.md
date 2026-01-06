@@ -26,7 +26,7 @@ This folder contains dbt models that transform raw Olist e-commerce data into an
 
 ## 🎯 Staging Layer (Phase 3A)
 
-### Purpose
+### Purpose of the
 
 1:1 mapping with RAW tables. Light cleaning, type casting, and standardization only. No business logic or aggregations.
 
