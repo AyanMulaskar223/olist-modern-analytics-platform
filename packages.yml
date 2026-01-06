@@ -1,24 +1,11 @@
-# 03_dbt/packages.yml
-# dbt Package Dependencies for Olist Analytics Platform
-# dbt 1.11+ compatible format
-
 packages:
-  # dbt_utils: Essential macros for surrogate keys, data tests, and SQL helpers
   - package: dbt-labs/dbt_utils
-    version: 1.3.3 # Latest stable
-
-  # dbt_expectations: Advanced data quality tests (Great Expectations-style)
+    version: 1.3.3
   - package: metaplane/dbt_expectations
-    version: 0.10.10 # Latest stable (migrated from calogica)
-
-  # codegen: Auto-generate YAML and SQL boilerplate
+    version: 0.10.4
   - package: dbt-labs/codegen
-    version: 0.14.0 # Latest stable
-
-  # audit_helper: Compare dev vs prod data for validation
+    version: 0.14.0
   - package: dbt-labs/audit_helper
-    version: 0.12.2 # Latest stable
-
-  # dbt_profiler: Automatic data profiling
+    version: 0.12.2
   - package: data-mie/dbt_profiler
-    version: 0.8.4 # Latest stable
+    version: 0.8.2
