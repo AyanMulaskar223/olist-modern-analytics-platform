@@ -272,8 +272,9 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 1
-              max_value: 100
+              arguments:
+                min_value: 1
+                max_value: 100
               config:
                 severity: warn
 
@@ -323,10 +324,10 @@ models:
           - AVG: R$120.65
           - Outliers: 1,966 (17.4% above IQR) - NOT filtered per ADLC
         tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 50000
+          - not_null\n          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 50000
               config:
                 severity: warn
 
@@ -340,8 +341,9 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 10000
+              arguments:
+                min_value: 0
+                max_value: 10000
               config:
                 severity: warn
 
@@ -440,7 +442,7 @@ models:
           - relationships:
               arguments:
                 to: ref('stg_olist__customers')
-                field: customer_id
+                field: order_customer_id
               config:
                 severity: warn
 
@@ -633,8 +635,9 @@ models:
               config:
                 severity: error
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 1000
+              arguments:
+                min_value: 0
+                max_value: 1000
               config:
                 severity: warn
 
@@ -661,8 +664,9 @@ models:
               config:
                 severity: error
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 50
+              arguments:
+                min_value: 0
+                max_value: 50
               config:
                 severity: warn
 
@@ -682,8 +686,9 @@ models:
               config:
                 severity: error
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 100000
+              arguments:
+                min_value: 0
+                max_value: 100000
               config:
                 severity: warn
 
@@ -993,8 +998,9 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 1
-              max_value: 50
+              arguments:
+                min_value: 1
+                max_value: 50
               config:
                 severity: warn
                 error_if: '>50'
@@ -1038,8 +1044,9 @@ models:
               config:
                 severity: error
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 1
-              max_value: 30
+              arguments:
+                min_value: 1
+                max_value: 30
               config:
                 severity: warn
 
@@ -1061,8 +1068,9 @@ models:
               config:
                 severity: error
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 50000
+              arguments:
+                min_value: 0
+                max_value: 50000
               config:
                 severity: warn
 
@@ -1366,9 +1374,10 @@ models:
           **Business Use:** Delivery distance calculations, logistics optimization.
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: -90
-              max_value: 90
-              row_condition: 'latitude is not null'
+              arguments:
+                min_value: -90
+                max_value: 90
+                row_condition: 'latitude is not null'
               config:
                 severity: warn
 
@@ -1384,9 +1393,10 @@ models:
           **Business Use:** Delivery distance calculations, route optimization.
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: -180
-              max_value: 180
-              row_condition: 'longitude is not null'
+              arguments:
+                min_value: -180
+                max_value: 180
+                row_condition: 'longitude is not null'
               config:
                 severity: warn
 
