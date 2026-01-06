@@ -470,11 +470,6 @@ models:
                   ]
               config:
                 severity: error
-                  'UNAVAILABLE',
-                  'CREATED',
-                ]
-              config:
-                severity: error
 
       # ════════════════════════════════════════════════════════════════════
       # TIMESTAMPS
