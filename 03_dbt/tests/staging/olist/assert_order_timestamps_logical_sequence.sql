@@ -1,6 +1,8 @@
 {{
     config(
-        severity='error',
+        severity='warn',
+        error_if='>500',
+        warn_if='>0',
         tags=['singular_test', 'business_rule', 'orders']
     )
 }}

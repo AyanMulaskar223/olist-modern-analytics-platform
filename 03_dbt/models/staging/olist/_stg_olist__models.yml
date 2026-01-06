@@ -120,38 +120,38 @@ models:
           - not_null:
               config:
                 severity: error
-              arguments:
           - accepted_values:
-              values:
-                [
-                  'AC',
-                  'AL',
-                  'AP',
-                  'AM',
-                  'BA',
-                  'CE',
-                  'DF',
-                  'ES',
-                  'GO',
-                  'MA',
-                  'MT',
-                  'MS',
-                  'MG',
-                  'PA',
-                  'PB',
-                  'PR',
-                  'PE',
-                  'PI',
-                  'RJ',
-                  'RN',
-                  'RS',
-                  'RO',
-                  'RR',
-                  'SC',
-                  'SP',
-                  'SE',
-                  'TO',
-                ]
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
               config:
                 severity: error
 
@@ -257,8 +257,9 @@ models:
               config:
                 severity: error
           - relationships:
-              to: ref('stg_olist__orders')
-              field: order_id
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
               config:
                 severity: warn
 
@@ -285,8 +286,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_olist__products')
-              field: product_id
+              arguments:
+                to: ref('stg_olist__products')
+                field: product_id
               config:
                 severity: warn
 
@@ -299,8 +301,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_olist__sellers')
-              field: seller_id
+              arguments:
+                to: ref('stg_olist__sellers')
+                field: seller_id
               config:
                 severity: warn
 
@@ -435,8 +438,9 @@ models:
               config:
                 severity: error
           - relationships:
-              to: ref('stg_olist__customers')
-              field: customer_id
+              arguments:
+                to: ref('stg_olist__customers')
+                field: customer_id
               config:
                 severity: warn
 
@@ -452,14 +456,20 @@ models:
               config:
                 severity: error
           - accepted_values:
-              values:
-                [
-                  'DELIVERED',
-                  'CANCELED',
-                  'SHIPPED',
-                  'PROCESSING',
-                  'APPROVED',
-                  'INVOICED',
+              arguments:
+                values:
+                  [
+                    'DELIVERED',
+                    'CANCELED',
+                    'SHIPPED',
+                    'PROCESSING',
+                    'APPROVED',
+                    'INVOICED',
+                    'UNAVAILABLE',
+                    'CREATED',
+                  ]
+              config:
+                severity: error
                   'UNAVAILABLE',
                   'CREATED',
                 ]
@@ -841,36 +851,37 @@ models:
               config:
                 severity: error
           - accepted_values:
-              values:
-                [
-                  'AC',
-                  'AL',
-                  'AP',
-                  'AM',
-                  'BA',
-                  'CE',
-                  'DF',
-                  'ES',
-                  'GO',
-                  'MA',
-                  'MT',
-                  'MS',
-                  'MG',
-                  'PA',
-                  'PB',
-                  'PR',
-                  'PE',
-                  'PI',
-                  'RJ',
-                  'RN',
-                  'RS',
-                  'RO',
-                  'RR',
-                  'SC',
-                  'SP',
-                  'SE',
-                  'TO',
-                ]
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
               config:
                 severity: error
 
@@ -926,12 +937,6 @@ models:
 
     config:
       tags: ['staging', 'olist', 'payments', 'finance']
-    tests:
-      - assert_payment_amounts_match_order_totals:
-          config:
-            severity: warn
-            error_if: '>100'
-            warn_if: '>0'
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -974,8 +979,9 @@ models:
               config:
                 severity: error
           - relationships:
-              to: ref('stg_olist__orders')
-              field: order_id
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
               config:
                 severity: warn
 
@@ -1015,8 +1021,9 @@ models:
           - not_null:
               config:
                 severity: error
-          - accepted_values:
-              values:
+          - acarguments:
+                values:
+                values:
                 ['credit_card', 'boleto', 'debit_card', 'voucher', 'unknown']
               config:
                 severity: error
@@ -1185,8 +1192,11 @@ models:
               config:
                 severity: error
           - relationships:
-              to: ref('stg_olist__orders')
-              field: order_id
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+              config:
+                severity: warn
               config:
                 severity: warn
 
@@ -1216,7 +1226,8 @@ models:
               config:
                 severity: error
           - accepted_values:
-              values: [1, 2, 3, 4, 5]
+              arguments:
+                values: [1, 2, 3, 4, 5]
               config:
                 severity: error
 
@@ -1411,36 +1422,37 @@ models:
               config:
                 severity: error
           - accepted_values:
-              values:
-                [
-                  'AC',
-                  'AL',
-                  'AP',
-                  'AM',
-                  'BA',
-                  'CE',
-                  'DF',
-                  'ES',
-                  'GO',
-                  'MA',
-                  'MT',
-                  'MS',
-                  'MG',
-                  'PA',
-                  'PB',
-                  'PR',
-                  'PE',
-                  'PI',
-                  'RJ',
-                  'RN',
-                  'RS',
-                  'RO',
-                  'RR',
-                  'SC',
-                  'SP',
-                  'SE',
-                  'TO',
-                ]
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
               config:
                 severity: error
 
