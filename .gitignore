@@ -73,3 +73,8 @@ localSettings.json
 # ----------------------
 context/
 dbt_internal_packages/
+# ✅ EXCEPTION: Allow dbt config files in 03_dbt/
+!03_dbt/dbt_project.yml
+!03_dbt/packages.yml
+!03_dbt/profiles.yml
+!03_dbt/.sqlfluff
