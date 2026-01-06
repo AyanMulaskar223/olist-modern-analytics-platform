@@ -1016,10 +1016,10 @@ models:
           - not_null:
               config:
                 severity: error
-          - acarguments:
+          - accepted_values:
+              arguments:
                 values:
-                values:
-                ['credit_card', 'boleto', 'debit_card', 'voucher', 'unknown']
+                  ['credit_card', 'boleto', 'debit_card', 'voucher', 'unknown']
               config:
                 severity: error
 
