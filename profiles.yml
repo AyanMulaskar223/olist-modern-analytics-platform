@@ -37,7 +37,7 @@ olist_snowflake:
       user: "{{ env_var('SNOWFLAKE_USER') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
       role: CI_SERVICE_ROLE # Dedicated CI role from 02_rbac_security.sql
-      database: OLIST_ANALYTICS_DB
+      database: OLIST_DEV_DB
       warehouse: TRANSFORM_WH_XS
       schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'dbt_ci') }}" # Dynamic schema per PR
       threads: 4
