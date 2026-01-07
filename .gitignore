@@ -92,3 +92,5 @@ desktop.ini
 
 # ✅ EXCEPTION: Allow logs for debugging
 !logs/.gitkeep
+.user.yml
+package-lock.yml
