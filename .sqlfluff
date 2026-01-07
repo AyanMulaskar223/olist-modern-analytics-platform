@@ -1,0 +1,35 @@
+# ==========================================
+# 🔧 SQLFluff Configuration (Root Level)
+# ==========================================
+# Purpose: Lint Snowflake SQL outside dbt (02_snowflake/*.sql)
+# For dbt models: Use 03_dbt/.sqlfluff instead
+# ==========================================
+
+[sqlfluff]
+dialect = snowflake
+templater = raw
+max_line_length = 120
+exclude_rules = L031, CP02, LT02
+
+# CRITICAL: Ignore ALL dbt-related paths to prevent manifest reading
+ignore = target, dbt_packages, .dbt, .venv, logs, dbt_internal_packages, 03_dbt/**, **/manifest.json, **/target/**, **/dbt_packages/**
+
+[sqlfluff:indentation]
+indent_unit = space
+tab_space_size = 4
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+line_position = trailing
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.table]
+aliasing = explicit
+
+[sqlfluff:rules:references.special_chars]
+additional_allowed_characters = "$"

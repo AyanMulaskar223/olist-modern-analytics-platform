@@ -14,7 +14,25 @@
     "sqlfluff.executablePath": "${workspaceFolder}/.venv/bin/sqlfluff",
     "sqlfluff.config": "${workspaceFolder}/.sqlfluff",
     "sqlfluff.dialect": "snowflake",
+    "sqlfluff.templater": "raw",
     "sqlfluff.linter.run": "onSave",
+    "sqlfluff.format.enabled": true,
+    "sqlfluff.experimental.format.executeInTerminal": true,
+    "sqlfluff.linter.arguments": ["--templater", "raw"],
+    "sqlfluff.format.arguments": [
+      "--templater",
+      "raw",
+      "--exclude-rules",
+      "LT02"
+    ],
+    "sqlfluff.excludePatterns": [
+      "**/03_dbt/models/**",
+      "**/03_dbt/tests/**",
+      "**/03_dbt/snapshots/**",
+      "**/03_dbt/analyses/**",
+      "**/target/**",
+      "**/dbt_packages/**"
+    ],
 
     // ==========================================
     // 🐍 Python Configuration

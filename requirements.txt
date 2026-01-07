@@ -2,4 +2,8 @@
 dbt-core==1.11.2
 dbt-snowflake==1.11.0
 
+# Phase 3: Code Quality & Linting
+sqlfluff==3.5.0
+sqlfluff-templater-dbt==3.5.0
+
 # Phase 3: dbt Packages (installed via dbt deps)
