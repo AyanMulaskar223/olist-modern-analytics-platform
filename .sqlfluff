@@ -1,13 +1,18 @@
-[sqlfluff]
-# 1. Global Settings
-dialect = snowflake
-templater = jinja
-max_line_length = 120
-# Exclude problematic rules that conflict with Snowflake/dbt patterns
-exclude_rules = L031, CP02
+# ==========================================
+# 🔧 SQLFluff Configuration (Root Level)
+# ==========================================
+# Purpose: Lint Snowflake SQL outside dbt (02_snowflake/*.sql)
+# For dbt models: Use 03_dbt/.sqlfluff instead
+# ==========================================
 
-# 2. Paths to Ignore
-ignore = target, dbt_packages, .dbt, .venv, logs
+[sqlfluff]
+dialect = snowflake
+templater = raw
+max_line_length = 120
+exclude_rules = L031, CP02, LT02
+
+# CRITICAL: Ignore ALL dbt-related paths to prevent manifest reading
+ignore = target, dbt_packages, .dbt, .venv, logs, dbt_internal_packages, 03_dbt/**, **/manifest.json, **/target/**, **/dbt_packages/**
 
 [sqlfluff:indentation]
 indent_unit = space
@@ -18,14 +23,10 @@ spacing_before = touch
 line_position = trailing
 
 [sqlfluff:rules:capitalisation.keywords]
-# SQL keywords: SELECT, FROM, WHERE
 capitalisation_policy = upper
 
 [sqlfluff:rules:capitalisation.identifiers]
-# ✅ FIXED: Allow lowercase identifiers (Snowflake best practice for readability)
 capitalisation_policy = lower
-# Alternatively, use 'consistent' to allow mixed case
-# capitalisation_policy = consistent
 
 [sqlfluff:rules:aliasing.table]
 aliasing = explicit

@@ -1,0 +1,1536 @@
+version: 2
+
+models:
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__CUSTOMERS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__customers
+    description: |
+      **Staging model for customer master data.**
+
+      Cleans and standardizes `raw_customers` (CSV source) with location hierarchy standardization.
+
+      **Grain:** One row per customer_id (surrogate key for order relationships).
+
+      **Key Transformations:**
+      - Explicit type casting (VARCHAR for UUIDs and postal codes)
+      - Text standardization (INITCAP for cities, UPPER for state codes)
+      - Whitespace trimming on all text fields
+      - Preservation of leading zeros in postal codes
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering (1:1 with source)
+      - ✅ Text standardization only (no business logic)
+
+      **Data Quality (from Phase 2):**
+      - 99,441 rows (100% loaded)
+      - 0 NULL values in primary key
+      - 0 NULL values in state codes
+      - customer_unique_id is NOT UNIQUE (expected Olist behavior)
+      - Location hierarchy: zip_code_prefix → city → state
+
+      **Business Context:**
+      - customer_id: Surrogate PK used for order relationships (1:1 with orders)
+      - customer_unique_id: Business key across Olist ecosystem (NOT unique!)
+      - Multiple customer_ids can map to same customer_unique_id (customer relocation)
+
+      **Dependencies:** raw_customers (Phase 2 ingestion)
+      **Owner:** Analytics Engineering Team
+      **SLA:** Real-time (view materialization)
+
+    config:
+      tags: ['staging', 'olist', 'customers', 'core']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: customer_sk
+        description: |
+          **Surrogate primary key** - Hash of customer_id for order relationships.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      - name: user_sk
+        description: |
+          **Surrogate key for user grouping** - Hash of customer_unique_id.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # NATURAL KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_customer_id
+        description: |
+          **Natural customer ID** - Original customer_id from source (UUID format).
+          Used for debugging and source traceability.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      - name: user_id
+        description: |
+          **Business key** - Original customer_unique_id from source.
+          Represents the same person across Olist ecosystem (NOT unique).
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # LOCATION HIERARCHY
+      # ════════════════════════════════════════════════════════════════════
+      - name: zip_code
+        description: |
+          **Brazilian postal code prefix** (CEP format, 5 digits with zero-padding).
+          Used for geolocation joins in intermediate layer.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+                warn_if: '>100'
+
+      - name: city
+        description: |
+          **City name** (standardized to title case via INITCAP).
+          Used for geographic segmentation.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      - name: state
+        description: |
+          **Brazilian state code** (ISO 3166-2:BR, 2 uppercase characters).
+          Used for Row-Level Security (RLS) in Power BI.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_filename
+        description: |
+          **Source CSV file path** from Azure Blob Storage.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: source_loaded_at_utc
+        description: |
+          **Phase 2 ingestion timestamp** (UTC, TIMESTAMP_NTZ format).
+          Used for data lineage and troubleshooting.
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__ORDER_ITEMS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__order_items
+    description: |
+      **Staging model for order line items.**
+
+      Cleans and standardizes `raw_order_items` (Parquet source) for downstream use.
+
+      **Grain:** One row per product per order (order_id + order_item_sequence_id).
+
+      **Key Transformations:**
+      - Surrogate key generation (order_item_sk)
+      - Explicit type casting (VARCHAR, NUMERIC, TIMESTAMP_NTZ)
+      - Whitespace trimming on string columns
+      - Monetary values standardized to NUMERIC(10,2) for BRL
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering
+
+      **Data Quality (from Phase 2):**
+      - 112,650 rows (100% loaded)
+      - 0 NULL values across all columns
+      - 0 duplicate composite keys
+      - 0 orphaned foreign keys
+      - Price range: R$0.85 - R$6,735.00
+
+    config:
+      tags: ['staging', 'olist', 'order_items']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_item_sk
+        description: |
+          **Surrogate primary key** (hash of order_id + order_item_id).
+
+          WHY: Composite natural keys are awkward for JOINs. A single hash key:
+          - Simplifies downstream model references
+          - Required for dbt incremental models
+          - Deterministic (same inputs = same hash)
+        tests:
+          - unique:
+              config:
+                severity: error
+                error_if: '>0'
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # KEYS (Foreign & Natural)
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_sk
+        description: Foreign key hash to stg_olist__orders.
+        tests:
+          - not_null
+
+      - name: product_sk
+        description: Foreign key hash to stg_olist__products.
+        tests:
+          - not_null
+
+      - name: seller_sk
+        description: Foreign key hash to stg_olist__sellers.
+        tests:
+          - not_null
+
+      - name: order_id
+        description: |
+          **Foreign key to stg_olist__orders.**
+
+          WHY NOT_NULL: Every line item MUST belong to an order.
+          WHY RELATIONSHIPS: Ensures referential integrity (no orphaned items).
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+              config:
+                severity: warn
+
+      - name: order_item_sequence_id
+        description: |
+          **Line item sequence number within an order** (1, 2, 3...).
+
+          WHY NOT_NULL: Required for composite key.
+          WHY POSITIVE: Sequence numbers must be >= 1.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 1
+                max_value: 100
+              config:
+                severity: warn
+
+      - name: product_id
+        description: |
+          **Foreign key to stg_olist__products.**
+
+          WHY RELATIONSHIPS: Ensures every item references a valid product.
+          Phase 2 confirmed 0 orphaned products.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_olist__products')
+                field: product_id
+              config:
+                severity: warn
+
+      - name: seller_id
+        description: |
+          **Foreign key to stg_olist__sellers.**
+
+          WHY RELATIONSHIPS: Ensures every item is fulfilled by a valid seller.
+          Phase 2 confirmed 0 orphaned sellers.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_olist__sellers')
+                field: seller_id
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # MONETARY VALUES
+      # ════════════════════════════════════════════════════════════════════
+      - name: item_price_brl
+        description: |
+          **Item price in Brazilian Reais (R$).**
+
+          WHY NUMERIC(10,2): Exact decimal arithmetic for financial calculations.
+          WHY _brl SUFFIX: Explicit currency prevents confusion.
+
+          Phase 2 Statistics:
+          - MIN: R$0.85
+          - MAX: R$6,735.00
+          - AVG: R$120.65
+          - Outliers: 1,966 (17.4% above IQR) - NOT filtered per ADLC
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 50000
+              config:
+                severity: warn
+
+      - name: item_freight_brl
+        description: |
+          **Shipping cost for this item in Brazilian Reais (R$).**
+
+          Phase 2 Statistics:
+          - AVG: R$19.99
+          - Outliers: 2,041 (18.1% above IQR) - NOT filtered per ADLC
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 10000
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT COLUMNS
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_file
+        description: |
+          **Azure Blob path of source Parquet file.**
+          WHY: Enables debugging of data quality issues back to source.
+        tests:
+          - not_null
+
+      - name: source_loaded_at_utc
+        description: |
+          **Phase 2 ingestion timestamp (UTC).**
+          WHY: Enables incremental processing and data freshness checks.
+        tests:
+          - not_null
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__ORDERS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__orders
+    description: |
+      **Staging model for orders (master transaction record).**
+
+      Cleans and standardizes `raw_orders` (CSV source) with data quality flags.
+
+      **Grain:** One row per order (order_id is unique).
+
+      **Key Transformations:**
+      - Surrogate key generation (order_sk)
+      - Explicit timestamp casting (TIMESTAMP_NTZ for Brazilian time)
+      - Status standardization (uppercase, trimmed)
+      - Data quality flags (impossible logistics, ghost deliveries)
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering (flags issues instead)
+      - ✅ Flags data quality anomalies for investigation
+
+      **Data Quality (from Phase 2):**
+      - 99,441 rows (100% loaded)
+      - Missing delivery dates: 2,965 (2.98%) - valid for non-delivered orders
+      - Delivered before shipped: 23 orders (flagged)
+      - Ghost deliveries: 8 orders (flagged)
+
+    config:
+      tags: ['staging', 'olist', 'orders', 'core']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_sk
+        description: |
+          **Surrogate primary key** (hash of order_id).
+          WHY: Consistent with dimensional modeling pattern. Simplifies joins to fact tables.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # NATURAL KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_id
+        description: |
+          **Natural primary key** - Unique order identifier (UUID format).
+
+          WHY NOT_NULL: Every order must have an identifier.
+          WHY UNIQUE: One row per order (business requirement).
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      - name: customer_id
+        description: |
+          **Foreign key to stg_olist__customers.**
+
+          WHY NOT_NULL: Every order must have a customer.
+          WHY RELATIONSHIPS: Ensures referential integrity (no orphaned orders).
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('stg_olist__customers')
+                field: order_customer_id
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # STATUS
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_status
+        description: |
+          **Order fulfillment status** (standardized to uppercase).
+          Valid values: DELIVERED, CANCELED, SHIPPED, PROCESSING, APPROVED, INVOICED, UNAVAILABLE, CREATED
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    'DELIVERED',
+                    'CANCELED',
+                    'SHIPPED',
+                    'PROCESSING',
+                    'APPROVED',
+                    'INVOICED',
+                    'UNAVAILABLE',
+                    'CREATED',
+                  ]
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # TIMESTAMPS
+      # ════════════════════════════════════════════════════════════════════
+      - name: ordered_at
+        description: |
+          **Order purchase timestamp** (when customer clicked "Buy").
+          WHY TIMESTAMP_NTZ: Preserves Brazilian local time without timezone conversion.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: approved_at
+        description: |
+          **Payment approval timestamp.**
+          NOTE: NULL for canceled/unavailable orders (expected behavior).
+        tests:
+          - not_null:
+              config:
+                severity: warn
+                warn_if: '>1000'
+
+      - name: shipped_at
+        description: '**Carrier pickup timestamp** (when order left seller warehouse).'
+
+      - name: delivered_at
+        description: '**Customer delivery timestamp** (when order arrived at customer address).'
+
+      - name: estimated_delivery_at
+        description: '**Estimated delivery date** (shown to customer at checkout).'
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # DATA QUALITY FLAGS
+      # ════════════════════════════════════════════════════════════════════
+      - name: is_arrival_before_shipping
+        description: |
+          **Data quality flag:** Customer received order before carrier picked it up.
+        tests:
+          - not_null
+
+      - name: is_arrival_before_approval
+        description: |
+          **Data quality flag:** Delivery occurred before payment approval.
+        tests:
+          - not_null
+
+      - name: is_ghost_delivery
+        description: |
+          **Data quality flag:** Status = 'DELIVERED' but delivered_at is NULL.
+        tests:
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_file
+        description: '**Source CSV file path from Azure Blob Storage.**'
+        tests:
+          - not_null
+
+      - name: source_loaded_at_utc
+        description: '**Phase 2 ingestion timestamp (UTC).**'
+        tests:
+          - not_null
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__PRODUCTS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__products
+    description: |
+      **Staging model for product master data.**
+
+      Cleans and standardizes `raw_products` (CSV source) with dimension handling.
+
+      **Grain:** One row per product_id (unique product).
+
+      **Key Transformations:**
+      - Surrogate key generation (product_sk)
+      - NULL category imputation ('outros' for 610 products)
+      - NULL dimension imputation (0 for weight/size to prevent math errors)
+      - Data quality flags (missing dimensions, missing photos)
+      - Fixing Olist source typos ('lenght' → 'length')
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering
+      - ✅ Flags data quality issues (not removes)
+
+      **Data Quality (from Phase 2):**
+      - 32,951 rows (100% loaded)
+      - Missing categories: 610 (1.85%) - imputed to 'outros'
+      - Missing photos: 610 (1.85%) - flagged for marketing review
+      - Missing dimensions: 2 (0.006%) - flagged for logistics review
+
+    config:
+      tags: ['staging', 'olist', 'products']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: product_sk
+        description: |
+          **Surrogate primary key** (hash of product_id).
+          WHY: Consistent with dimensional modeling pattern.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # NATURAL KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: product_id
+        description: |
+          **Natural primary key** - Unique product identifier (32-char hash).
+          WHY UNIQUE: One row per product (business requirement).
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # PRODUCT ATTRIBUTES
+      # ════════════════════════════════════════════════════════════════════
+      - name: category_name_pt
+        description: |
+          **Product category name in Portuguese** (lowercase, trimmed).
+
+          - Example: 'cama_mesa_banho', 'beleza_saude', 'esporte_lazer'
+          - NULL imputation: 610 products → 'outros' (others)
+          - Used for category translation join in intermediate layer
+
+          **Why NOT_NULL:** Every product must have a category for analysis.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # TEXT METRICS
+      # ════════════════════════════════════════════════════════════════════
+      - name: name_length
+        description: |
+          **Character count of product name.**
+          WHY: Marketing uses this to optimize SEO and search results.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1000
+              config:
+                severity: warn
+
+      - name: description_length
+        description: |
+          **Character count of product description.**
+          WHY: Longer descriptions typically correlate with higher conversion rates.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: photos_qty
+        description: |
+          **Number of product images.**
+
+          - Range: 0-20 (typical)
+          - NULL imputation: 610 products → 0
+          - Products with 0 photos flagged via is_missing_photos
+
+          **Business Impact:** Products with more photos have 2-3x higher conversion.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 50
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # LOGISTICS DIMENSIONS
+      # ════════════════════════════════════════════════════════════════════
+      - name: weight_g
+        description: |
+          **Product weight in grams.**
+
+          - NULL imputation: 2 products → 0 (flagged)
+          - Used for freight calculation in fct_orders
+
+          **Why COALESCE:** Prevents downstream math errors (NULL * rate = NULL).
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100000
+              config:
+                severity: warn
+
+      - name: length_cm
+        description: '**Product length in centimeters** (box dimension for shipping).'
+        tests:
+          - not_null
+
+      - name: height_cm
+        description: '**Product height in centimeters** (box dimension for shipping).'
+        tests:
+          - not_null
+
+      - name: width_cm
+        description: '**Product width in centimeters** (box dimension for shipping).'
+        tests:
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # DATA QUALITY FLAGS
+      # ════════════════════════════════════════════════════════════════════
+      - name: is_missing_dimensions
+        description: |
+          **Data quality flag:** Product has NULL weight or dimensions.
+
+          - 2 products flagged
+          - Logistics team cannot calculate accurate freight
+          - Flagged for dimension measurement request
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: is_missing_photos
+        description: |
+          **Business flag:** Product has zero photos.
+
+          - 610 products flagged
+          - Marketing priority: Add product images to improve conversion
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_filename
+        description: '**Source CSV file path from Azure Blob Storage.**'
+        tests:
+          - not_null
+
+      - name: source_loaded_at_utc
+        description: '**Phase 2 ingestion timestamp (UTC).**'
+        tests:
+          - not_null
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__SELLERS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__sellers
+    description: |
+      **Staging model for seller master data.**
+
+      Cleans and standardizes `raw_sellers` (CSV source) with location formatting.
+
+      **Grain:** One row per seller_id (unique marketplace vendor).
+
+      **Key Transformations:**
+      - Surrogate key generation (seller_sk)
+      - Zip code formatting (zero-padding to 5 digits)
+      - Location standardization (INITCAP for cities, UPPER for states)
+      - Whitespace trimming on all text fields
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering
+
+      **Data Quality (from Phase 2):**
+      - 3,095 rows (100% loaded)
+      - 0 NULL values in any column
+      - 0 duplicate seller_ids
+      - State distribution: 23 states represented (SP: 694, PR: 414, MG: 394)
+
+    config:
+      tags: ['staging', 'olist', 'sellers']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: seller_sk
+        description: |
+          **Surrogate primary key** (hash of seller_id).
+          WHY: Consistent with dimensional modeling pattern.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # NATURAL KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: seller_id
+        description: |
+          **Natural primary key** - Unique seller identifier (32-char hash).
+          WHY UNIQUE: One row per seller (business requirement).
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # LOCATION HIERARCHY
+      # ════════════════════════════════════════════════════════════════════
+      - name: zip_code
+        description: |
+          **Brazilian postal code prefix** (5 digits, zero-padded).
+
+          - Format: 5-digit string (e.g., "01310")
+          - Transformation: LPAD ensures leading zeros preserved
+          - Used for geolocation joins in intermediate layer
+
+          **Why LPAD:** Prevents '01310' → '1310' corruption.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: city
+        description: |
+          **Seller city name** (standardized to title case).
+
+          - Transformation: INITCAP(TRIM()) for consistency
+          - Example: "rio de janeiro" → "Rio De Janeiro"
+          - Used for regional seller distribution analysis
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: state
+        description: |
+          **Brazilian state code** (2 characters, uppercase).
+
+          - Format: Uppercase 2-char code (SP, RJ, MG, etc.)
+          - Transformation: UPPER(TRIM()) ensures consistency
+          - Used for seller geographic distribution analysis
+
+          **Distribution:** SP (694), PR (414), MG (394) are top 3 states.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_file
+        description: '**Source CSV file path from Azure Blob Storage.**'
+        tests:
+          - not_null
+
+      - name: source_loaded_at_utc
+        description: '**Phase 2 ingestion timestamp (UTC).**'
+        tests:
+          - not_null
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__PAYMENTS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__payments
+    description: |
+      **Staging model for order payment transactions.**
+
+      Cleans and standardizes `raw_order_payments` (CSV source) with financial data fixes.
+
+      **Grain:** One row per payment transaction (order_id + payment_sequential).
+
+      **Key Transformations:**
+      - Composite surrogate key generation (payment_sk)
+      - Payment type standardization ('not_defined' → 'unknown')
+      - Installment data fix (0 → 1 to prevent divide-by-zero)
+      - Data quality flag (is_zero_payment for R$0.00 transactions)
+      - Explicit NUMERIC(18,2) casting for financial accuracy
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved)
+      - ✅ No business filtering
+      - ✅ Flags data quality issues (not removes)
+
+      **Data Quality (from Phase 2):**
+      - 103,886 rows (100% loaded)
+      - 0 NULL values in primary key
+      - 0 orphaned order references
+      - Zero installments: 2 rows (fixed to 1)
+      - Zero payments: 9 rows (flagged)
+      - Payment types: credit_card (76%), boleto (19%), others (5%)
+
+      **Business Context:**
+      - Cardinality: 1-to-Many (orders can have multiple payment methods)
+      - payment_sequential tracks if customer split payment (1st, 2nd, 3rd card)
+      - Installments typical range: 1-24 (credit card only)
+
+    config:
+      tags: ['staging', 'olist', 'payments', 'finance']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: payment_sk
+        description: |
+          **Surrogate primary key** (hash of order_id + payment_sequential).
+
+          WHY COMPOSITE: Orders can have multiple payment methods.
+          Example: Customer uses 2 credit cards → 2 payment records.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # FOREIGN KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_sk
+        description: |
+          **Surrogate foreign key to stg_olist__orders.**
+          WHY: Enables joins to order fact table in marts layer.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: order_id
+        description: |
+          **Natural foreign key to orders.**
+
+          WHY NOT_NULL: Every payment must belong to an order.
+          WHY RELATIONSHIPS: Ensures referential integrity (no orphaned payments).
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # PAYMENT ATTRIBUTES
+      # ════════════════════════════════════════════════════════════════════
+      - name: payment_sequence
+        description: |
+          Sequential number indicating the payment order (1st card, 2nd card, etc.).
+
+          **Business Context:** Brazilian customers may split large purchases across multiple payment methods.
+          **Valid Range:** 1-50 (increased from 1-10 to accommodate edge cases)
+          **Warning Triggered:** 127 records exceed sequence 10 (mostly 11-20 range)
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 1
+                max_value: 50
+              config:
+                severity: warn
+                error_if: '>50'
+                warn_if: '>0'
+
+      - name: payment_type
+        description: |
+          **Payment method** (standardized payment type).
+
+          Valid values:
+          - credit_card (76% of transactions)
+          - boleto (19% - Brazilian instant payment)
+          - debit_card (3%)
+          - voucher (2% - gift cards, promotions)
+          - unknown (<1% - originally 'not_defined')
+
+          **Data Fix:** 3 'not_defined' records → 'unknown'.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values:
+                  ['credit_card', 'boleto', 'debit_card', 'voucher', 'unknown']
+              config:
+                severity: error
+
+      - name: installments
+        description: |
+          **Number of payment installments** (1-24 typical).
+
+          - Range: 1-24 (credit card only feature in Brazil)
+          - Default: 1 (single payment)
+          - Data Fix: 2 records had 0 → fixed to 1
+
+          **Why DATA FIX:** Prevents divide-by-zero in installment calculations.
+          **Business Context:** Brazilians commonly buy in 3-12 installments.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 1
+                max_value: 30
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # FINANCIAL VALUES
+      # ════════════════════════════════════════════════════════════════════
+      - name: payment_amount
+        description: |
+          **Payment value in Brazilian Reais** (R$).
+
+          - Format: NUMERIC(18,2) for exact decimal arithmetic
+          - Range: R$0.00 - R$13,664.08
+          - Zero values: 9 rows (flagged via is_zero_payment)
+
+          **Why NUMERIC:** Prevents floating-point rounding errors in financial calculations.
+          **Why 18,2 PRECISION:** Handles large orders (up to 999 trillion BRL) with 2 decimal places.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 50000
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # DATA QUALITY FLAGS
+      # ════════════════════════════════════════════════════════════════════
+      - name: is_zero_payment
+        description: |
+          **Data quality flag:** Payment value = R$0.00.
+
+          - 9 rows flagged (0.009%)
+          - Likely scenarios: 100% vouchers, system errors, refunds
+          - Recommendation: Exclude from "Average Order Value" calculations
+
+          **Business Impact:** Including zero payments skews AOV downward.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_file
+        description: '**Source CSV file path from Azure Blob Storage.**'
+        tests:
+          - not_null
+
+      - name: source_loaded_at_utc
+        description: '**Phase 2 ingestion timestamp (UTC).**'
+        tests:
+          - not_null
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__REVIEWS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__reviews
+    description: |
+      **Staging model for customer order reviews.**
+
+      Flattens and cleans `raw_order_reviews` (JSON source) with deduplication.
+
+      **Grain:** One row per review_id (unique customer review).
+
+      **Key Transformations:**
+      - JSON blob parsing (TRY_PARSE_JSON for safety)
+      - NaN artifact handling ('NaN' string → NULL)
+      - Duplicate removal via QUALIFY (814 duplicates)
+      - Boolean flag generation (has_comment for quick filtering)
+      - Explicit type casting (INTEGER for scores, TIMESTAMP for dates)
+
+      **ADLC Compliance:**
+      - ✅ No JOINs (staging rule)
+      - ✅ No GROUP BY (grain preserved after deduplication)
+      - ✅ Technical deduplication only (not business filtering)
+      - ✅ Flags data quality issues (not removes)
+
+      **Data Quality (from Phase 2):**
+      - 99,224 rows after deduplication (814 duplicates removed)
+      - Review score distribution: 1★ (11%), 2★ (3%), 3★ (8%), 4★ (19%), 5★ (58%)
+      - Comments present: 41% of reviews
+      - Seller responses: 0.4% of reviews (rare)
+
+      **Business Context:**
+      - Cardinality: 1-to-1 with orders (most orders have exactly 1 review)
+      - Review scores: 1-5 scale (1=worst, 5=best)
+      - Used for: Seller performance metrics, customer satisfaction KPIs
+
+    config:
+      tags: ['staging', 'olist', 'reviews']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEY
+      # ════════════════════════════════════════════════════════════════════
+      - name: review_sk
+        description: |
+          **Surrogate primary key** (hash of review_id).
+          WHY: Consistent with dimensional modeling pattern.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # FOREIGN KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_sk
+        description: |
+          **Surrogate foreign key to stg_olist__orders.**
+          WHY: Enables joins to order fact table in marts layer.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: review_id
+        description: |
+          **Natural primary key** - Unique review identifier (32-char hash).
+
+          WHY UNIQUE: One row per review after deduplication.
+          WHY NOT_NULL: Every review must have an identifier.
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      - name: order_id
+        description: |
+          **Natural foreign key to orders.**
+
+          WHY NOT_NULL: Every review must belong to an order.
+          WHY RELATIONSHIPS: Ensures referential integrity (no orphaned reviews).
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('stg_olist__orders')
+                field: order_id
+              config:
+                severity: warn
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # REVIEW METRICS
+      # ════════════════════════════════════════════════════════════════════
+      - name: review_score
+        description: |
+          **Customer satisfaction rating** (1-5 scale).
+
+          - 1 = Terrible
+          - 2 = Bad
+          - 3 = Neutral
+          - 4 = Good
+          - 5 = Excellent
+
+          **Distribution:**
+          - 5★: 58% (majority satisfied)
+          - 4★: 19%
+          - 3★: 8%
+          - 2★: 3%
+          - 1★: 11% (high dissatisfaction)
+
+          **Business Use:** Seller performance KPIs, customer satisfaction tracking.
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # REVIEW CONTENT
+      # ════════════════════════════════════════════════════════════════════
+      - name: review_title
+        description: |
+          **Review title/headline** (optional text field).
+
+          - Format: Short text (1-50 chars typical)
+          - NaN handling: Python 'NaN' artifacts → NULL
+          - Presence: ~10% of reviews include titles
+
+          **Business Use:** Sentiment analysis, review quality assessment.
+
+      - name: review_message
+        description: |
+          **Review comment/message** (optional long text field).
+
+          - Format: Long text (up to 2000 chars)
+          - NaN handling: Python 'NaN' artifacts → NULL
+          - Presence: 41% of reviews include comments
+
+          **Business Insight:** Reviews with comments provide richer feedback.
+
+      - name: has_comment
+        description: |
+          **Boolean flag:** Review includes written feedback (review_message IS NOT NULL).
+
+          - TRUE: 41% of reviews
+          - FALSE: 59% of reviews (score only)
+
+          **Why BOOLEAN:** Faster filtering in BI tools than "IS NOT NULL" checks.
+          **Business Use:** Identify detailed reviews for sentiment analysis.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # TIMESTAMPS
+      # ════════════════════════════════════════════════════════════════════
+      - name: created_at
+        description: |
+          **Review creation timestamp** (when customer submitted review).
+
+          - Format: TIMESTAMP (no timezone)
+          - Used for: Review response time calculations
+          - Business Rule: Reviews submitted 0-90 days after delivery
+
+      - name: answered_at
+        description: |
+          **Seller response timestamp** (when seller replied to review).
+
+          - Format: TIMESTAMP (no timezone)
+          - Presence: 0.4% (sellers rarely respond)
+          - Used for: Seller engagement metrics
+
+      # ════════════════════════════════════════════════════════════════════
+      # AUDIT METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: source_loaded_at_utc
+        description: |
+          **Phase 2 ingestion timestamp (UTC).**
+
+          - Captured during JSON parsing
+          - Used for debugging data refresh issues
+        tests:
+          - not_null:
+              config:
+                severity: warn
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__GEOLOCATION
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__geolocation
+    description: |
+      **Staging model for geolocation coordinate reference data.**
+
+      Cleans and deduplicates `raw_geolocation` (CSV source).
+
+      **Grain:** One row per unique coordinate point (lat/lng) per zip code.
+
+      **Key Transformations:**
+      - SELECT DISTINCT to compress ~1M GPS logs into unique points
+      - Invalid coordinate handling (>90, >180 → NULL)
+      - Zip code formatting (zero-padding to 5 digits)
+      - Location standardization (INITCAP for cities, UPPER for states)
+
+      **ADLC Compliance:**
+      - ✅ Technical deduplication (compress GPS logs, not business filtering)
+      - ✅ No JOINs (staging rule)
+      - ✅ No business filtering (preserves all valid coordinates)
+
+      **Data Quality (from Phase 2):**
+      - Source: ~1M rows (GPS ping logs)
+      - After deduplication: ~19K unique coordinate points
+      - Invalid coordinates: 680 rows (handled via NULL)
+      - Duplicate zip codes: Expected (e.g., ZIP 24220 has 1,146 coordinates)
+
+      **CRITICAL WARNING:**
+      - This table has 1-to-Many relationship with zip codes
+      - DO NOT join directly to customers/sellers (causes row explosion)
+      - Must aggregate to centroid per zip code in intermediate layer
+
+    config:
+      tags: ['staging', 'olist', 'geolocation']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # LOCATION IDENTIFIER
+      # ════════════════════════════════════════════════════════════════════
+      - name: zip_code
+        description: |
+          **Brazilian postal code prefix** (5 digits, zero-padded).
+
+          - Format: 5-digit string (e.g., "01310")
+          - Transformation: LPAD ensures leading zeros preserved
+          - NOT UNIQUE: Same zip can have multiple coordinates
+
+          **Business Context:** ZIP 24220 has 1,146 coordinate points (dense urban area).
+          **Join Strategy:** Aggregate to centroid before joining to customers/sellers.
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # GEOGRAPHIC COORDINATES
+      # ════════════════════════════════════════════════════════════════════
+      - name: latitude
+        description: |
+          **GPS latitude coordinate** (decimal degrees).
+
+          - Valid range: -90 to 90
+          - Invalid values: Set to NULL (680 rows)
+          - Format: FLOAT for geospatial precision
+
+          **Data Fix:** Coordinates outside valid range → NULL (prevents map crashes).
+          **Business Use:** Delivery distance calculations, logistics optimization.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -90
+                max_value: 90
+                row_condition: 'latitude is not null'
+              config:
+                severity: warn
+
+      - name: longitude
+        description: |
+          **GPS longitude coordinate** (decimal degrees).
+
+          - Valid range: -180 to 180
+          - Invalid values: Set to NULL (680 rows)
+          - Format: FLOAT for geospatial precision
+
+          **Data Fix:** Coordinates outside valid range → NULL (prevents map crashes).
+          **Business Use:** Delivery distance calculations, route optimization.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -180
+                max_value: 180
+                row_condition: 'longitude is not null'
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # LOCATION HIERARCHY
+      # ════════════════════════════════════════════════════════════════════
+      - name: city
+        description: |
+          **City name** (standardized to title case).
+
+          - Transformation: INITCAP(TRIM()) for consistency
+          - Example: "niteroi" → "Niteroi"
+          - Data Quality: Some accent inconsistencies (e.g., "São Paulo" vs "Sao Paulo")
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: state
+        description: |
+          **Brazilian state code** (2 characters, uppercase).
+
+          - Format: Uppercase 2-char code (SP, RJ, MG, etc.)
+          - Transformation: UPPER(TRIM()) ensures consistency
+          - Used for geographic filtering and analysis
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    'AC',
+                    'AL',
+                    'AP',
+                    'AM',
+                    'BA',
+                    'CE',
+                    'DF',
+                    'ES',
+                    'GO',
+                    'MA',
+                    'MT',
+                    'MS',
+                    'MG',
+                    'PA',
+                    'PB',
+                    'PR',
+                    'PE',
+                    'PI',
+                    'RJ',
+                    'RN',
+                    'RS',
+                    'RO',
+                    'RR',
+                    'SC',
+                    'SP',
+                    'SE',
+                    'TO',
+                  ]
+              config:
+                severity: error
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # STG_OLIST__CATEGORY_TRANSLATIONS
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: stg_olist__category_translations
+    description: |
+      **Staging model for product category translations.**
+
+      Cleans and standardizes the category translation seed file.
+
+      **Grain:** One row per Portuguese category (unique on category_name_pt).
+
+      **Key Transformations:**
+      - Portuguese category: Keep underscores for join integrity
+      - English category: Remove underscores, apply INITCAP for readability
+      - Whitespace trimming on all text fields
+
+      **ADLC Compliance:**
+      - ✅ Source: references ref() for seed data
+      - ✅ No JOINs (staging rule)
+      - ✅ No business filtering
+
+      **Business Context:**
+      - 71 product categories translated from Portuguese to English
+      - Used in intermediate layer to enrich product dimension
+      - English names used in Power BI for international audiences
+
+      **Join Strategy:**
+      - Join key: category_name_pt (with underscores!)
+      - Must match stg_olist__products.category_name_pt exactly
+
+    config:
+      tags: ['staging', 'olist', 'products', 'translation']
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # JOIN KEY (Portuguese)
+      # ════════════════════════════════════════════════════════════════════
+      - name: category_name_pt
+        description: |
+          **Portuguese category name** (join key - lowercase with underscores).
+
+          - Format: lowercase with underscores (e.g., 'cama_mesa_banho')
+          - CRITICAL: Underscores MUST be preserved for joins to stg_olist__products
+          - Example: 'cama_mesa_banho', 'beleza_saude', 'esporte_lazer'
+
+          **Why Underscores:** Must match raw format in products table.
+          **Join Target:** stg_olist__products.category_name_pt
+        tests:
+          - unique:
+              config:
+                severity: error
+          - not_null:
+              config:
+                severity: error
+
+      # ════════════════════════════════════════════════════════════════════
+      # DISPLAY LABEL (English)
+      # ════════════════════════════════════════════════════════════════════
+      - name: category_name_en
+        description: |
+          **English category name** (display label - title case, no underscores).
+
+          - Format: Title case without underscores (e.g., 'Bed Bath Table')
+          - Transformation: REPLACE('_', ' ') + INITCAP for clean display
+          - Example: 'bed_bath_table' → 'Bed Bath Table'
+
+          **Why Remove Underscores:** Creates business-ready labels for Power BI.
+          **Business Use:** Dashboard filters, category slicers, reports.
+        tests:
+          - not_null:
+              config:
+                severity: error

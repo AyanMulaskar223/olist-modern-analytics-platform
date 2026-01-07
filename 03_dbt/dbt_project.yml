@@ -1,0 +1,71 @@
+name: 'olist_analytics'
+version: '1.0.0'
+config-version: 2
+
+# Profile name must match profiles.yml
+profile: 'olist_snowflake'
+
+# Project paths
+model-paths: ['models'] # Changed from '03_dbt/models'
+analysis-paths: ['analyses'] # Changed from '03_dbt/analyses'
+test-paths: ['tests'] # Changed from '03_dbt/tests'
+seed-paths: ['seeds'] # Changed from '03_dbt/seeds'
+macro-paths: ['macros'] # Already correct
+snapshot-paths: ['snapshots'] # Changed from '03_dbt/snapshots'
+
+# Artifacts
+target-path: 'target'
+clean-targets:
+  - 'target'
+  - 'dbt_packages'
+
+# Snowflake-specific quoting (prevents case sensitivity issues)
+quoting:
+  database: false
+  schema: false
+  identifier: false
+
+# Global variables (accessible in models via {{ var('...') }})
+vars:
+  # Business rule: Only delivered orders count toward revenue
+  eligible_order_status: 'delivered'
+
+  # Surrogate key salt for dbt_utils.generate_surrogate_key()
+  surrogate_key_salt: 'olist_2024'
+
+  # Date range for incremental models (optional)
+  start_date: '2016-01-01'
+  end_date: '2018-12-31'
+
+# On-run hooks (execute before/after dbt run)
+on-run-start:
+  - "{{ log('Starting dbt run: ' ~ run_started_at.strftime('%Y-%m-%d %H:%M:%S'), info=True) }}"
+  - "ALTER SESSION SET QUERY_TAG = 'DBT_{{ target.name | upper }}_{{ invocation_id }}'"
+
+on-run-end:
+  - "{{ log('dbt run completed: ' ~ run_started_at.strftime('%Y-%m-%d %H:%M:%S'), info=True) }}"
+
+# Model configurations
+models:
+  olist_analytics:
+    # Staging layer (1:1 with RAW)
+    staging:
+      +materialized: view # Zero storage cost
+      +schema: staging
+      +tags: ['staging', 'raw_source']
+      +persist_docs:
+        relation: true
+        columns: true
+
+seeds:
+  olist_analytics: # Your project name
+    # This applies to all seeds in the project
+    +schema: seeds
+    +enabled: true
+    +quote_columns: false
+
+    # Product category translation
+    product_category_name_translation:
+      +column_types:
+        product_category_name: varchar(100)
+        product_category_name_english: varchar(100)

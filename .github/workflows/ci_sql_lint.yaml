@@ -1,0 +1,40 @@
+name: CI - SQL Linting (Fast)
+
+on:
+  push:
+    branches: ['feat/**', 'fix/**', 'staging']
+  pull_request:
+    branches: ['main', 'staging']
+
+jobs:
+  lint-sql:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./03_dbt
+
+    # 🔧 FIX: Add dummy env vars for dbt compilation (linting doesn't connect to Snowflake)
+    env:
+      SNOWFLAKE_ACCOUNT: 'dummy_account'
+      SNOWFLAKE_USER: 'dummy_user'
+      SNOWFLAKE_PASSWORD: 'dummy_password'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install SQLFluff + dbt
+        run: |
+          pip install sqlfluff==3.2.5 sqlfluff-templater-dbt==3.2.5 dbt-snowflake==1.11.0
+
+      - name: Install dbt Dependencies
+        run: dbt deps
+
+      - name: Lint SQL (with dbt context)
+        run: |
+          sqlfluff lint models/ --dialect snowflake --templater dbt
