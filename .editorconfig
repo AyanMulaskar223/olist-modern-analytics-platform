@@ -1,0 +1,42 @@
+# ==============================================================================
+# EditorConfig for Olist Modern Analytics Platform
+# ==============================================================================
+# Purpose: Maintain consistent coding styles across editors and developers.
+# Docs: https://editorconfig.org/
+# ==============================================================================
+
+root = true
+
+# 1. Base Rules (All Files)
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf          # Force Linux/Mac style line endings (Critical for Git)
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# 2. Python (Standard: 4 spaces)
+[*.py]
+indent_size = 4
+
+# 3. YAML / dbt Configuration (Standard: 2 spaces)
+# dbt prefers 2 spaces for .yml files to keep deep nesting readable
+[*.{yml,yaml}]
+indent_size = 2
+
+# 4. JSON (Standard: 2 or 4 spaces - 2 is cleaner for large configs)
+[*.json]
+indent_size = 2
+
+# 5. SQL (Match your SQLFluff config)
+[*.sql]
+indent_size = 4
+
+# 6. Markdown (Documentation)
+[*.md]
+trim_trailing_whitespace = false  # Markdown uses trailing spaces for line breaks
+indent_size = 2
+# 7. Config files (INI/TOML/CONF)
+[*.{ini,toml,conf}]
+indent_size = 2

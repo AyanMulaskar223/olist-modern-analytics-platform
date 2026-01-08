@@ -1,9 +1,39 @@
-# Phase 3: dbt Core Dependencies (NOT dbt-fusion)
-dbt-core==1.11.2
-dbt-snowflake==1.11.0
+# =======================================================
+# 🚀 Olist Modern Analytics Platform - Python Dependencies
+# =======================================================
 
-# Phase 3: Code Quality & Linting
-sqlfluff==3.5.0
-sqlfluff-templater-dbt==3.5.0
+# -------------------------------------------------------
+# 1. CORE TRANSFORMATION ENGINE (dbt)
+# -------------------------------------------------------
+# We only install the adapter. It automatically pulls the matching dbt-core.
+# Using ~=1.8.0 ensures you get stability (v1.8.x) without breaking changes.
+dbt-snowflake~=1.8.0
 
-# Phase 3: dbt Packages (installed via dbt deps)
+# -------------------------------------------------------
+# 2. CODE QUALITY & LINTING (The "Guardrails")
+# -------------------------------------------------------
+# SQLFluff enforces your SQL style guide.
+# The templater is required to understand dbt macros {{ ref() }}.
+sqlfluff==3.0.7
+sqlfluff-templater-dbt==3.0.7
+
+# -------------------------------------------------------
+# 3. AUTOMATION & GIT HOOKS
+# -------------------------------------------------------
+# Runs checks automatically before you commit (detects secrets, trailing spaces).
+# You have a .pre-commit-config.yaml, so this is MANDATORY.
+pre-commit==3.7.1
+
+# -------------------------------------------------------
+# 4. DATA UTILITIES (For Local Debugging/EDA)
+# -------------------------------------------------------
+# Essential for inspecting CSV seeds or running small Python analyses.
+pandas>=2.0.0
+pyarrow>=14.0.0  # Required for modern Pandas/Snowflake performance
+python-dotenv>=1.0.0 # Helps manage .env secrets safely
+
+# -------------------------------------------------------
+# 5. TESTING (Optional but Recommended)
+# -------------------------------------------------------
+# If you write custom Python scripts, use this to test them.
+pytest>=8.0.0
