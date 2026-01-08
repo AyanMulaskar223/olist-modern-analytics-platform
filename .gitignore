@@ -10,11 +10,14 @@
 secrets.json
 azure_keys.txt
 *.pem
+*.key
+# 🛑 NEVER commit the profiles file with passwords
+profiles.yml
+03_dbt/profiles.yml
 
 # ----------------------
 # 2. PYTHON & VIRTUAL ENV
 # ----------------------
-# Never commit your installed libraries, only requirements.txt
 venv/
 .venv/
 __pycache__/
@@ -24,10 +27,9 @@ __pycache__/
 # ----------------------
 # 3. DATA & LOCAL FILES
 # ----------------------
-# Mac OS junk
 .DS_Store
 
-# Large Data Files (We use Azure for this, not GitHub)
+# Large Data Files (We use Azure/Snowflake for this)
 *.csv
 *.json
 *.parquet
@@ -38,30 +40,31 @@ __pycache__/
 !03_dbt/seeds/*.csv
 !03_dbt/seeds/**/*.csv
 
-# ✅ EXCEPTION: Allow Power BI project files
+# ✅ EXCEPTION: Allow Power BI Project (PBIP) definitions
 !04_powerbi/**/*.json
 !04_powerbi/**/*.pbip
+!04_powerbi/**/*.tmdl
 
 # ✅ EXCEPTION: Allow test fixtures
 !tests/fixtures/*.csv
 !tests/fixtures/*.json
 
-# ✅ EXCEPTION: Allow placeholder files
+# ✅ EXCEPTION: Allow placeholder files (keeps folders alive)
 !**/.gitkeep
 
 # ----------------------
 # 4. DBT (DATA BUILD TOOL)
 # ----------------------
-# Compiled SQL files (generated automatically)
 target/
 dbt_packages/
-logs/
 dbt_modules/
+logs/
+.user.yml
 
-# ✅ EXCEPTION: Allow dbt config files in 03_dbt/
+# ✅ EXCEPTION: Allow dbt config files
 !03_dbt/dbt_project.yml
 !03_dbt/packages.yml
-!03_dbt/profiles.yml
+# Note: profiles.yml is REMOVED from here for security
 !03_dbt/.sqlfluff
 
 # ----------------------
@@ -71,26 +74,28 @@ dbt_modules/
 .idea/
 *.swp
 *.swo
+*.code-workspace
 
-# ✅ EXCEPTION: Allow VSCode settings for team
+# ✅ EXCEPTION: Allow VSCode settings for team consistency
 !.vscode/extensions.json
 !.vscode/settings.json
 
 # ----------------------
-# 6. OS & SYSTEM FILES
+# 6. SYSTEM JUNK
 # ----------------------
 Thumbs.db
 desktop.ini
 *.DS_Store
-
-# ----------------------
-# 7. TEMPORARY & CACHE FILES
-# ----------------------
-*.tmp
 *.bak
+*.tmp
 *.log
-
-# ✅ EXCEPTION: Allow logs for debugging
 !logs/.gitkeep
-.user.yml
-package-lock.yml
+
+# ----------------------
+# 7. POWER BI BINARIES
+# ----------------------
+# We track the .pbip folder (text), not the binary blob
+*.pbix
+*.abf
+04_powerbi/**/localSettings.json
+04_powerbi/**/.pbitool.json
