@@ -28,6 +28,7 @@ __pycache__/
 # 3. DATA & LOCAL FILES
 # ----------------------
 .DS_Store
+context/
 
 # Large Data Files (We use Azure/Snowflake for this)
 *.csv
@@ -61,6 +62,7 @@ dbt_modules/
 logs/
 .user.yml
 dbt_internal_packages/
+
 
 # ✅ EXCEPTION: Allow dbt config files
 !03_dbt/dbt_project.yml
@@ -100,3 +102,4 @@ desktop.ini
 *.abf
 04_powerbi/**/localSettings.json
 04_powerbi/**/.pbitool.json
+package-lock.yml
