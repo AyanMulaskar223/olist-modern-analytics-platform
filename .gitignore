@@ -62,6 +62,7 @@ dbt_modules/
 logs/
 .user.yml
 dbt_internal_packages/
+package-lock.yml
 
 
 # ✅ EXCEPTION: Allow dbt config files
@@ -102,4 +103,6 @@ desktop.ini
 *.abf
 04_powerbi/**/localSettings.json
 04_powerbi/**/.pbitool.json
-package-lock.yml
+
+#Other
+adlc.md
