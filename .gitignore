@@ -60,6 +60,7 @@ dbt_packages/
 dbt_modules/
 logs/
 .user.yml
+dbt_internal_packages/
 
 # ✅ EXCEPTION: Allow dbt config files
 !03_dbt/dbt_project.yml
