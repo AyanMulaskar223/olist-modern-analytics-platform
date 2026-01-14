@@ -1,0 +1,124 @@
+
+// ==============================================
+// 🔴 ADMIN & SECURITY LAYER (RLS - BRIDGE PATTERN)
+// ==============================================
+
+Table dim_security_rls [headercolor: #D32F2F] {
+  user_email varchar(100) [note: 'Principal Name. e.g. alice@olist.com']
+  access_key varchar(50) [note: 'FK to Bridge. The abstract "Token". e.g. SP, RJ, SOUTH_REGION']
+  access_level varchar(50) [note: 'Context description. e.g. State, Region']
+
+  Note: 'RLS Rules Table. Contains multiple rows per user (M:M with Bridge).'
+}
+
+Table dim_rls_bridge [headercolor: #FFA000] {
+  // Column 1: The Input (From Security)
+  access_key varchar(50) [note: 'The Security Token. e.g. "SP" or "SOUTH_REGION"']
+
+  // Column 2: The Output (To Sellers)
+  seller_state varchar(2) [note: 'The actual Data Value. e.g. "SP", "RS", "SC"']
+
+  Note: 'BRIDGE TABLE. Maps abstract Security Keys to concrete Data Values (The "Translator").'
+}
+
+// ==============================================
+// 🔗 SECURITY RELATIONSHIPS
+// ==============================================
+
+// 1. Security to Bridge
+// Flow: User logs in -> Filters Security Table -> Filters Bridge Keys
+// Power BI: Cardinality Many-to-Many (*:*), Direction Both
+
+// 2. Bridge to Sellers
+// Flow: Bridge resolves Key to State(s) -> Filters Sellers in those States
+// Power BI: Cardinality One-to-Many (1:*), Direction Single (Bridge filters Sellers)
+Ref: dim_rls_bridge.seller_state < dim_sellers.seller_state
+
+// ==============================================
+// 🔵 CORE ANALYTICS MART
+// ==============================================
+
+Table fct_order_items {
+  order_item_sk varchar(32) [pk, note: 'Hash of order_id + order_item_id. Grain: One row per item sold.']
+  order_id varchar(32) [note: 'Natural key used for DISTINCTCOUNT of orders in DAX.']
+
+  // Relationship Keys
+  customer_sk varchar(32) [ref: > dim_customers.customer_sk, note: 'FK to Unique Person (Identity Layer). Mapping: user_sk.']
+  product_sk varchar(32) [ref: > dim_products.product_sk, note: 'FK to Product Dimension.']
+  seller_sk varchar(32) [ref: > dim_sellers.seller_sk, note: 'FK to Seller Dimension.']
+  order_date_dt date [ref: > dim_date.date_day, note: 'FK to Calendar. Use this for all time-series analysis.']
+
+  // Financial Metrics (Q1, Q2, Q3, Q5)
+  price_brl number(10,2) [note: 'Item price. Sum this for Total Revenue KPI.']
+  freight_value_brl number(10,2) [note: 'Shipping cost. Use for GMV and diagnostic analysis.']
+
+  // Retention Logic (Q6)
+  order_sequence_number integer [note: 'Calculated in dbt. 1 = New Customer Order, >1 = Repeat Order. Accurate over time.']
+
+  // Delivery Performance (Q4)
+  delivery_time_days integer [note: 'Pre-calculated in dbt. Avg this for Delivery Efficiency KPI.']
+  is_delayed integer [note: '1 if delivered_at > estimated_at, else 0. Sum this for Delay Rate.']
+
+  // Compressed Data Quality (Audit Layer)
+  is_verified integer [note: 'Master switch. 1 = Clean data, 0 = DQ Issue. Use as Report-Level Filter.']
+  quality_issue_reason varchar(100) [note: 'Explains DQ issue: e.g., Ghost Delivery, Invalid Timeline.']
+}
+
+Table dim_customers {
+  customer_sk varchar(32) [pk, note: 'Surrogate Key for unique human. Mapping: user_sk.']
+  customer_unique_id varchar(32) [note: 'Natural Business Key for the person. Mapping: user_id.']
+  customer_city varchar(50) [note: 'Standardized Initcap city name.']
+  customer_state varchar(2) [note: '2-letter state code (Uppercase).']
+}
+
+Table dim_products {
+  product_sk varchar(32) [pk, note: 'Surrogate Key generated in dbt']
+  product_id varchar(32) [note: 'Natural Key from Olist source']
+  product_category varchar(100) [note: 'English translation. Fallback to Portuguese if missing.']
+  product_category_original varchar(100) [note: 'Original Portuguese category name for debugging']
+  is_verified integer [note: '1 = Complete info, 0 = Missing metadata.']
+  quality_issue_reason varchar(100) [note: 'e.g., Missing Photos, No Dimensions.']
+}
+
+
+Table dim_sellers {
+  seller_sk varchar(32) [pk]
+  seller_id varchar(32)
+  seller_city varchar(50)
+  seller_state varchar(2) [note: 'Join target for RLS Bridge']
+}
+
+Table dim_date {
+  date_day date [pk, note: 'Primary Key']
+
+  // Calendar Hierarchy
+  year_number integer
+  quarter_name varchar(2) [note: 'Q1, Q2...']
+  month_name varchar(15) [note: 'January, February...']
+  month_short_name varchar(3) [note: 'Jan, Feb...']
+  day_of_week_name varchar(10) [note: 'Monday, Tuesday...']
+
+  // ⚡ Power BI Sorting Keys (Hidden in Report View)
+  month_number integer [note: '1-12. Sort month_name by this.']
+  day_of_week_number integer [note: '1-7. Sort day_name by this.']
+  year_month_number integer [note: '201701. Sort year_month_name by this.']
+
+  // 📊 Visualization Helpers
+  year_month_name varchar(7) [note: 'Jan-17. Best for Trend Axis.']
+
+  // 🚚 Logistics Flags (Critical for Olist Q4)
+  is_weekend integer [note: '1 = Sat/Sun, 0 = Mon-Fri']
+}
+
+// ==============================================
+// 🔗 SECURITY RELATIONSHIPS (BRIDGE PATTERN)
+// ==============================================
+
+// 1. Security to Bridge: Many-to-One
+// Logic: Many rows for "Alice" map to One row per "State" in Bridge.
+// Note: In Power BI, set this to Cross-filter Direction: "Both"
+Ref: dim_security_rls.access_key > dim_rls_bridge.access_key
+
+// 2. Bridge to Sellers: One-to-Many
+// Logic: One "State" in Bridge maps to Many Sellers in that State.
+// Note: In Power BI, set this to Cross-filter Direction: "Single"

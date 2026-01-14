@@ -73,17 +73,14 @@ Build a **single source of truth analytics platform** that enables stakeholders 
 
 ## 6. Key Business Questions
 
-| ID  | Business Question                                                                 | Analytics Type |
-| --- | --------------------------------------------------------------------------------- | -------------- |
-| Q1  | How are total revenue and order volume trending over time?                        | Descriptive    |
-| Q2  | Which product categories generate the most revenue and orders?                    | Descriptive    |
-| Q3  | Which regions and states contribute most to revenue and orders?                   | Descriptive    |
-| Q4  | How efficient is order delivery performance across regions?                       | Diagnostic     |
-| Q5  | Which sellers contribute the most to revenue and order volume?                    | Descriptive    |
-| Q6  | What payment methods are most commonly used and how do they impact order value?   | Diagnostic     |
-| Q7  | How many customers are repeat buyers versus new customers?                        | Descriptive    |
-| Q8  | Where do order delays occur most frequently (by state, carrier proxy, or seller)? | Diagnostic     |
-| Q9  | What is the cancellation/unavailable rate and where is it highest?                | Diagnostic     |
+| ID  | Business Question                                               | Analytics Type |
+| --- | --------------------------------------------------------------- | -------------- |
+| Q1  | How are total revenue and order volume trending over time?      | Descriptive    |
+| Q2  | Which product categories generate the most revenue and orders?  | Descriptive    |
+| Q3  | Which regions and states contribute most to revenue and orders? | Descriptive    |
+| Q4  | How efficient is order delivery performance across regions?     | Diagnostic     |
+| Q5  | Which sellers contribute the most to revenue and order volume?  | Descriptive    |
+| Q6  | How many customers are repeat buyers versus new customers?      | Descriptive    |
 
 ---
 
@@ -102,7 +99,6 @@ Build a **single source of truth analytics platform** that enables stakeholders 
 - **Orders by Category**
 - **Revenue by State**
 - **Seller Contribution %**
-- **Orders by Payment Type**
 - **On-Time Delivery %**
 - **Cancellation Rate** (optional but recommended)
 - **Unavailable Rate** (optional but recommended)
@@ -119,7 +115,6 @@ Build a **single source of truth analytics platform** that enables stakeholders 
 | Q3                | Revenue by State              | Revenue grouped by customer state               | customers, orders, payments     |
 | Q4                | Avg Delivery Time             | Avg(delivered_date − purchase_date)             | orders                          |
 | Q5                | Seller Revenue                | Revenue attributed to seller via order items    | sellers, order_items, payments  |
-| Q6                | AOV by Payment                | Avg order value grouped by payment type         | payments, orders                |
 | Q7                | Repeat Customer Rate          | % customers with ≥ 2 eligible orders            | orders, customers               |
 | Q8                | On-Time Delivery %            | % delivered on/before estimated date            | orders                          |
 | Q9                | Cancellation/Unavailable Rate | % orders with status in (canceled, unavailable) | orders                          |
