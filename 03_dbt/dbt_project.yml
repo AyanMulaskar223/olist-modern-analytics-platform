@@ -1,24 +1,24 @@
 # yaml-language-server: $schema=none
-name: 'olist_analytics'
-version: '1.0.0'
+name: "olist_analytics"
+version: "1.0.0"
 config-version: 2
 
 # Profile name must match profiles.yml
-profile: 'olist_snowflake'
+profile: "olist_snowflake"
 
 # Project paths
-model-paths: ['models'] # Changed from '03_dbt/models'
-analysis-paths: ['analyses'] # Changed from '03_dbt/analyses'
-test-paths: ['tests'] # Changed from '03_dbt/tests'
-seed-paths: ['seeds'] # Changed from '03_dbt/seeds'
-macro-paths: ['macros'] # Already correct
-snapshot-paths: ['snapshots'] # Changed from '03_dbt/snapshots'
+model-paths: ["models"] # Changed from '03_dbt/models'
+analysis-paths: ["analyses"] # Changed from '03_dbt/analyses'
+test-paths: ["tests"] # Changed from '03_dbt/tests'
+seed-paths: ["seeds"] # Changed from '03_dbt/seeds'
+macro-paths: ["macros"] # Already correct
+snapshot-paths: ["snapshots"] # Changed from '03_dbt/snapshots'
 
 # Artifacts
-target-path: 'target'
+target-path: "target"
 clean-targets:
-  - 'target'
-  - 'dbt_packages'
+  - "target"
+  - "dbt_packages"
 
 # Snowflake-specific quoting (prevents case sensitivity issues)
 quoting:
@@ -29,14 +29,14 @@ quoting:
 # Global variables (accessible in models via {{ var('...') }})
 vars:
   # Business rule: Only delivered orders count toward revenue
-  eligible_order_status: 'delivered'
+  eligible_order_status: "delivered"
 
   # Surrogate key salt for dbt_utils.generate_surrogate_key()
-  surrogate_key_salt: 'olist_2024'
+  surrogate_key_salt: "olist_2024"
 
   # Date range for incremental models (optional)
-  start_date: '2016-01-01'
-  end_date: '2018-12-31'
+  start_date: "2016-01-01"
+  end_date: "2018-12-31"
 
 # On-run hooks (execute before/after dbt run)
 on-run-start:
@@ -53,7 +53,16 @@ models:
     staging:
       +materialized: view # Zero storage cost
       +schema: staging
-      +tags: ['staging', 'raw_source']
+      +tags: ["staging", "raw_source"]
+      +persist_docs:
+        relation: true
+        columns: true
+
+    # Intermediate layer (Business logic & joins)
+    intermediate:
+      +materialized: ephemeral # CTE-like, no physical table
+      +schema: intermediate
+      +tags: ["intermediate"]
       +persist_docs:
         relation: true
         columns: true

@@ -1,0 +1,319 @@
+version: 2
+
+models:
+  - name: int_sales__order_items_joined
+    description: |
+      **Purpose:** Enriched order items with customer identity, retention logic, and quality flags
+
+      **Grain:** One row per order item (line-level granularity)
+
+      **Business Logic:**
+      - Implements "Baton Pass" identity resolution (customer_id → user_sk → customer_sk)
+      - Calculates point-in-time retention (order_sequence_number) at order level
+      - Computes delivery performance metrics (delivery_time_days, is_delayed)
+      - Applies data quality compression (quality_issue_reason → is_verified flag)
+
+      **Business Rules:**
+      - Only includes items from orders with valid customer matches (INNER JOIN)
+      - Delivery delay = delivered_at > estimated_delivery_at
+      - Quality issues: Ghost Delivery, Arrival Before Shipping, Zero Value Items
+      - Order sequence partitioned by user_id (persistent customer identity)
+
+      **Dependencies:**
+      - stg_olist__orders
+      - stg_olist__order_items
+      - stg_olist__customers
+
+      **Materialization:** Ephemeral (compiled as CTE in downstream models)
+      **Owner:** Analytics Engineering Team
+      **Tags:** sales, intermediate, identity_resolution, retention
+    columns:
+      - name: order_item_sk
+        description: |
+          Surrogate key for order item (generated in staging layer).
+          Unique identifier for each line item in an order.
+          Hash of order_id + order_item_id.
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: |
+          Natural key for the order (transactional identifier).
+          Used for joining to other order-level tables.
+        tests:
+          - not_null
+
+      - name: customer_sk
+        description: |
+          **Person Key** - Surrogate key linking to persistent customer identity.
+          Result of "Baton Pass" identity resolution:
+          order.customer_id → customer.order_customer_id → customer.user_sk → customer_sk
+
+          Use this for all customer-level analysis (NOT customer_id).
+          This enables tracking repeat purchases across different order_customer_id values.
+        tests:
+          - not_null
+
+      - name: product_sk
+        description: |
+          Surrogate key for product dimension.
+          Links to dim_products for product attributes (category, weight, dimensions).
+        tests:
+          - not_null
+
+      - name: seller_sk
+        description: |
+          Surrogate key for seller dimension.
+          Links to dim_sellers for seller attributes (city, state).
+        tests:
+          - not_null
+
+      - name: order_date_dt
+        description: |
+          Order purchase date (cast to DATE type).
+          Used for date dimension joins and time-based analysis.
+          Source: order_purchase_timestamp cast to DATE.
+        tests:
+          - not_null
+
+      - name: price_brl
+        description: |
+          Item price in Brazilian Real (BRL).
+          Excludes freight. Pre-tax amount paid by customer for product.
+        tests:
+          - not_null:
+              config:
+                severity: warn # Warning only, zero price items might be valid promos
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+              config:
+                severity: warn
+
+      - name: freight_value_brl
+        description: |
+          Shipping/freight cost for this item in BRL.
+          Charged separately from product price.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+              config:
+                severity: warn
+
+      - name: order_sequence_number
+        description: |
+          **Retention Metric** - Sequential order number for this customer.
+          - 1 = New Customer (first order)
+          - >1 = Repeat Customer (subsequent orders)
+
+          Calculated using ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY ordered_at ASC).
+          Used to classify customer behavior in fct_orders.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 1" # Rank must always be positive
+
+      - name: delivery_time_days
+        description: |
+          **Performance Metric** - Days between order purchase and delivery.
+          Calculated as: DATEDIFF('day', ordered_at, delivered_at).
+          NULL if order not yet delivered.
+          Used for logistics analysis and SLA monitoring.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 365
+              config:
+                severity: warn
+
+      - name: is_delayed
+        description: |
+          **Boolean Flag** - Indicates if delivery was later than estimated.
+          - 1 = Delayed (delivered_at > estimated_delivery_at)
+          - 0 = On-time or early
+          Used for delivery performance analysis and customer satisfaction metrics.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+          - not_null
+
+      - name: is_verified
+        description: |
+          **Master Data Quality Flag** - Indicates if record passes all quality checks.
+          - 1 = Clean record (quality_issue_reason IS NULL)
+          - 0 = Dirty record (has at least one quality issue)
+
+          Use this to filter final Marts to clean data only.
+          Business Rule: WHERE is_verified = 1
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+          - not_null
+
+      - name: quality_issue_reason
+        description: |
+          **Data Quality Diagnostic** - Specific reason for data quality failure.
+
+          Possible values:
+          - 'Ghost Delivery' = Delivery date exists but no shipping date
+          - 'Arrival Before Shipping' = Arrival before shipping timestamp
+          - 'Arrival Before Approval' = Arrival before order approval
+          - 'Zero Value Item' = Item price <= 0 (business logic violation)
+          - NULL = No quality issues (record is verified)
+
+          Use for data quality monitoring and root cause analysis.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "Ghost Delivery",
+                    "Arrival Before Shipping",
+                    "Arrival Before Approval",
+                    "Zero Value Item",
+                  ]
+              config:
+                severity: warn
+                where: "quality_issue_reason is not null"
+
+      - name: order_status
+        description: |
+          **Order Status** - Current state of the order.
+
+          Values: 'delivered', 'shipped', 'canceled', 'processing', 'approved', etc.
+          Passed through for downstream filtering.
+
+          Business Rule: Final Marts should filter WHERE order_status = 'delivered'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "DELIVERED",
+                    "SHIPPED",
+                    "CANCELED",
+                    "INVOICED",
+                    "PROCESSING",
+                    "APPROVED",
+                    "CREATED",
+                    "UNAVAILABLE",
+                  ]
+
+  - name: int_customers__prep
+    description: |
+      **Purpose:** Deduplicated customer master data for dimension layer
+
+      **Grain:** One row per unique person (user_sk)
+
+      **Business Logic:**
+      - Deduplicates customers who moved cities (same person, different addresses)
+      - Selects most recent address based on source_loaded_at_utc
+      - Implements "Baton Pass" identity resolution (user_id → user_sk → customer_sk)
+      - Prepares clean customer dimension for downstream marts
+
+      **Business Rules:**
+      - One person = One row (even if they placed orders from multiple addresses)
+      - Most recent address wins (ROW_NUMBER by source_loaded_at DESC)
+      - customer_sk (Person Key) becomes PK for dim_customers
+
+      **Dependencies:**
+      - stg_olist__customers
+
+      **Materialization:** View (lightweight, no complex joins)
+      **Owner:** Analytics Engineering Team
+      **Tags:** sales, intermediate, customer, deduplication
+
+    columns:
+      - name: customer_sk
+        description: |
+          **Person Key** - Surrogate key for unique customer (hash of customer_unique_id).
+          Primary key for dim_customers dimension.
+
+          This is the persistent identity used across all fact tables.
+          Use this for customer-level aggregations and analysis.
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_unique_id
+        description: |
+          **Natural Key** - Unique person identifier across Olist ecosystem.
+
+          Business key that persists even if customer:
+          - Moves to different city/state
+          - Places orders from multiple addresses
+          - Changes email/phone
+
+          One customer_unique_id = One person in real life.
+          This field enables identity resolution for repeat customer analysis.
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_city
+        description: |
+          **Most Recent City** - City where customer currently resides.
+
+          If customer moved, this reflects their latest address (based on source_loaded_at).
+          Used for:
+          - Geographic segmentation
+          - Logistics planning
+          - Regional marketing campaigns
+        tests:
+          - not_null
+
+      - name: customer_state
+        description: |
+          **Most Recent State** - 2-letter Brazilian state code.
+
+          If customer moved, this reflects their latest state (based on source_loaded_at).
+          Used for:
+          - Regional sales analysis
+          - Row-Level Security (RLS) filtering in Power BI
+          - State-level KPI tracking
+
+          Valid values: 27 Brazilian states (26 states + 1 Federal District)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "SP",
+                    "RJ",
+                    "MG",
+                    "RS",
+                    "PR",
+                    "SC",
+                    "BA",
+                    "DF",
+                    "GO",
+                    "PE",
+                    "CE",
+                    "ES",
+                    "MA",
+                    "PA",
+                    "MT",
+                    "PB",
+                    "AM",
+                    "RN",
+                    "AL",
+                    "PI",
+                    "SE",
+                    "TO",
+                    "RO",
+                    "MS",
+                    "AC",
+                    "RR",
+                    "AP",
+                  ]

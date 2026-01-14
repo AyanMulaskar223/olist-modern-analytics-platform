@@ -41,7 +41,7 @@ models:
       **SLA:** Real-time (view materialization)
 
     config:
-      tags: ['staging', 'olist', 'customers', 'core']
+      tags: ["staging", "olist", "customers", "core"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -101,7 +101,7 @@ models:
           - not_null:
               config:
                 severity: warn
-                warn_if: '>100'
+                warn_if: ">100"
 
       - name: city
         description: |
@@ -124,33 +124,33 @@ models:
               arguments:
                 values:
                   [
-                    'AC',
-                    'AL',
-                    'AP',
-                    'AM',
-                    'BA',
-                    'CE',
-                    'DF',
-                    'ES',
-                    'GO',
-                    'MA',
-                    'MT',
-                    'MS',
-                    'MG',
-                    'PA',
-                    'PB',
-                    'PR',
-                    'PE',
-                    'PI',
-                    'RJ',
-                    'RN',
-                    'RS',
-                    'RO',
-                    'RR',
-                    'SC',
-                    'SP',
-                    'SE',
-                    'TO',
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
                   ]
               config:
                 severity: error
@@ -205,7 +205,7 @@ models:
       - Price range: R$0.85 - R$6,735.00
 
     config:
-      tags: ['staging', 'olist', 'order_items']
+      tags: ["staging", "olist", "order_items"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -223,7 +223,7 @@ models:
           - unique:
               config:
                 severity: error
-                error_if: '>0'
+                error_if: ">0"
           - not_null:
               config:
                 severity: error
@@ -395,7 +395,7 @@ models:
       - Ghost deliveries: 8 orders (flagged)
 
     config:
-      tags: ['staging', 'olist', 'orders', 'core']
+      tags: ["staging", "olist", "orders", "core"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -462,14 +462,14 @@ models:
               arguments:
                 values:
                   [
-                    'DELIVERED',
-                    'CANCELED',
-                    'SHIPPED',
-                    'PROCESSING',
-                    'APPROVED',
-                    'INVOICED',
-                    'UNAVAILABLE',
-                    'CREATED',
+                    "DELIVERED",
+                    "CANCELED",
+                    "SHIPPED",
+                    "PROCESSING",
+                    "APPROVED",
+                    "INVOICED",
+                    "UNAVAILABLE",
+                    "CREATED",
                   ]
               config:
                 severity: error
@@ -494,16 +494,16 @@ models:
           - not_null:
               config:
                 severity: warn
-                warn_if: '>1000'
+                warn_if: ">1000"
 
       - name: shipped_at
-        description: '**Carrier pickup timestamp** (when order left seller warehouse).'
+        description: "**Carrier pickup timestamp** (when order left seller warehouse)."
 
       - name: delivered_at
-        description: '**Customer delivery timestamp** (when order arrived at customer address).'
+        description: "**Customer delivery timestamp** (when order arrived at customer address)."
 
       - name: estimated_delivery_at
-        description: '**Estimated delivery date** (shown to customer at checkout).'
+        description: "**Estimated delivery date** (shown to customer at checkout)."
         tests:
           - not_null:
               config:
@@ -534,12 +534,12 @@ models:
       # AUDIT METADATA
       # ════════════════════════════════════════════════════════════════════
       - name: source_file
-        description: '**Source CSV file path from Azure Blob Storage.**'
+        description: "**Source CSV file path from Azure Blob Storage.**"
         tests:
           - not_null
 
       - name: source_loaded_at_utc
-        description: '**Phase 2 ingestion timestamp (UTC).**'
+        description: "**Phase 2 ingestion timestamp (UTC).**"
         tests:
           - not_null
 
@@ -574,7 +574,7 @@ models:
       - Missing dimensions: 2 (0.006%) - flagged for logistics review
 
     config:
-      tags: ['staging', 'olist', 'products']
+      tags: ["staging", "olist", "products"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -694,17 +694,17 @@ models:
                 severity: warn
 
       - name: length_cm
-        description: '**Product length in centimeters** (box dimension for shipping).'
+        description: "**Product length in centimeters** (box dimension for shipping)."
         tests:
           - not_null
 
       - name: height_cm
-        description: '**Product height in centimeters** (box dimension for shipping).'
+        description: "**Product height in centimeters** (box dimension for shipping)."
         tests:
           - not_null
 
       - name: width_cm
-        description: '**Product width in centimeters** (box dimension for shipping).'
+        description: "**Product width in centimeters** (box dimension for shipping)."
         tests:
           - not_null
 
@@ -738,12 +738,12 @@ models:
       # AUDIT METADATA
       # ════════════════════════════════════════════════════════════════════
       - name: source_filename
-        description: '**Source CSV file path from Azure Blob Storage.**'
+        description: "**Source CSV file path from Azure Blob Storage.**"
         tests:
           - not_null
 
       - name: source_loaded_at_utc
-        description: '**Phase 2 ingestion timestamp (UTC).**'
+        description: "**Phase 2 ingestion timestamp (UTC).**"
         tests:
           - not_null
 
@@ -776,7 +776,7 @@ models:
       - State distribution: 23 states represented (SP: 694, PR: 414, MG: 394)
 
     config:
-      tags: ['staging', 'olist', 'sellers']
+      tags: ["staging", "olist", "sellers"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -855,33 +855,33 @@ models:
               arguments:
                 values:
                   [
-                    'AC',
-                    'AL',
-                    'AP',
-                    'AM',
-                    'BA',
-                    'CE',
-                    'DF',
-                    'ES',
-                    'GO',
-                    'MA',
-                    'MT',
-                    'MS',
-                    'MG',
-                    'PA',
-                    'PB',
-                    'PR',
-                    'PE',
-                    'PI',
-                    'RJ',
-                    'RN',
-                    'RS',
-                    'RO',
-                    'RR',
-                    'SC',
-                    'SP',
-                    'SE',
-                    'TO',
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
                   ]
               config:
                 severity: error
@@ -890,12 +890,12 @@ models:
       # AUDIT METADATA
       # ════════════════════════════════════════════════════════════════════
       - name: source_file
-        description: '**Source CSV file path from Azure Blob Storage.**'
+        description: "**Source CSV file path from Azure Blob Storage.**"
         tests:
           - not_null
 
       - name: source_loaded_at_utc
-        description: '**Phase 2 ingestion timestamp (UTC).**'
+        description: "**Phase 2 ingestion timestamp (UTC).**"
         tests:
           - not_null
 
@@ -937,7 +937,7 @@ models:
       - Installments typical range: 1-24 (credit card only)
 
     config:
-      tags: ['staging', 'olist', 'payments', 'finance']
+      tags: ["staging", "olist", "payments", "finance"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -1004,8 +1004,8 @@ models:
                 max_value: 50
               config:
                 severity: warn
-                error_if: '>50'
-                warn_if: '>0'
+                error_if: ">50"
+                warn_if: ">0"
 
       - name: payment_type
         description: |
@@ -1026,7 +1026,7 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  ['credit_card', 'boleto', 'debit_card', 'voucher', 'unknown']
+                  ["credit_card", "boleto", "debit_card", "voucher", "unknown"]
               config:
                 severity: error
 
@@ -1096,12 +1096,12 @@ models:
       # AUDIT METADATA
       # ════════════════════════════════════════════════════════════════════
       - name: source_file
-        description: '**Source CSV file path from Azure Blob Storage.**'
+        description: "**Source CSV file path from Azure Blob Storage.**"
         tests:
           - not_null
 
       - name: source_loaded_at_utc
-        description: '**Phase 2 ingestion timestamp (UTC).**'
+        description: "**Phase 2 ingestion timestamp (UTC).**"
         tests:
           - not_null
 
@@ -1141,7 +1141,7 @@ models:
       - Used for: Seller performance metrics, customer satisfaction KPIs
 
     config:
-      tags: ['staging', 'olist', 'reviews']
+      tags: ["staging", "olist", "reviews"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -1201,8 +1201,6 @@ models:
                 field: order_id
               config:
                 severity: warn
-              config:
-                severity: warn
 
       # ════════════════════════════════════════════════════════════════════
       # REVIEW METRICS
@@ -1224,7 +1222,7 @@ models:
           - 2★: 3%
           - 1★: 11% (high dissatisfaction)
 
-          **Business Use:** Seller performance KPIs, customer satisfaction tracking.
+          **Business Use:** Selconfig:ler performance KPIs, customer satisfaction tracking.
         tests:
           - not_null:
               config:
@@ -1339,7 +1337,7 @@ models:
       - Must aggregate to centroid per zip code in intermediate layer
 
     config:
-      tags: ['staging', 'olist', 'geolocation']
+      tags: ["staging", "olist", "geolocation"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════
@@ -1378,7 +1376,7 @@ models:
               arguments:
                 min_value: -90
                 max_value: 90
-                row_condition: 'latitude is not null'
+                row_condition: "latitude is not null"
               config:
                 severity: warn
 
@@ -1397,7 +1395,7 @@ models:
               arguments:
                 min_value: -180
                 max_value: 180
-                row_condition: 'longitude is not null'
+                row_condition: "longitude is not null"
               config:
                 severity: warn
 
@@ -1431,33 +1429,33 @@ models:
               arguments:
                 values:
                   [
-                    'AC',
-                    'AL',
-                    'AP',
-                    'AM',
-                    'BA',
-                    'CE',
-                    'DF',
-                    'ES',
-                    'GO',
-                    'MA',
-                    'MT',
-                    'MS',
-                    'MG',
-                    'PA',
-                    'PB',
-                    'PR',
-                    'PE',
-                    'PI',
-                    'RJ',
-                    'RN',
-                    'RS',
-                    'RO',
-                    'RR',
-                    'SC',
-                    'SP',
-                    'SE',
-                    'TO',
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
                   ]
               config:
                 severity: error
@@ -1493,7 +1491,7 @@ models:
       - Must match stg_olist__products.category_name_pt exactly
 
     config:
-      tags: ['staging', 'olist', 'products', 'translation']
+      tags: ["staging", "olist", "products", "translation"]
 
     columns:
       # ════════════════════════════════════════════════════════════════════

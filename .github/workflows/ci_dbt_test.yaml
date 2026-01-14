@@ -2,24 +2,25 @@ name: CI - dbt Integration
 
 on:
   pull_request:
-    branches: ['main']
+    branches: ["main"]
     paths:
-      - '03_dbt/**'
-      - 'requirements.txt'
-      - '.github/workflows/ci_dbt_test.yaml'
+      - "03_dbt/**"
+      - "requirements.txt"
+      - ".github/workflows/ci_dbt_test.yaml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
+  # Secrets are loaded into Env Vars, but dbt needs them in a file
   SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
   SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
   SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
   SNOWFLAKE_ROLE: CI_SERVICE_ROLE
   SNOWFLAKE_WAREHOUSE: TRANSFORM_WH_XS
   SNOWFLAKE_DATABASE: OLIST_DEV_DB
-  SNOWFLAKE_SCHEMA: 'CI_PR_${{ github.event.number }}'
+  SNOWFLAKE_SCHEMA: "CI_PR_${{ github.event.number }}"
 
 jobs:
   integration-test:
@@ -36,27 +37,39 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          cache: 'pip'
+          python-version: "3.10"
+          cache: "pip"
 
-      # ✅ FIXED: Install from root requirements.txt
       - name: Install dbt
         run: pip install -r ../requirements.txt
 
-      # ✅ ADDED: Verify dbt installation
-      - name: Verify dbt Installation
+      # ✅ CRITICAL FIX: Create the profiles.yml file dynamically
+      - name: Create profiles.yml
         run: |
-          dbt --version
-          which dbt
+          echo "olist_snowflake:" > profiles.yml
+          echo "  target: ci" >> profiles.yml
+          echo "  outputs:" >> profiles.yml
+          echo "    ci:" >> profiles.yml
+          echo "      type: snowflake" >> profiles.yml
+          echo "      account: $SNOWFLAKE_ACCOUNT" >> profiles.yml
+          echo "      user: $SNOWFLAKE_USER" >> profiles.yml
+          echo "      password: $SNOWFLAKE_PASSWORD" >> profiles.yml
+          echo "      role: $SNOWFLAKE_ROLE" >> profiles.yml
+          echo "      warehouse: $SNOWFLAKE_WAREHOUSE" >> profiles.yml
+          echo "      database: $SNOWFLAKE_DATABASE" >> profiles.yml
+          echo "      schema: $SNOWFLAKE_SCHEMA" >> profiles.yml
+          echo "      threads: 4" >> profiles.yml
 
       - name: Install dbt Packages
-        run: dbt deps
+        # Must point to the profile we just made
+        run: dbt deps --profiles-dir .
 
       - name: Run dbt Build
-        run: dbt build --target ci --full-refresh
+        # Must point to the profile we just made
+        run: dbt build --target ci --full-refresh --profiles-dir .
 
-      # ✅ IMPROVED: Better error handling
       - name: Drop CI Schema
         if: always()
+        # Must point to the profile we just made
         run: |
-          dbt run-operation drop_ci_schema --target ci --args "{schema_name: $SNOWFLAKE_SCHEMA}" || echo "Schema cleanup skipped (may not exist)"
+          dbt run-operation drop_ci_schema --target ci --profiles-dir . --args "{schema_name: $SNOWFLAKE_SCHEMA}" || echo "Schema cleanup skipped"
