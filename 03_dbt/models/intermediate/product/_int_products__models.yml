@@ -1,0 +1,138 @@
+version: 2
+
+models:
+  # ══════════════════════════════════════════════════════════════════════════
+  # INT_PRODUCTS__ENRICHED
+  # ══════════════════════════════════════════════════════════════════════════
+  - name: int_products__enriched
+    description: |
+      **Intermediate model enriching products with category translations and quality metrics.**
+
+      Combines `stg_olist__products` (master product data) with `stg_olist__category_translations` (reference lookup) to produce a single, business-ready product dimension.
+
+      **Grain:** One row per product_id (unique product).
+
+      **Key Transformations:**
+      - **Category Translation:** Swaps Portuguese category name for English translation (LEFT JOIN preserves untranslated products)
+      - **Quality Consolidation:** Converts 3 separate quality flags into 2 derived columns:
+        - `quality_issue_reason`: Prioritized reason (Missing Photos > Missing Dimensions > Missing Category)
+        - `is_verified`: Boolean flag (1 = all quality checks passed, 0 = at least one issue)
+      - **No Filtering:** All 32,951 products retained (quality issues flagged, not removed)
+
+      **ADLC Compliance:**
+      - ✅ Joins only staging models (no raw sources)
+      - ✅ Centralized business logic (translation + verification)
+      - ✅ No filtering (flags instead for BI discretion)
+      - ✅ Ephemeral materialization (CTE-like, zero storage cost)
+
+      **Business Context:**
+      - **Why LEFT JOIN?** If we INNER JOINed, we'd lose ~610 products with no English translation. Business wants to see ALL products.
+      - **Quality Reason vs Flag:** Two columns allow different use cases:
+        - Dashboard filtering: Use `is_verified = 1`
+        - Root cause analysis: Use `quality_issue_reason` to understand gaps
+      - **Translation Priority:** English preferred for international audience, Portuguese as fallback for local market, 'Unknown' as safety net
+
+      **Dependencies:**
+      - stg_olist__products (Phase 2 staging)
+      - stg_olist__category_translations (Phase 2 staging reference)
+      **Owner:** Analytics Engineering Team
+      **SLA:** Real-time (ephemeral materialization)
+
+    config:
+      tags: ["products", "intermediate", "logistics"]
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # SURROGATE KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: product_sk
+        description: |
+          **Surrogate primary key for product (dbt_utils.generate_surrogate_key).**
+
+          Used for joining to fact tables (fct_order_items) and creating dim_products.
+          Stable across dbt runs even if source data order changes.
+
+        tests:
+          - unique
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # NATURAL KEYS
+      # ════════════════════════════════════════════════════════════════════
+      - name: product_id
+        description: |
+          **Natural primary key from Olist source (UUID-like string).**
+
+          Business key linking to raw_products, stg_olist__order_items, and fct_order_items.
+
+        tests:
+          - unique
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # PRODUCT ATTRIBUTES
+      # ════════════════════════════════════════════════════════════════════
+      - name: category_name
+        description: |
+          **Translated product category name (English preferred, Portuguese fallback, 'Unknown' for nulls).**
+
+          Translation Priority:
+          1. **English** (from stg_olist__category_translations.category_name_en)
+          2. **Portuguese** (from stg_olist__products.category_name_pt if no English match)
+          3. **'Unknown'** (safety fallback for missing categories)
+
+          Use Cases:
+          - Dimension rollup for category-level reporting
+          - Filtering dashboards by category
+          - International marketplace readiness (English labels)
+
+        tests:
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # QUALITY METRICS (derived in intermediate layer)
+      # ════════════════════════════════════════════════════════════════════
+      - name: quality_issue_reason
+        description: |
+          **Compressed quality flag indicating the primary issue (if any).**
+
+          Priority Order (returns first matching):
+          1. **'Missing Photos'** (is_missing_photos = 1)
+          2. **'Missing Dimensions'** (is_missing_dimensions = 1)
+          3. **'Missing Category'** (category_name_pt IS NULL)
+          4. **NULL** (all quality checks passed)
+
+          Use Cases:
+          - Root cause analysis for data quality dashboards
+          - Marketing team: Prioritize photo uploads (609 products)
+          - Logistics team: Identify dimension gaps (2 products)
+
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - "Missing Photos"
+                  - "Missing Dimensions"
+                  - "Missing Category"
+              config:
+                treat_nulls_as_distinct: true
+
+      - name: is_verified
+        description: |
+          **Boolean flag indicating if product passed all quality checks (1 = verified, 0 = has issues).**
+
+          Verification Criteria (ALL must be true):
+          - is_missing_photos = 0 (product has at least 1 photo)
+          - is_missing_dimensions = 0 (product has all 4 dimension values)
+          - category_name_pt IS NOT NULL (product has a category)
+
+          Use Cases:
+          - BI filtering: Show only verified products in customer-facing dashboards
+          - Data quality KPIs: Track % products verified over time
+          - Inclusion rules for fact tables (if business decides)
+
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+          - not_null
