@@ -33,7 +33,7 @@ deduplicated as (
         -- Location Attributes
         city as customer_city,
         state as customer_state,
-        zip_code,
+        zip_code as customer_zip_code,
 
         -- Logic: If a user has multiple addresses, take the most recent one processed
         row_number() over (
@@ -49,5 +49,6 @@ select
     customer_unique_id,
     customer_city,
     customer_state,
+    customer_zip_code
 from deduplicated
 where row_num = 1
