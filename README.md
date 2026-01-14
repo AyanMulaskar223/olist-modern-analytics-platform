@@ -26,37 +26,8 @@ This project migrates a legacy, manual CSV reporting process to a **Modern Data 
 
 The platform follows a **Batch ELT (Extract, Load, Transform)** architecture designed for scalability and cost-efficiency.
 
-flowchart LR
-%% 1. Source System
-A[Azure Blob Storage\nRaw CSV Files]
-
-    %% 2. Snowflake Environment (The "Box")
-    subgraph SNOWFLAKE[Snowflake Data Warehouse]
-        direction LR
-
-        %% Nodes defined inside the subgraph appear inside the box
-        B[(RAW DB\nImmutable landing)]
-        C[(STAGING\nstg_* cleans & types)]
-        D[(INTERMEDIATE\nint_* business logic)]
-        E[(MARTS\nStar Schema: dim_* & fct_*)]
-
-        %% Relationships inside Snowflake
-        B -->|dbt models| C
-        C -->|dbt models| D
-        D -->|dbt models| E
-    end
-
-    %% 3. Connections & Quality
-    A -->|"COPY INTO (Ingestion)"| B
-
-    %% Quality Gate (Floating node)
-    Q>Data Quality Checks\ndbt tests]
-    C -.->|not_null\nunique| Q
-    D -.->|relationships\naccepted_values| Q
-    E -.->|referential\nintegrity| Q
-
-    %% 4. Consumption
-    E -->|"Power BI (DirectQuery)"| F[Power BI\nDashboard]
+**Flowchart**:
+![alt text](IMG_4111-1.PNG)
 
 **Notes**
 
