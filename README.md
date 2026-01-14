@@ -26,8 +26,6 @@ This project migrates a legacy, manual CSV reporting process to a **Modern Data 
 
 The platform follows a **Batch ELT (Extract, Load, Transform)** architecture designed for scalability and cost-efficiency.
 
-**Flowchart**:
-![alt text](IMG_4111-1.PNG)
 
 **Notes**
 
