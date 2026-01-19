@@ -67,6 +67,23 @@ models:
         relation: true
         columns: true
 
+    # Marts layer (Star schema for BI)
+    marts:
+      +materialized: table # Fast queries for Power BI
+      +schema: marts
+      +tags: ["marts", "production"]
+      +persist_docs:
+        relation: true
+        columns: true
+
+      # Core dimensions (shared across all fact tables)
+      core:
+        +tags: ["marts", "core", "dimension"]
+
+      # Sales domain (facts and dimensions)
+      sales:
+        +tags: ["marts", "sales"]
+
 seeds:
   olist_analytics: # Your project name
     # This applies to all seeds in the project

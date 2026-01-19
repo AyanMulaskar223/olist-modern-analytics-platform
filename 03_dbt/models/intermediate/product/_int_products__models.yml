@@ -114,8 +114,6 @@ models:
                   - "Missing Photos"
                   - "Missing Dimensions"
                   - "Missing Category"
-              config:
-                treat_nulls_as_distinct: true
 
       - name: is_verified
         description: |
