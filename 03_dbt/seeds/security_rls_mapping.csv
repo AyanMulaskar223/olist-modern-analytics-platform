@@ -1,0 +1,27 @@
+user_email,access_key,access_level
+alice@olist.com,SP,State
+alice@olist.com,RJ,State
+bob@olist.com,RS,State
+bob@olist.com,SC,State
+charlie@olist.com,MG,State
+charlie@olist.com,BA,State
+diana@olist.com,SP,State
+diana@olist.com,RJ,State
+diana@olist.com,MG,State
+eva@olist.com,PR,State
+AyanMulaskar@Analytics740.onmicrosoft.com,AM,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,PB,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,AC,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,PA,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,RO,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,SE,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,PE,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,GO,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,RN,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,MA,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,MT,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,ES,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,MS,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,DF,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,CE,State Manager
+AyanMulaskar@Analytics740.onmicrosoft.com,PI,State Manager

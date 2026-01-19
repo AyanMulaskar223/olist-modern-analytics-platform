@@ -1,0 +1,608 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: |
+      **Customer Dimension Table**
+
+      Provides the single source of truth for customer profile and location data.
+      Each row represents a unique person (user) in the Olist marketplace.
+
+      **Business Rules:**
+      - One row per unique customer (customer_sk = person identifier)
+      - Location reflects the most recent known address
+      - Deduplicated from order-level customer records in staging
+
+      **Grain:** One row per customer_sk (unique person)
+
+      **Usage:**
+      - Power BI relationships: customer_sk → fct_order_items[customer_sk]
+      - Customer segmentation and geographic analysis
+      - Retention and cohort analysis
+
+      **Owner:** Analytics Team
+      **SLA:** Daily refresh by 6:00 AM UTC
+
+    config:
+      contract:
+        enforced: true
+      tags: ["customers", "marts", "core", "dimension"]
+
+    columns:
+      - name: customer_sk
+        data_type: varchar
+        description: |
+          Surrogate key (primary key) for the customer dimension.
+          Generated from customer_unique_id using dbt_utils.generate_surrogate_key().
+          This represents a unique person across all their orders.
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_unique_id
+        data_type: varchar
+        description: |
+          Natural key - the business identifier for a unique customer (person).
+          Original identifier from source system.
+          Multiple orders can share the same customer_unique_id.
+        tests:
+          - not_null
+
+      - name: customer_city
+        data_type: varchar
+        description: |
+          City name where the customer is located.
+          Standardized to Title Case for consistent reporting.
+          Most recent address if customer has moved.
+        tests:
+          - not_null
+
+      - name: customer_state_code
+        data_type: varchar
+        description: |
+          Brazilian state code (2-letter abbreviation, e.g., 'SP', 'RJ').
+          Standardized to UPPERCASE for consistent reporting.
+          27 unique states in Brazil.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
+                  ]
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was last updated by dbt.
+          Used for incremental build filtering and freshness monitoring.
+        tests:
+          - not_null
+
+  - name: dim_date
+    description: |
+      **Date Dimension Table**
+
+      Provides the master calendar for all date-based time series analysis.
+      Generated using a date spine covering the entire Olist dataset period.
+
+      **Business Rules:**
+      - One row per calendar day
+      - Includes hierarchies: year → quarter → month → day of week
+      - Includes logistics flags (weekend indicator)
+      - Covers 2016-01-01 through 2018-12-31
+
+      **Grain:** One row per calendar date (date_day)
+
+      **Usage:**
+      - Power BI relationships: date_day → fct_order_items[order_date_dt]
+      - Time series analysis and trend reporting
+      - Period-over-period comparisons (YoY, MoM)
+      - Fiscal period calculations
+
+      **Owner:** Analytics Team
+      **SLA:** Static (loaded once, no daily refresh required)
+
+    config:
+      contract:
+        enforced: true
+      tags: ["dates", "marts", "core", "dimension", "conformed"]
+
+    columns:
+      - name: date_day
+        data_type: date
+        description: |
+          Primary key - the calendar date in YYYY-MM-DD format.
+          Covers the full Olist dataset period: 2016-01-01 to 2018-12-31.
+          Matches order_date_dt and delivered_date_dt in fact tables.
+        tests:
+          - unique
+          - not_null
+
+      - name: year_number
+        data_type: integer
+        description: |
+          4-digit fiscal year (e.g., 2016, 2017, 2018).
+          Used for year-over-year analysis and cohort grouping.
+
+      - name: quarter_name
+        data_type: varchar
+        description: |
+          Quarter label in format 'Q1', 'Q2', 'Q3', 'Q4'.
+          Used for quarterly reporting and trend analysis.
+
+      - name: month_name
+        data_type: varchar
+        description: |
+          Full month name (e.g., 'January', 'February').
+          Standardized for consistent reporting and Power BI visualizations.
+
+      - name: month_short_name
+        data_type: varchar
+        description: |
+          3-letter month abbreviation (e.g., 'Jan', 'Feb').
+          Used for compact displays and dashboard labels.
+
+      - name: month_number
+        data_type: integer
+        description: |
+          Month as integer (1-12).
+          Used for sorting and period calculations.
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+      - name: year_month_number
+        data_type: integer
+        description: |
+          Combined year-month as integer (YYYYMM, e.g., 202101 for Jan 2021).
+          Used for efficient sorting and period-based grouping without string conversion.
+
+      - name: year_month_name
+        data_type: varchar
+        description: |
+          Year-month label (e.g., 'Jan-16', 'Dec-18').
+          Used for compact pivot tables and dashboard headers.
+
+      - name: day_of_week_name
+        data_type: varchar
+        description: |
+          Full day name (e.g., 'Monday', 'Saturday').
+          Used for day-of-week analysis and visualization.
+
+      - name: day_of_week_number
+        data_type: integer
+        description: |
+          Day of week as integer (0=Sunday, 1=Monday, ..., 6=Saturday).
+          Used for sorting weekdays in Power BI (ensure correct order).
+
+      - name: is_weekend
+        data_type: integer
+        description: |
+          Binary flag (1=Weekend Saturday/Sunday, 0=Weekday Monday-Friday).
+          Used for separating weekend vs. weekday patterns in logistics analysis.
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was last updated by dbt.
+          Static dimension - typically unchanged after initial load.
+
+  - name: dim_products
+    description: |
+      **Product Dimension Table**
+
+      Provides the single source of truth for product attributes and category data.
+      Each row represents a unique product SKU sold on the Olist marketplace.
+
+      **Business Rules:**
+      - One row per unique product (product_sk = product identifier)
+      - Category includes both Portuguese and English translations
+      - Data quality flags preserved (NOT filtered out - we flag but don't delete)
+      - Denormalized to include all necessary attributes for Power BI Import Mode
+
+      **Grain:** One row per unique product (product_id)
+
+      **Usage:**
+      - Power BI relationships: product_sk → fct_order_items[product_sk]
+      - Product category analysis and segmentation
+      - Data quality reporting (is_verified flag)
+
+      **Data Quality Strategy:**
+      - Unverified products are KEPT (NOT filtered)
+      - Flag them with is_verified=FALSE and quality_issue_reason
+      - Let Power BI users decide filtering in DAX measures
+
+      **Owner:** Analytics Team
+      **SLA:** Daily refresh by 6:00 AM UTC
+
+    config:
+      contract:
+        enforced: true
+      tags: ["products", "marts", "core", "dimension"]
+
+    columns:
+      - name: product_sk
+        data_type: varchar
+        description: |
+          Surrogate key (primary key) for the product dimension.
+          Generated from product_id using dbt_utils.generate_surrogate_key().
+          Used for Power BI relationships to fact tables.
+        tests:
+          - unique
+          - not_null
+
+      - name: product_id
+        data_type: varchar
+        description: |
+          Natural key - the business identifier for a unique product.
+          Original product SKU from source system.
+          Preserved for operational debugging and lineage tracing.
+        tests:
+          - unique
+          - not_null
+
+      - name: product_category
+        data_type: varchar
+        description: |
+          English category name for the product (e.g., 'bed', 'sofa', 'electronics').
+          Standardized through dbt seed translation table.
+          Used for Power BI category hierarchies and segmentation.
+        tests:
+          - not_null
+
+      - name: product_category_original
+        data_type: varchar
+        description: |
+          Original Portuguese category name (e.g., 'cama_colchao', 'sofa').
+          Preserved for audit trail and debugging.
+          Maps 1:1 to product_category (English).
+
+      - name: is_verified
+        data_type: integer
+        description: |
+          Data quality flag (1=Verified, 0=Unverified).
+          Indicates whether this product passed data quality checks.
+          KEEP unverified products (don't filter) - Power BI handles filtering.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: quality_issue_reason
+        data_type: varchar
+        description: |
+          Text explanation of any data quality issues (NULL if is_verified=1).
+          Examples: "Missing category", "Invalid product_id format"
+          Used for diagnostics and root cause analysis.
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was last updated by dbt.
+          Used for incremental build filtering and freshness monitoring.
+        tests:
+          - not_null
+
+  - name: dim_sellers
+    description: |
+      **Seller Dimension Table**
+
+      Provides the single source of truth for merchant partner data.
+      Each row represents a unique seller (external partner) on the Olist marketplace.
+
+      **Business Rules:**
+      - One row per unique seller (seller_sk = merchant identifier)
+      - Location reflects seller registration address (static)
+      - This is the PRIMARY TABLE for Row-Level Security (RLS) filtering
+
+      **Grain:** One row per unique seller (seller_id)
+
+      **RLS Integration:**
+      - seller_state_code is the TARGET COLUMN for RLS filtering
+      - Managers are assigned to states/regions via dim_rls_bridge
+      - Power BI filters this dimension, which cascades to all facts
+
+      **Usage:**
+      - Power BI relationships: seller_sk → fct_order_items[seller_sk]
+      - Seller performance analysis and reputation tracking
+      - RLS enforcement point for manager-level access control
+
+      **Owner:** Analytics Team + Security Team
+      **SLA:** Daily refresh by 6:00 AM UTC
+      **RLS:** Enabled (seller_state_code filtered via dim_rls_bridge)
+
+    config:
+      contract:
+        enforced: true
+      tags: ["sellers", "marts", "core", "dimension", "security", "rls"]
+
+    columns:
+      - name: seller_sk
+        data_type: varchar
+        description: |
+          Surrogate key (primary key) for the seller dimension.
+          Generated from seller_id using dbt_utils.generate_surrogate_key().
+          Used for Power BI relationships to fact tables.
+        tests:
+          - unique
+          - not_null
+
+      - name: seller_id
+        data_type: varchar
+        description: |
+          Natural key - the business identifier for a unique seller/merchant.
+          Original seller ID from source system.
+          Preserved for operational debugging and partner communication.
+        tests:
+          - unique
+          - not_null
+
+      - name: seller_city
+        data_type: varchar
+        description: |
+          City name where the seller is located (registration address).
+          Standardized to Title Case for consistent reporting.
+          Used with seller_state_code for geographic segmentation.
+        tests:
+          - not_null
+
+      - name: seller_state_code
+        data_type: varchar
+        description: |
+          Brazilian state code (2-letter ISO abbreviation, e.g., 'SP', 'RJ').
+          Standardized to UPPERCASE for consistent reporting.
+          🚨 CRITICAL: This column is the TARGET for Row-Level Security (RLS) filtering.
+          Managers are assigned to states via dim_rls_bridge → Power BI filters here.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
+                  ]
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was last updated by dbt.
+          Used for incremental build filtering and freshness monitoring.
+        tests:
+          - not_null
+
+  - name: dim_security_rls
+    description: |
+      **Security RLS Mapping Table**
+
+      Maps users to abstract security tokens for Row-Level Security enforcement.
+      Entry point for Power BI RLS filtering - users are defined here.
+
+      **Business Rules:**
+      - One row per (user_email, access_key) pair
+      - Many-to-One from users: One user can have multiple access_keys (multi-region managers)
+      - Access tokens are abstract security keys (e.g., state codes 'SP', 'RJ')
+      - Translated to concrete values (seller_state_codes) via dim_rls_bridge
+
+      **Grain:** One row per (user_email, access_key) combination
+
+      **RLS Flow:**
+      1. User logs into Power BI (e.g., alice@olist.com)
+      2. Power BI reads their email from this table
+      3. Gets all access_keys for that user (e.g., ['SP', 'RJ', 'MG'])
+      4. dim_rls_bridge translates access_keys to seller_state_codes
+      5. dim_sellers filters to only those states
+      6. fct_order_items cascades filtered sellers (no direct filter needed)
+
+      **Data Source:**
+      - Loaded from dbt seed: seeds/security_rls_mapping.csv
+      - Managed by Operations/Admin team (not automated from Snowflake)
+
+      **Usage:**
+      - Power BI relationships: user_email → dim_rls_bridge[access_key]
+      - RLS policy enforcement (user-level access control)
+      - Audit trail for who can access which regions
+
+      **Owner:** Security Team + Operations
+      **SLA:** Manual updates (seed file versioned in Git)
+      **RLS:** Enabled (This is where user access is defined)
+
+    config:
+      contract:
+        enforced: true
+      tags: ["security", "rls", "admin", "marts", "dimension"]
+
+    columns:
+      - name: user_email
+        data_type: varchar
+        description: |
+          Principal name / email address (e.g., alice@olist.com).
+          Matched against Power BI user context at runtime.
+          Typically the user's work email in Azure AD.
+        tests:
+          - not_null
+
+      - name: access_key
+        data_type: varchar
+        description: |
+          Abstract security token representing a scope (e.g., 'SP', 'RJ').
+          In Olist's case: State codes for regional managers.
+          Translated to concrete seller_state_codes via dim_rls_bridge.
+          One user can have many access_keys (multi-region access).
+        tests:
+          - not_null
+
+      - name: access_level
+        data_type: varchar
+        description: |
+          Human-readable description of the access scope (e.g., 'State', 'Region').
+          Documents what the access_key represents.
+          Used for audit trails and documentation purposes.
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was loaded.
+          Reflects when the seed was last updated and dbt re-ran.
+
+  - name: dim_rls_bridge
+    description: |
+      **RLS Bridge Table (Many-to-Many Translator)**
+
+      Translates abstract security tokens to concrete seller state codes.
+      Implements the Bridge Pattern for flexible RLS mapping.
+
+      **Business Rules:**
+      - One row per (access_key, seller_state_code) combination
+      - Many-to-Many support: One access_key can map to multiple seller_state_codes
+      - One user (in dim_security_rls) can have many access_keys
+      - Deduplicates from security_rls_mapping seed
+
+      **Grain:** One row per (access_key, seller_state_code) pair (distinct)
+
+      **RLS Flow (Bridge Pattern):**
+      1. User logs into Power BI (alice@olist.com)
+      2. Power BI queries dim_security_rls WHERE user_email = 'alice@olist.com'
+      3. Gets: access_key IN ['SP', 'RJ']
+      4. Power BI queries dim_rls_bridge WHERE access_key IN ['SP', 'RJ']
+      5. Gets: seller_state_code IN ['SP', 'RJ']
+      6. Power BI applies filter: dim_sellers[seller_state_code] IN ['SP', 'RJ']
+      7. Fact tables automatically filtered via seller relationships
+
+      **Why a Bridge?**
+      - Decouples security rules (abstract tokens) from data model (concrete values)
+      - Enables complex mappings: access_key='SOUTH_REGION' → ['SP', 'RJ', 'RS', 'PR', 'SC']
+      - Simplifies administration: Change mapping once, applies everywhere
+      - Currently: Simple 1:1 mapping (access_key = state code), but extensible
+
+      **Data Source:**
+      - Deduplicated from dbt seed: seeds/security_rls_mapping.csv
+      - In Olist's case: DISTINCT on (access_key, access_key_as_state_code)
+
+      **Usage:**
+      - Power BI relationships: dim_rls_bridge[access_key] ← dim_security_rls[access_key]
+      - Power BI relationships: dim_rls_bridge[seller_state_code] → dim_sellers[seller_state_code]
+      - Many-to-Many RLS enforcement for complex access rules
+
+      **Owner:** Security Team + Analytics
+      **SLA:** Manual updates (seed file versioned in Git)
+      **RLS:** Enabled (This is the BRIDGE for filtering)
+
+    config:
+      contract:
+        enforced: true
+      tags: ["security", "rls", "bridge", "marts", "admin"]
+
+    columns:
+      - name: access_key
+        data_type: varchar
+        description: |
+          Abstract security token (input to the bridge).
+          Comes from dim_security_rls.access_key.
+          Example: 'SP' (state code) or could be 'SOUTH_REGION' (abstract token).
+          Used in Power BI: FILTER(dim_rls_bridge, dim_rls_bridge[access_key] IN user_access_list)
+        tests:
+          - not_null
+
+      - name: seller_state_code
+        data_type: varchar
+        description: |
+          Concrete seller state code (output of the bridge).
+          Translates the access_key to concrete data values.
+          Example: 'SP' (São Paulo), 'RJ' (Rio de Janeiro).
+          Used in Power BI: FILTER(dim_sellers, dim_sellers[seller_state_code] IN bridge_result)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "AC",
+                    "AL",
+                    "AP",
+                    "AM",
+                    "BA",
+                    "CE",
+                    "DF",
+                    "ES",
+                    "GO",
+                    "MA",
+                    "MT",
+                    "MS",
+                    "MG",
+                    "PA",
+                    "PB",
+                    "PR",
+                    "PE",
+                    "PI",
+                    "RJ",
+                    "RN",
+                    "RS",
+                    "RO",
+                    "RR",
+                    "SC",
+                    "SP",
+                    "SE",
+                    "TO",
+                  ]
+
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          System timestamp indicating when this record was loaded.
+          Reflects when the seed was last updated and dbt re-ran.
