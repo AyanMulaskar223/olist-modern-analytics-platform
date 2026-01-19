@@ -1,3 +1,4 @@
+
 // ==============================================
 // 🔴 ADMIN & SECURITY LAYER (RLS - BRIDGE PATTERN)
 // ==============================================
@@ -15,7 +16,7 @@ Table dim_rls_bridge [headercolor: #FFA000] {
   access_key varchar(50) [note: 'The Security Token. e.g. "SP" or "SOUTH_REGION"']
 
   // Column 2: The Output (To Sellers)
-  seller_state varchar(2) [note: 'The actual Data Value. e.g. "SP", "RS", "SC"']
+  seller_state_code varchar(2) [note: 'The actual Data Value. e.g. "SP", "RS", "SC"']
 
   Note: 'BRIDGE TABLE. Maps abstract Security Keys to concrete Data Values (The "Translator").'
 }
@@ -31,7 +32,7 @@ Table dim_rls_bridge [headercolor: #FFA000] {
 // 2. Bridge to Sellers
 // Flow: Bridge resolves Key to State(s) -> Filters Sellers in those States
 // Power BI: Cardinality One-to-Many (1:*), Direction Single (Bridge filters Sellers)
-Ref: dim_rls_bridge.seller_state < dim_sellers.seller_state
+Ref: dim_rls_bridge.seller_state_code < dim_sellers.seller_state_code
 
 // ==============================================
 // 🔵 CORE ANALYTICS MART
@@ -46,6 +47,7 @@ Table fct_order_items {
   product_sk varchar(32) [ref: > dim_products.product_sk, note: 'FK to Product Dimension.']
   seller_sk varchar(32) [ref: > dim_sellers.seller_sk, note: 'FK to Seller Dimension.']
   order_date_dt date [ref: > dim_date.date_day, note: 'FK to Calendar. Use this for all time-series analysis.']
+  order_status varchar(20) [note: 'Order status: delivered, canceled, shipped, processing, etc. Includes ALL statuses for Lost Revenue analysis.']
 
   // Financial Metrics (Q1, Q2, Q3, Q5)
   price_brl number(10,2) [note: 'Item price. Sum this for Total Revenue KPI.']
@@ -67,7 +69,7 @@ Table dim_customers {
   customer_sk varchar(32) [pk, note: 'Surrogate Key for unique human. Mapping: user_sk.']
   customer_unique_id varchar(32) [note: 'Natural Business Key for the person. Mapping: user_id.']
   customer_city varchar(50) [note: 'Standardized Initcap city name.']
-  customer_state varchar(2) [note: '2-letter state code (Uppercase).']
+  customer_state_code varchar(2) [note: '2-letter state code (Uppercase).']
 }
 
 Table dim_products {
@@ -79,12 +81,11 @@ Table dim_products {
   quality_issue_reason varchar(100) [note: 'e.g., Missing Photos, No Dimensions.']
 }
 
-
 Table dim_sellers {
   seller_sk varchar(32) [pk]
   seller_id varchar(32)
   seller_city varchar(50)
-  seller_state varchar(2) [note: 'Join target for RLS Bridge']
+  seller_state_code varchar(2) [note: 'Join target for RLS Bridge']
 }
 
 Table dim_date {

@@ -283,32 +283,26 @@ Intermediate layer will resolve the identity using `user_sk`.
 **Singular Tests (7 business logic checks in `tests/staging/olist/`):**
 
 1. **`assert_delivered_orders_have_delivery_date`**
-
    - **What:** If `order_status = 'DELIVERED'`, then `delivered_at` must exist
    - **Why:** Catch incomplete status updates
 
 2. **`assert_no_future_order_dates`**
-
    - **What:** All order timestamps ≤ today
    - **Why:** Prevent data entry errors or timezone issues
 
 3. **`assert_no_negative_prices_or_freight`**
-
    - **What:** `item_price_brl >= 0` and `item_freight_brl >= 0`
    - **Why:** Negative values break revenue calculations
 
 4. **`assert_order_timestamps_logical_sequence`**
-
    - **What:** `ordered_at ≤ approved_at ≤ shipped_at ≤ delivered_at`
    - **Why:** Impossible timelines indicate data corruption
 
 5. **`assert_payment_amounts_match_order_totals`**
-
    - **What:** SUM(payments) per order = SUM(items) per order (within 1 cent tolerance)
    - **Why:** Accounting integrity check
 
 6. **`assert_product_dimensions_physically_possible`**
-
    - **What:** Length/width/height ≤ 300 cm, weight ≤ 100 kg
    - **Why:** Catch data entry errors (e.g., extra zeros)
 
@@ -399,7 +393,6 @@ Passing 4+ boolean flags downstream clutters Power BI and creates confusion.
 Two custom singular tests enforce business logic integrity:
 
 1. **`assert_int_sales_retention_sequence_integrity`**
-
    - **What:** Every customer must have an order with `sequence_number = 1`
    - **Why:** If someone starts at #2, identity resolution broke
    - **Impact:** Protects repeat customer KPIs from silent corruption
@@ -413,28 +406,153 @@ Two custom singular tests enforce business logic integrity:
 
 ---
 
-## Testing and Data Quality
+Here is the polished, professional version of your **Marts Layer** section.
 
-- Staging: unique, not_null, relationships, accepted_values on all keys and enums; freshness checks on sources.
-- Singular tests cover ghost deliveries, timestamp order, negative prices/freight, payment vs order totals, physical dimensions, review score bounds.
-- Known flagged issues (kept, not dropped): ghost deliveries (8), arrival-before-shipping (23), missing product dimensions (2), review duplicates (814), missing categories (610).
+I have enhanced the formatting to make it more scannable for recruiters, emphasized the "Senior Engineering" decisions, and aligned the **Meta** section with the "Two Clocks" strategy we just finalized.
 
 ---
 
-## How to Run
+## 💎 Marts Layer
 
-```bash
-cd 03_dbt
+![alt text](https://img.shields.io/badge/Status-Production_Ready-success?style=flat-square)
+![alt text](https://img.shields.io/badge/Materialization-Table/Incremental-blue?style=flat-square)
+![alt text](https://img.shields.io/badge/Architecture-Star_Schema-orange?style=flat-square)
 
-dbt deps
+### 📖 Layer Philosophy
 
-dbt debug
+The marts layer is the **Consumption Zone**. Its single purpose is to package intermediate logic into a clean **Star Schema** optimized for Power BI Import Mode.
 
-dbt seed
+**Core Design Principles:**
 
-dbt build --select staging
-# run once intermediate models land
-# dbt build --select intermediate
+1. **Logic Already Happened:** No window functions, no complex `JOIN`s, no `CASE` statements. This layer strictly selects and renames.
+2. **Load Everything:** We do not filter "Bad Data" here. We flag it (`is_verified = 0`). This allows the BI tool to report on "Data Quality" rather than hiding it.
+3. **Star Schema Alignment:** A central fact table (`fct_`) surrounded by denormalized dimensions (`dim_`). No snowflakes. This reduces JOIN complexity in the BI layer.
+
+---
+
+### 📂 Folder Structure
+
+Organized by **Business Domain** to match the downstream Power BI workspace structure:
+
+```text
+models/marts/
+├── core/                          # 🌍 Shared Dimensions (The "Conformed" Layer)
+│   ├── dim_customers.sql          # Customer Master (Merged Profiles)
+│   ├── dim_products.sql           # Product Catalog (English/Portuguese merged)
+│   ├── dim_sellers.sql            # Seller Master
+│   ├── dim_date.sql               # Date Intelligence (2016-2020)
+│   ├── dim_security_rls.sql       # RLS: User-to-State Mapping
+│   └── dim_rls_bridge.sql         # RLS: State-to-Seller Bridge
+├── sales/                         # 💰 Sales Domain
+│   └── fct_order_items.sql        # The Transactional Fact Table
+└── meta/                          # ⚙️ System Observability
+    └── meta_project_status.sql    # The "Heartbeat" Table (Pipeline Health)
+
 ```
 
-Linting: `sqlfluff lint models --dialect snowflake`
+---
+
+### 🧠 Key Architecture Decisions
+
+This section highlights the "Senior" engineering choices made to solve specific business problems.
+
+#### **Problem #1: "Where is the Lost Revenue?"**
+
+The business needed to calculate "Cancellation Rate" and "Lost Revenue."
+
+- **❌ Junior Approach:** Filter `WHERE order_status = 'delivered'` in SQL to get clean data.
+- **✅ Senior Solution:** Load **ALL** statuses (delivered, canceled, unavailable) into `fct_order_items`. logic is pushed to DAX measures:
+- `Total Revenue` = `CALCULATE(SUM(price), status = 'delivered')`
+- `Lost Revenue` = `CALCULATE(SUM(price), status = 'canceled')`
+
+#### **Problem #2: The "Duplicate Customer" Issue**
+
+Olist generates a new `customer_id` for every single order, breaking retention analysis.
+
+- **✅ Senior Solution:** We use `customer_sk` (a persistent surrogate key generated in the Intermediate layer) for all Fact-to-Dimension joins. The original transactional `order_id` is kept only as a degenerate dimension for drill-through.
+
+#### **Problem #3: Performance vs. Normalization**
+
+Product Category translations lived in a separate table, inviting a Snowflake Schema.
+
+- **✅ Senior Solution:** We flattened the hierarchy in SQL. English and Portuguese names are joined into `dim_products`. Power BI sees one wide, denormalized dimension, reducing query cost during report rendering.
+
+#### **Problem #4: The "Pipeline Black Box"**
+
+Stakeholders didn't know if the dashboard data was fresh or stuck.
+
+- **✅ Senior Solution:** Created `meta_project_status`, a singleton table tracking two distinct clocks:
+
+1. **Pipeline Time:** When dbt last ran successfully.
+2. **Business Time:** The latest order date in the system (handling the 2018 historical cutoff).
+
+---
+
+### 🛠️ Model Reference
+
+#### **Facts (Sales Domain)**
+
+| Model                 | Grain                 | Materialization | Key Measures                     |
+| --------------------- | --------------------- | --------------- | -------------------------------- |
+| **`fct_order_items`** | One row per Line Item | `incremental`   | `price_brl`, `freight_value_brl` |
+
+#### **Dimensions (Core Domain)**
+
+| Model                  | Grain                   | Key Attributes                                |
+| ---------------------- | ----------------------- | --------------------------------------------- |
+| **`dim_customers`**    | One row per **Person**  | `customer_city`, `is_repeat_buyer`            |
+| **`dim_products`**     | One row per **Product** | `category_name_english`, `product_volume_cm3` |
+| **`dim_sellers`**      | One row per **Seller**  | `seller_city`, `seller_state`                 |
+| **`dim_date`**         | One row per **Day**     | `is_weekend`, `quarter_text`                  |
+| **`dim_security_rls`** | One row per **Manager** | `state_code` (Security Filter)                |
+
+#### **Metadata (Observability)**
+
+| Model                     | Grain                 | Purpose                                               |
+| ------------------------- | --------------------- | ----------------------------------------------------- |
+| **`meta_project_status`** | **Singleton** (1 Row) | Powers the "Data Current Through" footer in Power BI. |
+
+---
+
+### 🧪 Testing Strategy (The Safety Net)
+
+We employ a "Defense in Depth" strategy using both Generic and Singular tests.
+
+#### **1. Generic Tests (YAML)**
+
+Applied to every model to ensure structural integrity.
+
+- **`unique`**: Applied to all Surrogate Keys (`_sk`).
+- **`not_null`**: Applied to PKs and FKs.
+- **`relationships`**: Ensures referential integrity (no Orphan records).
+- **`accepted_values`**: Validates Order Status and Payment Types.
+
+#### **2. Singular Tests (Business Logic)**
+
+Seven custom SQL tests (`tests/marts/`) act as our "Business Logic Unit Tests."
+
+| Domain    | Test Name                            | The Logic                                       | Why it matters?                                              |
+| --------- | ------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------ |
+| **Core**  | `mart_dim_date_completeness`         | Checks for missing dates (2016-2020).           | Prevents "Time Intelligence" breaks in Power BI.             |
+| **Core**  | `mart_rls_seller_state_coverage`     | Ensures all 27 Brazilian states exist in RLS.   | Prevents silent data loss for Regional Managers.             |
+| **Sales** | `mart_fct_order_items_metric_ranges` | `price >= 0`, `freight >= 0`.                   | Catches impossible negative values before the CEO sees them. |
+| **Sales** | `mart_fct_order_items_quality_flags` | If `is_verified=0`, `reason` must be populated. | Enforces "Root Cause" documentation for bad data.            |
+
+---
+
+### 🏃 How to Run
+
+```bash
+# 1. Install dependencies
+dbt deps
+
+# 2. Test connection
+dbt debug
+
+# 3. Build the specific layer (recommended)
+dbt build --select marts
+
+# 4. Run data quality tests only
+dbt test --select marts
+
+```

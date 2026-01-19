@@ -1,0 +1,37 @@
+version: 2
+
+exposures:
+  - name: olist_executive_dashboard
+    label: "Olist Executive Dashboard (Power BI)"
+    type: dashboard
+    maturity: high
+    url: "https://app.powerbi.com/groups/me/reports/placeholder" # You will update this link later
+    description: >
+      The primary Executive view for Olist E-Commerce.
+      Tracks GMV, Order Trends, and Seller Performance.
+
+      **Key Consumers:** - CEO (Daily Subscription)
+      - Regional Managers (Row-Level Security)
+
+      **Refresh Schedule:** - Daily at 8:00 AM UTC
+
+    owner:
+      name: Analytics Team
+      email: data@olist.com
+
+    depends_on:
+      # 1. The Core Fact Table
+      - ref('fct_order_items')
+
+      # 2. The Context Dimensions
+      - ref('dim_customers')
+      - ref('dim_products')
+      - ref('dim_sellers')
+      - ref('dim_date')
+
+      # 3. Security Tables (Crucial to list these as dependencies!)
+      - ref('dim_security_rls')
+      - ref('dim_rls_bridge')
+
+      # 4. The "Heartbeat" Table
+      - ref('meta_project_status')
