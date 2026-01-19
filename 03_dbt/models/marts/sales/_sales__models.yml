@@ -1,0 +1,283 @@
+version: 2
+
+models:
+  - name: fct_order_items
+    description: |
+      **Central fact table for order-level revenue, retention, and operational analysis.**
+
+      Grain: One row per order item (line-level transaction).
+      Business Rule: Include ALL orders (handled by Power BI DAX filtering).
+
+      This is the primary star schema fact table, connecting to dimensions:
+      - dim_customers (customer_sk) - persistent customer identity
+      - dim_products (product_sk) - product master
+      - dim_sellers (seller_sk) - seller/merchant (RLS target)
+      - dim_date (order_date_dt) - calendar for time-series
+
+      **Use Cases:**
+      - Q1: Total Revenue = SUM(price_brl + freight_value_brl) WHERE is_verified=1
+      - Q2: AOV = Revenue / DISTINCTCOUNT(order_id)
+      - Q4: Delivery SLA = AVG(delivery_time_days), % Delayed = SUM(is_delayed) / COUNT(*)
+      - Q6: Repeat Customer Rate = CALCULATE(COUNT(*), order_sequence_number > 1) / COUNT(*)
+
+    config:
+      contract:
+        enforced: true
+      tags: ["sales", "marts", "fact", "production"]
+      persist_docs:
+        relation: true
+        columns: true
+
+    columns:
+      # ════════════════════════════════════════════════════════════════════
+      # PRIMARY KEY (Surrogate)
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_item_sk
+        data_type: varchar
+        description: |
+          **Surrogate primary key for the order item (generated in staging).**
+          Hash of order_id + order_item_id for stability across dbt runs.
+          Use for Power BI unique identification and incremental upsert key.
+        constraints:
+          - type: primary_key
+            warn_unenforced: false
+        tests:
+          - unique
+          - not_null
+
+      # ════════════════════════════════════════════════════════════════════
+      # FOREIGN KEYS (For Star Schema Relationships)
+      # ════════════════════════════════════════════════════════════════════
+      - name: customer_sk
+        data_type: varchar
+        description: |
+          **Person Key - Persistent customer identity across all transactions.**
+          Links to dim_customers[customer_sk].
+          Enables tracking repeat customers even if address changes (SP→RJ relocation).
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_sk
+              config:
+                severity: warn
+
+      - name: product_sk
+        data_type: varchar
+        description: |
+          **Product Key - Links to dim_products for product attributes.**
+          Used for product category analysis, inventory metrics, cross-sell.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_sk
+              config:
+                severity: warn
+
+      - name: seller_sk
+        data_type: varchar
+        description: |
+          **Seller Key - Links to dim_sellers (Primary RLS target).**
+          Filtered via: dim_sellers[seller_state_code] → dim_rls_bridge → dim_security_rls
+          Use for seller performance analysis, regional sales, role-based access.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_sk
+              config:
+                severity: warn
+
+      - name: order_date_dt
+        data_type: date
+        description: |
+          **Order Date Key - Links to dim_date calendar dimension.**
+          Purchase date (not delivery date) for time-series analysis.
+          Use for trend analysis, seasonality, cohort retention.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # DEGENERATE DIMENSIONS (Context, No Lookup Required)
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_id
+        data_type: varchar
+        description: |
+          **Natural key for the order (business key from source).**
+          Stored in fact to enable DISTINCTCOUNT(order_id) in Power BI.
+          Example: Order #12345 has 3 items = 3 rows in fact, 1 order.
+        tests:
+          - not_null
+
+      - name: order_status
+        data_type: varchar
+        description: |
+          **Order status - Now includes ALL statuses (delivered, canceled, shipped, etc.).**
+          Used by Power BI DAX to calculate Realized Revenue vs. Lost Revenue.
+          (Previously filtered to delivered only, now user decides in BI layer.)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  [
+                    "Delivered",
+                    "Shipped",
+                    "Canceled",
+                    "Processing",
+                    "Approved",
+                    "Created",
+                    "Invoiced",
+                    "Unavailable",
+                  ]
+
+      # ════════════════════════════════════════════════════════════════════
+      # FINANCIAL METRICS (Additive, Aggregatable)
+      # ════════════════════════════════════════════════════════════════════
+      - name: price_brl
+        data_type: numeric(10, 2)
+        description: |
+          **Item price in Brazilian Real (BRL), excluding freight.**
+          Additive metric: SUM for Total Revenue.
+          Precision: NUMERIC(10,2) for currency accuracy.
+
+          DAX: Total Revenue = SUM(fct_order_items[price_brl])
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0.00
+              config:
+                severity: warn
+
+      - name: freight_value_brl
+        data_type: numeric(10, 2)
+        description: |
+          **Shipping/freight cost for this item in BRL.**
+          Additive metric: SUM for logistics cost analysis.
+          GMV = SUM(price_brl + freight_value_brl)
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0.00
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # OPERATIONAL METRICS (Pre-Calculated in Intermediate)
+      # ════════════════════════════════════════════════════════════════════
+      - name: order_sequence_number
+        data_type: integer
+        description: |
+          **Retention metric - Sequential order number per customer.**
+          1 = New Customer (first order), 2+ = Repeat Customer.
+          Pre-calculated in intermediate using ROW_NUMBER().
+
+          DAX: Repeat Orders = CALCULATE(
+            COUNT(*),
+            fct_order_items[order_sequence_number] > 1
+          )
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 1"
+
+      - name: delivery_time_days
+        data_type: integer
+        description: |
+          **Operational SLA metric - Days from order to delivery.**
+          Pre-calculated: DATEDIFF('day', ordered_at, delivered_at).
+          Used for: AVG(delivery_time_days), SLA monitoring.
+          NULL for non-delivered orders (canceled, processing, etc.).
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 365
+              config:
+                severity: warn
+
+      - name: is_delayed
+        data_type: integer
+        description: |
+          **Delivery performance flag - 1=Late, 0=On-time.**
+          1 if delivered_at > estimated_delivery_at, else 0.
+
+          DAX: On-Time % = DIVIDE(
+            COUNTROWS(FILTER(fct_order_items, [is_delayed]=0)),
+            COUNTROWS(fct_order_items)
+          )
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      # ════════════════════════════════════════════════════════════════════
+      # DATA QUALITY / AUDIT (Flags, NOT Filters)
+      # ════════════════════════════════════════════════════════════════════
+      - name: is_verified
+        data_type: integer
+        description: |
+          **Master data quality flag - 1=Clean, 0=Has Issues.**
+          Indicates row passed all quality checks in intermediate layer.
+
+          **IMPORTANT:** Rows are NOT filtered here. Power BI users decide.
+
+          DAX Pattern:
+          Clean Revenue = CALCULATE([Total Revenue], [is_verified]=1)
+          All Revenue = [Total Revenue]
+          Cost of Poor Quality = All Revenue - Clean Revenue
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: quality_issue_reason
+        data_type: varchar
+        description: |
+          **Data quality diagnostic - Reason for failure (if any).**
+          NULL if is_verified=1 (no issues).
+
+          Values:
+          - 'Ghost Delivery' = Delivery but no shipping date
+          - 'Arrival Before Shipping' = Delivered before carrier pickup
+          - 'Arrival Before Approval' = Delivered before order approval
+          - 'Zero Value Item' = Price <= 0
+
+          Use for root cause analysis dashboards, NOT production filtering.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - "Ghost Delivery"
+                  - "Arrival Before Shipping"
+                  - "Arrival Before Approval"
+                  - "Zero Value Item"
+              config:
+                severity: warn
+
+      # ════════════════════════════════════════════════════════════════════
+      # METADATA
+      # ════════════════════════════════════════════════════════════════════
+      - name: dbt_updated_at
+        data_type: timestamp_ltz
+        description: |
+          **dbt execution timestamp (UTC).**
+          Indicates when this row was last transformed.
+          Used for freshness monitoring and change detection.
+        tests:
+          - not_null

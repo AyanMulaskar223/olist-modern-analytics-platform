@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: meta_project_status
+    description: >
+      System-level singleton table (one row).
+      Used to power the "Footer" in Power BI Dashboards.
+      Separates pipeline execution time from actual business data freshness.
+    columns:
+      - name: pipeline_last_run_at
+        description: "The UTC timestamp when this dbt model was built. Proves the pipeline is active."
+      - name: data_valid_through
+        description: "The max order date in the fact table. Critical for Olist context (ends in 2018)."
+      - name: environment
+        description: "Hardcoded label (PROD) to indicate this data lives in the production schema."
