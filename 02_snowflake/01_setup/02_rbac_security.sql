@@ -4,176 +4,163 @@
 -- Purpose: Least-privilege access for ingestion, analytics, CI, and BI
 -- Owner: Ayan
 -- ============================================================
-
 -- ============================================================
 -- ⚠️ EXECUTION CONTEXT: Run this script as SECURITYADMIN or ACCOUNTADMIN
 -- ============================================================
-
 -- ------------------------------------------------------------
 -- 1. CREATE ROLES
 -- ------------------------------------------------------------
-
 -- Human roles
-CREATE ROLE IF NOT EXISTS ANALYTICS_ROLE
-COMMENT = 'Data analysts / engineers: develop & manage analytics models';
-
-CREATE ROLE IF NOT EXISTS REPORTER_ROLE
-COMMENT = 'BI consumers: read-only access to curated marts';
-
+CREATE ROLE IF NOT EXISTS ANALYTICS_ROLE COMMENT = 'Data analysts / engineers: develop & manage analytics models';
+CREATE ROLE IF NOT EXISTS REPORTER_ROLE COMMENT = 'BI consumers: read-only access to curated marts';
 -- Service roles
-CREATE ROLE IF NOT EXISTS LOADER_ROLE
-COMMENT = 'Service role for raw data ingestion (Azure → Snowflake)';
-
-CREATE ROLE IF NOT EXISTS CI_SERVICE_ROLE
-COMMENT = 'Service role for CI/CD pipelines (dbt + testing + schema validation)';
-
-
+CREATE ROLE IF NOT EXISTS LOADER_ROLE COMMENT = 'Service role for raw data ingestion (Azure → Snowflake)';
+CREATE ROLE IF NOT EXISTS CI_SERVICE_ROLE COMMENT = 'Service role for CI/CD pipelines (dbt + testing + schema validation)';
 -- ------------------------------------------------------------
 -- 2. ROLE HIERARCHY
 -- ------------------------------------------------------------
-
 -- SYSADMIN retains visibility & recovery control
 GRANT ROLE ANALYTICS_ROLE TO ROLE SYSADMIN;
 GRANT ROLE LOADER_ROLE TO ROLE SYSADMIN;
 GRANT ROLE CI_SERVICE_ROLE TO ROLE SYSADMIN;
-
-
 -- ------------------------------------------------------------
 -- 3. DATABASE PRIVILEGES
 -- ------------------------------------------------------------
-
 -- RAW database (immutable landing zone)
 GRANT USAGE ON DATABASE OLIST_RAW_DB TO ROLE LOADER_ROLE;
 GRANT USAGE ON DATABASE OLIST_RAW_DB TO ROLE ANALYTICS_ROLE;
-GRANT USAGE ON DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ READ RAW DATA
-
+GRANT USAGE ON DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;
+-- ✅ READ RAW DATA
 -- DEV database (sandbox for development & CI)
 GRANT USAGE ON DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT USAGE ON DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ CI BUILDS HERE
+GRANT USAGE ON DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+-- ✅ CI BUILDS HERE
 GRANT CREATE SCHEMA ON DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT CREATE SCHEMA ON DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ CREATE CI_PR_* SCHEMAS
-
+GRANT CREATE SCHEMA ON DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+-- ✅ CREATE CI_PR_* SCHEMAS
 -- Analytics database (production - dbt-managed)
 GRANT USAGE ON DATABASE OLIST_ANALYTICS_DB TO ROLE ANALYTICS_ROLE;
 GRANT USAGE ON DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
 -- ❌ REMOVED: CI_SERVICE_ROLE should NOT touch production
-
-
 -- ------------------------------------------------------------
 -- 4. SCHEMA PRIVILEGES
 -- ------------------------------------------------------------
-
 -- Raw schemas (LOADER_ROLE can write data)
 GRANT USAGE ON ALL SCHEMAS IN DATABASE OLIST_RAW_DB TO ROLE LOADER_ROLE;
 GRANT CREATE TABLE ON SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
 GRANT CREATE STAGE ON SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
 GRANT CREATE FILE FORMAT ON SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
-
 -- RAW read access (for dbt sources)
-GRANT SELECT ON ALL TABLES IN DATABASE OLIST_RAW_DB TO ROLE ANALYTICS_ROLE;
-GRANT SELECT ON ALL TABLES IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ READ RAW TABLES
-
--- RAW write access (for ingestion)
-GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
-GRANT INSERT, SELECT ON FUTURE TABLES IN SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
-
--- File formats & stages (for ingestion)
-GRANT USAGE ON STAGE OLIST_RAW_DB.LANDING.AZURE_STAGE TO ROLE LOADER_ROLE;
+GRANT
+SELECT
+    ON ALL TABLES IN DATABASE OLIST_RAW_DB TO ROLE ANALYTICS_ROLE;
+GRANT
+SELECT
+    ON ALL TABLES IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ READ RAW TABLES
+    -- RAW write access (for ingestion)
+    GRANT
+INSERT,
+SELECT
+    ON ALL TABLES IN SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
+GRANT
+INSERT,
+SELECT
+    ON FUTURE TABLES IN SCHEMA OLIST_RAW_DB.OLIST TO ROLE LOADER_ROLE;
+    -- File formats & stages (for ingestion)
+    GRANT USAGE ON STAGE OLIST_RAW_DB.LANDING.AZURE_STAGE TO ROLE LOADER_ROLE;
 GRANT USAGE ON FILE FORMAT OLIST_RAW_DB.LANDING.CSV_GENERIC_FMT TO ROLE LOADER_ROLE;
 GRANT USAGE ON FILE FORMAT OLIST_RAW_DB.LANDING.JSON_GENERIC_FMT TO ROLE LOADER_ROLE;
 GRANT USAGE ON FILE FORMAT OLIST_RAW_DB.LANDING.PARQUET_GENERIC_FMT TO ROLE LOADER_ROLE;
-
--- DEV schemas (full control for developers & CI)
-GRANT ALL PRIVILEGES ON ALL SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT ALL PRIVILEGES ON ALL SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ FULL CI CONTROL
-
--- Production schemas (read-only for BI consumers)
-GRANT SELECT ON ALL TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
-
-
--- ------------------------------------------------------------
--- 5. FUTURE GRANTS (CRITICAL)
--- ------------------------------------------------------------
-
--- RAW database future objects
-GRANT SELECT ON FUTURE TABLES IN DATABASE OLIST_RAW_DB TO ROLE ANALYTICS_ROLE;
-GRANT SELECT ON FUTURE TABLES IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ READ NEW RAW TABLES
-GRANT SELECT ON FUTURE VIEWS IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;   -- ✅ READ RAW VIEWS
-
--- DEV database future objects (for CI isolation)
-GRANT ALL PRIVILEGES ON FUTURE SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT ALL PRIVILEGES ON FUTURE SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;  -- ✅ MANAGE CI_PR_* SCHEMAS
-GRANT ALL PRIVILEGES ON FUTURE TABLES IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT ALL PRIVILEGES ON FUTURE TABLES IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;   -- ✅ CREATE TEST TABLES
-GRANT ALL PRIVILEGES ON FUTURE VIEWS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
-GRANT ALL PRIVILEGES ON FUTURE VIEWS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;    -- ✅ CREATE STAGING VIEWS
-
--- Production future objects (BI read-only)
-GRANT SELECT ON FUTURE TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
-GRANT SELECT ON FUTURE VIEWS IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
-
--- Production grants for analytics team (not CI)
-GRANT ALL ON FUTURE TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE ANALYTICS_ROLE;
+    -- DEV schemas (full control for developers & CI)
+    GRANT ALL PRIVILEGES ON ALL SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
+GRANT ALL PRIVILEGES ON ALL SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ FULL CI CONTROL
+    -- Production schemas (read-only for BI consumers)
+    GRANT
+SELECT
+    ON ALL TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
+    -- ------------------------------------------------------------
+    -- 5. FUTURE GRANTS (CRITICAL)
+    -- ------------------------------------------------------------
+    -- RAW database future objects
+    GRANT
+SELECT
+    ON FUTURE TABLES IN DATABASE OLIST_RAW_DB TO ROLE ANALYTICS_ROLE;
+GRANT
+SELECT
+    ON FUTURE TABLES IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ READ NEW RAW TABLES
+    GRANT
+SELECT
+    ON FUTURE VIEWS IN DATABASE OLIST_RAW_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ READ RAW VIEWS
+    -- DEV database future objects (for CI isolation)
+    GRANT ALL PRIVILEGES ON FUTURE SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE SCHEMAS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ MANAGE CI_PR_* SCHEMAS
+    GRANT ALL PRIVILEGES ON FUTURE TABLES IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE TABLES IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ CREATE TEST TABLES
+    GRANT ALL PRIVILEGES ON FUTURE VIEWS IN DATABASE OLIST_DEV_DB TO ROLE ANALYTICS_ROLE;
+GRANT ALL PRIVILEGES ON FUTURE VIEWS IN DATABASE OLIST_DEV_DB TO ROLE CI_SERVICE_ROLE;
+    -- ✅ CREATE STAGING VIEWS
+    -- Production future objects (BI read-only)
+    GRANT
+SELECT
+    ON FUTURE TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
+GRANT
+SELECT
+    ON FUTURE VIEWS IN DATABASE OLIST_ANALYTICS_DB TO ROLE REPORTER_ROLE;
+    -- Production grants for analytics team (not CI)
+    GRANT ALL ON FUTURE TABLES IN DATABASE OLIST_ANALYTICS_DB TO ROLE ANALYTICS_ROLE;
 GRANT ALL ON FUTURE VIEWS IN DATABASE OLIST_ANALYTICS_DB TO ROLE ANALYTICS_ROLE;
-
-
--- ------------------------------------------------------------
--- 6. WAREHOUSE ACCESS
--- ------------------------------------------------------------
-
--- Ingestion
-GRANT USAGE ON WAREHOUSE LOADING_WH_XS TO ROLE LOADER_ROLE;
-
--- Transformations (dev & prod)
-GRANT USAGE ON WAREHOUSE TRANSFORM_WH_XS TO ROLE ANALYTICS_ROLE;
-GRANT USAGE ON WAREHOUSE TRANSFORM_WH_XS TO ROLE CI_SERVICE_ROLE;  -- ✅ CI COMPUTE
-
--- BI / Reporting
-GRANT USAGE ON WAREHOUSE REPORTING_WH_XS TO ROLE REPORTER_ROLE;
-
-
--- ==============================================================
--- 7. ASSIGN USER AYAN TO APPROPRIATE ROLES
--- ==============================================================
--- ⚠️ IMPORTANT: Change 'AYAN' to match your Snowflake username (case-sensitive)
-
-GRANT ROLE ANALYTICS_ROLE TO USER AYAN;
-GRANT ROLE LOADER_ROLE TO USER AYAN;
-GRANT ROLE SYSADMIN TO USER AYAN;
-
--- Set SYSADMIN as default role for your user (can switch to others)
-ALTER USER AYAN SET DEFAULT_ROLE = SYSADMIN;
-
-
--- ==============================================================
--- 8. VALIDATION (Run these to verify setup)
--- ==============================================================
-
--- Check all roles created
--- SHOW ROLES;
-
--- Check grants to AYAN
--- SHOW GRANTS TO USER AYAN;
-
--- Check CI_SERVICE_ROLE permissions
--- SHOW GRANTS TO ROLE CI_SERVICE_ROLE;
-
--- Check grants on DEV database
--- SHOW GRANTS ON DATABASE OLIST_DEV_DB;
-
--- ==============================================================
--- SUMMARY
--- ==============================================================
--- ✅ Roles created: ANALYTICS_ROLE, REPORTER_ROLE, LOADER_ROLE, CI_SERVICE_ROLE
--- ✅ Least-privilege model: Each role has minimum required permissions
--- ✅ Future grants enabled: New tables inherit role permissions automatically
--- ✅ CI isolation: CI_SERVICE_ROLE builds in OLIST_DEV_DB only
--- ✅ Production protection: CI_SERVICE_ROLE has NO access to OLIST_ANALYTICS_DB
--- ✅ User AYAN assigned to: ANALYTICS_ROLE, LOADER_ROLE, SYSADMIN
---
--- 🚀 NEXT STEPS:
--- 1. Run this script as ACCOUNTADMIN
--- 2. Verify CI grants: SHOW GRANTS TO ROLE CI_SERVICE_ROLE;
--- 3. Test CI build: Push a PR and watch GitHub Actions
--- 4. Verify schema cleanup: Check SHOW SCHEMAS IN OLIST_DEV_DB after CI run
--- ==============================================================
+    -- ------------------------------------------------------------
+    -- 6. WAREHOUSE ACCESS
+    -- ------------------------------------------------------------
+    -- Ingestion
+    GRANT USAGE ON WAREHOUSE LOADING_WH_XS TO ROLE LOADER_ROLE;
+    -- Transformations (dev & prod)
+    GRANT USAGE ON WAREHOUSE TRANSFORM_WH_XS TO ROLE ANALYTICS_ROLE;
+GRANT USAGE ON WAREHOUSE TRANSFORM_WH_XS TO ROLE CI_SERVICE_ROLE;
+    -- ✅ CI COMPUTE
+    -- BI / Reporting
+    GRANT USAGE ON WAREHOUSE REPORTING_WH_XS TO ROLE REPORTER_ROLE;
+    -- ==============================================================
+    -- 7. ASSIGN USER AYAN TO APPROPRIATE ROLES
+    -- ==============================================================
+    -- ⚠️ IMPORTANT: Change 'AYAN' to match your Snowflake username (case-sensitive)
+    GRANT ROLE ANALYTICS_ROLE TO USER AYAN22;
+GRANT ROLE LOADER_ROLE TO USER AYAN22;
+GRANT ROLE SYSADMIN TO USER AYAN22;
+    -- Set SYSADMIN as default role for your user (can switch to others)
+    ALTER USER AYAN22
+SET
+    DEFAULT_ROLE = SYSADMIN;
+    -- ==============================================================
+    -- 8. VALIDATION (Run these to verify setup)
+    -- ==============================================================
+    -- Check all roles created
+    -- SHOW ROLES;
+    -- Check grants to AYAN
+    -- SHOW GRANTS TO USER AYAN;
+    -- Check CI_SERVICE_ROLE permissions
+    -- SHOW GRANTS TO ROLE CI_SERVICE_ROLE;
+    -- Check grants on DEV database
+    -- SHOW GRANTS ON DATABASE OLIST_DEV_DB;
+    -- ==============================================================
+    -- SUMMARY
+    -- ==============================================================
+    -- ✅ Roles created: ANALYTICS_ROLE, REPORTER_ROLE, LOADER_ROLE, CI_SERVICE_ROLE
+    -- ✅ Least-privilege model: Each role has minimum required permissions
+    -- ✅ Future grants enabled: New tables inherit role permissions automatically
+    -- ✅ CI isolation: CI_SERVICE_ROLE builds in OLIST_DEV_DB only
+    -- ✅ Production protection: CI_SERVICE_ROLE has NO access to OLIST_ANALYTICS_DB
+    -- ✅ User AYAN assigned to: ANALYTICS_ROLE, LOADER_ROLE, SYSADMIN
+    --
+    -- 🚀 NEXT STEPS:
+    -- 1. Run this script as ACCOUNTADMIN
+    -- 2. Verify CI grants: SHOW GRANTS TO ROLE CI_SERVICE_ROLE;
+    -- 3. Test CI build: Push a PR and watch GitHub Actions
+    -- 4. Verify schema cleanup: Check SHOW SCHEMAS IN OLIST_DEV_DB after CI run
+    -- ==============================================================

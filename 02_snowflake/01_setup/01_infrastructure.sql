@@ -6,7 +6,6 @@
   Run as: SYSADMIN
 ==============================================================================*/
 
-USE ROLE SYSADMIN;
 
 -- Resource monitor: 100 credit monthly cap, suspend at 90%
 CREATE OR REPLACE RESOURCE MONITOR OLIST_MONTHLY_LIMIT
@@ -18,19 +17,8 @@ CREATE OR REPLACE RESOURCE MONITOR OLIST_MONTHLY_LIMIT
     ON 90 PERCENT DO SUSPEND
     ON 100 PERCENT DO SUSPEND_IMMEDIATE;
 
--- Governance database: shared utilities, tags, monitoring
-CREATE DATABASE IF NOT EXISTS OLIST_COMMON_DB
-  COMMENT = 'Shared utilities: tags, UDFs, monitoring views';
-
-CREATE SCHEMA IF NOT EXISTS OLIST_COMMON_DB.GOVERNANCE;
-
--- Cost center tag: tracks which workload drives spend (Ingestion/Transform/Reporting)
-CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.COST_CENTER
-  COMMENT = 'Workload classification for billing analysis';
-
--- Environment tag: identifies PROD vs DEV environment
-CREATE OR REPLACE TAG OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT
-  COMMENT = 'DEV | PROD | STAGING environment identifier';
+-- Governance tags: workload classification and environment tracking
+-- Note: Tags are created at the account level for simplicity
 
 -- Loading warehouse: X-SMALL, 60s suspend, Azure Blob → Snowflake RAW
 CREATE OR REPLACE WAREHOUSE LOADING_WH_XS
@@ -45,8 +33,8 @@ CREATE OR REPLACE WAREHOUSE LOADING_WH_XS
   COMMENT = 'Raw data ingestion from Azure Blob Storage';
 
 ALTER WAREHOUSE LOADING_WH_XS SET TAG
-  OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'INGESTION',
-  OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
+  COST_CENTER = 'INGESTION',
+  ENVIRONMENT = 'PROD';
 
 -- Transform warehouse: X-SMALL, 60s suspend, dbt model execution
 CREATE OR REPLACE WAREHOUSE TRANSFORM_WH_XS
@@ -61,8 +49,8 @@ CREATE OR REPLACE WAREHOUSE TRANSFORM_WH_XS
   COMMENT = 'dbt transformations (STAGING → INTERMEDIATE → MARTS)';
 
 ALTER WAREHOUSE TRANSFORM_WH_XS SET TAG
-  OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'TRANSFORMATION',
-  OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
+  COST_CENTER = 'TRANSFORMATION',
+  ENVIRONMENT = 'PROD';
 
 -- Reporting warehouse: X-SMALL, 300s suspend (allows Power BI caching)
 CREATE OR REPLACE WAREHOUSE REPORTING_WH_XS
@@ -77,8 +65,8 @@ CREATE OR REPLACE WAREHOUSE REPORTING_WH_XS
   COMMENT = 'Power BI Import/DirectQuery workloads';
 
 ALTER WAREHOUSE REPORTING_WH_XS SET TAG
-  OLIST_COMMON_DB.GOVERNANCE.COST_CENTER = 'REPORTING',
-  OLIST_COMMON_DB.GOVERNANCE.ENVIRONMENT = 'PROD';
+  COST_CENTER = 'REPORTING',
+  ENVIRONMENT = 'PROD';
 
 -- Raw database: 0-day retention (source in Azure), immutable landing zone
 CREATE OR REPLACE DATABASE OLIST_RAW_DB
