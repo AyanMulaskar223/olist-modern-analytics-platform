@@ -4,8 +4,6 @@
 
 This project implements a modern data stack following the Medallion Architecture pattern: RAW → STAGING → INTERMEDIATE → MARTS. Built with dimensional modeling principles (Kimball), automated testing, and production-grade documentation.
 
-**Status:** Staging ✅ | Intermediate 🚧 | Marts 📋 Planned
-
 **Tech Stack:** dbt Core 1.8+ | Snowflake | SQLFluff | dbt Utils + Expectations packages
 
 ---
@@ -530,7 +528,98 @@ Stakeholders didn't know if the dashboard data was fresh or stuck.
 
 ---
 
-### 🛠️ Model Reference
+### � Data Contracts & Exposures
+
+This project enforces **explicit contracts** between the data warehouse and downstream consumers to prevent breaking changes and maintain trust.
+
+#### **What is a Data Contract?**
+
+A Data Contract is a formal agreement that guarantees:
+
+1. **Schema Stability:** Column names, data types, and grain will not change without versioning.
+2. **Data Quality SLAs:** Minimum freshness, completeness, and accuracy thresholds.
+3. **Breaking Change Protection:** Any schema modification triggers downstream validation before merge.
+
+**Implementation:**
+
+```yaml
+# models/marts/sales/_schema.yml
+version: 2
+
+models:
+  - name: fct_order_items
+    config:
+      contract:
+        enforced: true # ✅ Blocks deployment if schema changes
+    columns:
+      - name: order_item_sk
+        data_type: varchar
+        constraints:
+          - type: not_null
+          - type: unique
+      - name: price_brl
+        data_type: number
+        constraints:
+          - type: not_null
+```
+
+**Why This Matters:**
+
+- **For Power BI:** Prevents "Field Not Found" errors when refreshing semantic models.
+- **For Analysts:** Guarantees query stability—no surprise `NULL` values in production reports.
+- **For Portfolio:** Demonstrates understanding of DataOps maturity beyond "just build models."
+
+---
+
+#### **Exposures: Documenting Downstream Dependencies**
+
+Exposures create a **dependency graph** linking dbt models to their real-world consumers (dashboards, ML models, external APIs).
+
+**Current Exposures:**
+
+| Exposure Name                  | Type      | Owner          | Depends On                                         |
+| ------------------------------ | --------- | -------------- | -------------------------------------------------- |
+| **`power_bi_sales_dashboard`** | Dashboard | Analytics Team | `fct_order_items`, `dim_customers`, `dim_products` |
+| **`executive_summary_report`** | Report    | Executive Team | `dim_date`, `dim_sellers`, `fct_order_items`       |
+
+**Implementation:**
+
+```yaml
+# models/exposures.yml
+version: 2
+
+exposures:
+  - name: power_bi_sales_dashboard
+    type: dashboard
+    maturity: high
+    url: https://app.powerbi.com/groups/workspace-id/dashboards/dashboard-id
+    description: |
+      Primary sales analytics dashboard used by Sales and Marketing teams.
+      Includes KPIs: Total Revenue, AOV, Repeat Customer Rate, Delivery SLA.
+
+    depends_on:
+      - ref('fct_order_items')
+      - ref('dim_customers')
+      - ref('dim_products')
+      - ref('dim_sellers')
+      - ref('dim_date')
+
+    owner:
+      name: Analytics Team
+      email: analytics@olist.com
+```
+
+**Benefits:**
+
+1. **Impact Analysis:** `dbt list --select +exposure:power_bi_sales_dashboard` shows all upstream dependencies.
+2. **Change Management:** Before modifying `dim_customers`, you know it breaks the Executive Dashboard.
+3. **Documentation:** Auto-generated lineage graphs in `dbt docs` visualize end-to-end data flow.
+
+**Portfolio Impact:** Recruiters see you understand **Data Product Thinking**—treating analytics models as APIs with consumers, not just tables.
+
+---
+
+### �🛠️ Model Reference
 
 #### **Facts (Sales Domain)**
 
