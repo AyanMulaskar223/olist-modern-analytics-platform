@@ -84,6 +84,18 @@ models:
       sales:
         +tags: ["marts", "sales"]
 
+      # Security tables (RLS mappings) -> ANALYTICS_PROD.SECURITY
+      security:
+        +schema: security
+        +materialized: table
+        +tags: ["security", "rls"]
+
+      # 3. Engineering Metadata -> ANALYTICS_PROD.OPS
+      # Any model inside the 'models/meta' folder goes here
+      meta:
+        +schema: ops
+        +materialized: table
+
 seeds:
   olist_analytics: # Your project name
     # This applies to all seeds in the project

@@ -1,0 +1,7 @@
+fct_name,column_name,resource_name,reason_to_exclude
+fct_missing_primary_key_tests,,meta_project_status,Single-row monitoring table with no natural primary key
+fct_missing_primary_key_tests,,stg_olist__geolocation,Geolocation reference data with composite key (zip+lat+lng) - no single-column PK
+fct_test_directories,,tests/staging,Staging tests follow dbt best practice structure
+fct_test_directories,,tests/marts,Marts tests follow dbt best practice structure
+fct_root_models,,stg_olist__category_translations,Seed-based staging model (references seed not source)
+fct_exposures_dependent_on_private_models,,Olist Executive Dashboard,Evaluator internal false positive - exposure correctly references public marts

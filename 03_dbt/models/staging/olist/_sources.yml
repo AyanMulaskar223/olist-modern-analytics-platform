@@ -28,33 +28,33 @@ sources:
                   arguments:
                     values:
                       [
-                        'AC',
-                        'AL',
-                        'AP',
-                        'AM',
-                        'BA',
-                        'CE',
-                        'DF',
-                        'ES',
-                        'GO',
-                        'MA',
-                        'MT',
-                        'MS',
-                        'MG',
-                        'PA',
-                        'PB',
-                        'PR',
-                        'PE',
-                        'PI',
-                        'RJ',
-                        'RN',
-                        'RS',
-                        'RO',
-                        'RR',
-                        'SC',
-                        'SP',
-                        'SE',
-                        'TO',
+                        "AC",
+                        "AL",
+                        "AP",
+                        "AM",
+                        "BA",
+                        "CE",
+                        "DF",
+                        "ES",
+                        "GO",
+                        "MA",
+                        "MT",
+                        "MS",
+                        "MG",
+                        "PA",
+                        "PB",
+                        "PR",
+                        "PE",
+                        "PI",
+                        "RJ",
+                        "RN",
+                        "RS",
+                        "RO",
+                        "RR",
+                        "SC",
+                        "SP",
+                        "SE",
+                        "TO",
                       ]
         config:
           freshness:
@@ -88,14 +88,14 @@ sources:
                   arguments:
                     values:
                       [
-                        'delivered',
-                        'canceled',
-                        'shipped',
-                        'processing',
-                        'approved',
-                        'invoiced',
-                        'unavailable',
-                        'created',
+                        "delivered",
+                        "canceled",
+                        "shipped",
+                        "processing",
+                        "approved",
+                        "invoiced",
+                        "unavailable",
+                        "created",
                       ]
           - name: order_purchase_timestamp
             description: When customer placed the order
@@ -135,6 +135,9 @@ sources:
                     to: source('olist', 'raw_sellers')
                     field: seller_id
         config:
+          freshness:
+            warn_after: { count: 1, period: day }
+            error_after: { count: 2, period: day }
           loaded_at_field: _loaded_at
 
       - name: raw_order_payments
@@ -157,13 +160,16 @@ sources:
                   arguments:
                     values:
                       [
-                        'credit_card',
-                        'boleto',
-                        'debit_card',
-                        'voucher',
-                        'not_defined',
+                        "credit_card",
+                        "boleto",
+                        "debit_card",
+                        "voucher",
+                        "not_defined",
                       ]
         config:
+          freshness:
+            warn_after: { count: 1, period: day }
+            error_after: { count: 2, period: day }
           loaded_at_field: _loaded_at
 
       - name: raw_order_reviews
@@ -172,6 +178,9 @@ sources:
           NOTE: Tests removed from source - will be added in staging layer after JSON extraction.
           Column names need proper quoting for Snowflake case sensitivity.
         config:
+          freshness:
+            warn_after: { count: 7, period: day }
+            error_after: { count: 14, period: day }
           loaded_at_field: _loaded_at
 
       - name: raw_products
@@ -185,6 +194,9 @@ sources:
           - name: product_category_name
             description: Portuguese product category name
         config:
+          freshness:
+            warn_after: { count: 7, period: day }
+            error_after: { count: 14, period: day }
           loaded_at_field: _loaded_at
 
       - name: raw_sellers
@@ -202,35 +214,38 @@ sources:
                   arguments:
                     values:
                       [
-                        'AC',
-                        'AL',
-                        'AP',
-                        'AM',
-                        'BA',
-                        'CE',
-                        'DF',
-                        'ES',
-                        'GO',
-                        'MA',
-                        'MT',
-                        'MS',
-                        'MG',
-                        'PA',
-                        'PB',
-                        'PR',
-                        'PE',
-                        'PI',
-                        'RJ',
-                        'RN',
-                        'RS',
-                        'RO',
-                        'RR',
-                        'SC',
-                        'SP',
-                        'SE',
-                        'TO',
+                        "AC",
+                        "AL",
+                        "AP",
+                        "AM",
+                        "BA",
+                        "CE",
+                        "DF",
+                        "ES",
+                        "GO",
+                        "MA",
+                        "MT",
+                        "MS",
+                        "MG",
+                        "PA",
+                        "PB",
+                        "PR",
+                        "PE",
+                        "PI",
+                        "RJ",
+                        "RN",
+                        "RS",
+                        "RO",
+                        "RR",
+                        "SC",
+                        "SP",
+                        "SE",
+                        "TO",
                       ]
         config:
+          freshness:
+            warn_after: { count: 7, period: day }
+            error_after: { count: 14, period: day }
           loaded_at_field: _loaded_at
 
       - name: raw_geolocation
@@ -247,33 +262,36 @@ sources:
                   arguments:
                     values:
                       [
-                        'AC',
-                        'AL',
-                        'AP',
-                        'AM',
-                        'BA',
-                        'CE',
-                        'DF',
-                        'ES',
-                        'GO',
-                        'MA',
-                        'MT',
-                        'MS',
-                        'MG',
-                        'PA',
-                        'PB',
-                        'PR',
-                        'PE',
-                        'PI',
-                        'RJ',
-                        'RN',
-                        'RS',
-                        'RO',
-                        'RR',
-                        'SC',
-                        'SP',
-                        'SE',
-                        'TO',
+                        "AC",
+                        "AL",
+                        "AP",
+                        "AM",
+                        "BA",
+                        "CE",
+                        "DF",
+                        "ES",
+                        "GO",
+                        "MA",
+                        "MT",
+                        "MS",
+                        "MG",
+                        "PA",
+                        "PB",
+                        "PR",
+                        "PE",
+                        "PI",
+                        "RJ",
+                        "RN",
+                        "RS",
+                        "RO",
+                        "RR",
+                        "SC",
+                        "SP",
+                        "SE",
+                        "TO",
                       ]
         config:
+          freshness:
+            warn_after: { count: 30, period: day }
+            error_after: { count: 60, period: day }
           loaded_at_field: _loaded_at

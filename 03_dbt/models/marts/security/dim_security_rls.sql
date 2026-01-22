@@ -1,8 +1,8 @@
 {{
     config(
         materialized='table',
-        schema='marts',
-        tags=['security', 'marts', 'rls', 'admin']
+        schema='security',
+        tags=['security', 'rls', 'admin']
     )
 }}
 
@@ -57,6 +57,6 @@ select
     access_level,
 
     -- ⏰ METADATA
-    current_timestamp()::timestamp_ltz as dbt_updated_at
+    current_timestamp()::timestamp_lptz as dbt_updated_at
 
 from security_rls
