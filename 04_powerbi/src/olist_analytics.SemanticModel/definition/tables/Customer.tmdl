@@ -1,0 +1,130 @@
+/// Dimension table containing customer demographic and geographic details. Sourced from OLIST_ANALYTICS_DB.MARTS.DIM_CUSTOMERS. Used to analyze sales performance across Customer States and Cities.
+table Customer
+	lineageTag: 784e2cae-2e30-4949-ae5d-de4b25da4cc0
+
+	/// The unique identifier for the customer, visible to business users and distinct from the system key.
+	column 'Customer ID'
+		dataType: string
+		lineageTag: 0b964afe-71e0-4e68-b129-877f04cfbbfd
+		summarizeBy: none
+		sourceColumn: Customer ID
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// System-generated Surrogate Key (SK) used to uniquely identify a customer record in the Data Warehouse. Hidden from reporting view.
+	column 'Customer SK'
+		dataType: string
+		isHidden
+		isKey
+		isAvailableInMdx: false
+		lineageTag: b8084ec1-aff3-43eb-abf1-cec0fba5dbea
+		summarizeBy: none
+		sourceColumn: Customer SK
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	/// The city where the customer is located. Used for geospatial analysis and delivery logistics reporting.
+	column 'Customer City'
+		dataType: string
+		lineageTag: 2326b3f2-fcd8-420f-ab9e-6fc8f6187afe
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Customer City
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// The state or province code where the customer is located. Serves as the highest level of the Customer Geography hierarchy.
+	column 'Customer State'
+		dataType: string
+		lineageTag: 428cf0ca-404a-4206-9c24-68322d5f92b3
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Customer State
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	hierarchy 'Customer Geography'
+		lineageTag: 37cf7c1f-5a44-43ca-8d5a-77c73a20925a
+
+		level 'Customer State'
+			lineageTag: 06b50b53-843b-4d70-aa6d-f395441b7987
+			column: 'Customer State'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level 'Customer City'
+			lineageTag: 1ebefb51-8330-49ea-8877-2241791bafa4
+			column: 'Customer City'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+	partition Customer = m
+		mode: import
+		queryGroup: '01 Dimensions'
+		source =
+				let
+				    // 1. Source Connection
+				    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com", "REPORTING_WH_XS", [Implementation="2.0", CommandTimeout=600]),
+				    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+				    MARTS_SCHEMA = OLIST_ANALYTICS_DB_Database{[Name="MARTS",Kind="Schema"]}[Data],
+				    DIM_CUSTOMERS_Table = MARTS_SCHEMA{[Name="DIM_CUSTOMERS",Kind="Table"]}[Data],
+				
+				    // -----------------------------------------------------------
+				    // 🛑 STEP 2: THE DATA CONTRACT
+				    // -----------------------------------------------------------
+				    // FIX: Removed double quotes (""name"") -> ("name")
+				    // FIX: Added a proper step name "_Enforce_Schema_Contract"
+				    #"Select: Contract Columns" = Table.SelectColumns(
+				        DIM_CUSTOMERS_Table,
+				        {
+				            "CUSTOMER_UNIQUE_ID",
+				            "CUSTOMER_SK",
+				            "CUSTOMER_CITY",
+				            "CUSTOMER_STATE_CODE"
+				        }
+				    ),
+				
+				    // -----------------------------------------------------------
+				    // 🎨 STEP 3: RENAMING
+				    // -----------------------------------------------------------
+				    #"Rename: To Tilte case" = Table.RenameColumns(
+				        #"Select: Contract Columns",
+				        {
+				            {"CUSTOMER_UNIQUE_ID", "Customer ID"},
+				            {"CUSTOMER_SK", "Customer SK"},
+				            {"CUSTOMER_CITY", "Customer City"},
+				            {"CUSTOMER_STATE_CODE", "Customer State"}
+				        }
+				    ),
+				
+				    // -----------------------------------------------------------
+				    // 🛠 STEP 4: FINAL TYPES
+				    // -----------------------------------------------------------
+				    #"Cast: Data Types" = Table.TransformColumnTypes(
+				        #"Rename: To Tilte case",
+				        {
+				            {"Customer ID", type text},
+				            {"Customer SK", type text},
+				            {"Customer City", type text},
+				            {"Customer State", type text}
+				        }
+				    ),
+				    #"Reorder: Columns" = Table.ReorderColumns(#"Cast: Data Types",{"Customer SK", "Customer ID", "Customer State", "Customer City"})
+				
+				in
+				    #"Reorder: Columns"
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
+

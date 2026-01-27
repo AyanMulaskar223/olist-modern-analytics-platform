@@ -1,0 +1,203 @@
+/// Centralized calendar dimension at the daily granularity. Acts as the primary time backbone for the model, enabling standard Time Intelligence calculations (YTD, MoM, YoY) and fiscal reporting.
+table Date
+	lineageTag: 56e2864e-8fa5-4e1b-bbea-1e88afefc9c5
+	dataCategory: Time
+
+	/// Numeric sorting column used to order the 'Month Year' column chronologically (e.g., 202401). Hidden from report view.
+	column 'Month-Year Sort'
+		dataType: int64
+		isHidden
+		lineageTag: 5e904fde-ec28-44ea-8032-9bb60e080f5d
+		summarizeBy: none
+		sourceColumn: Month-Year Sort
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// The primary date field. Connects the calendar dimension to fact tables and is the basis for all time intelligence logic.
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: mm/dd/yyyy
+		lineageTag: ab6f5c39-f5ae-4868-a26d-297d18104828
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION","RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	/// The four-digit calendar year (e.g., 2024). Used for annual aggregation and year-over-year comparisons.
+	column Year
+		dataType: int64
+		formatString: " 0000"
+		lineageTag: 228196a1-df53-4732-bdf3-7ae539007617
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	/// The calendar quarter (e.g., Q1, Q2). Used for quarterly business reviews and trend analysis.
+	column Quarter
+		dataType: string
+		lineageTag: 13f201e2-2f6d-4e4d-98f4-49ba22c74bdb
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// The full name of the month (e.g., January, February). Automatically sorted by 'Month No'.
+	column Month
+		dataType: string
+		lineageTag: d7bf0ec7-c956-45c0-8cda-a2c070f7f259
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: 'Month No'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// The three-letter abbreviation of the month (e.g., Jan, Feb). Useful for compact visual axes. Sorted by 'Month No'.
+	column 'Month Short'
+		dataType: string
+		lineageTag: 949f63bd-8166-44c7-838e-eed0296b533d
+		summarizeBy: none
+		sourceColumn: Month Short
+		sortByColumn: 'Month No'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// Sequential month number (1-12). Used internally to sort month names chronologically. Hidden from report view.
+	column 'Month No'
+		dataType: int64
+		isHidden
+		lineageTag: 90f02f97-3279-4bf4-bddb-0b8eff81bdcc
+		summarizeBy: none
+		sourceColumn: Month No
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Concatenation of Month and Year (e.g., "Jan 2024"). Useful for long-term trend analysis spanning multiple years.
+	column 'Month Year'
+		dataType: string
+		lineageTag: 36000787-c851-472b-9440-1fa5367e2c02
+		summarizeBy: none
+		sourceColumn: Month Year
+		sortByColumn: 'Month-Year Sort'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// The numeric representation of the day of the week (e.g., 0=Sunday, 1=Monday). Used for sorting day names. Hidden from report view.
+	column 'Day No'
+		dataType: int64
+		isHidden
+		lineageTag: 9a0fbf40-524f-45a2-91c5-04492f1dd359
+		summarizeBy: none
+		sourceColumn: Day No
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Boolean flag indicating whether the date falls on a weekend (True) or a weekday (False).
+	column 'Is Weekend'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c6796ca2-9088-41e3-927d-ad3cf14f2106
+		summarizeBy: none
+		sourceColumn: Is Weekend
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	/// The name of the day of the week (e.g., Monday, Tuesday). Sorted by 'Day No'.
+	column 'Day Name'
+		dataType: string
+		lineageTag: 3d0ead52-c856-4652-9ee6-145b470e9675
+		summarizeBy: none
+		sourceColumn: Day Name
+		sortByColumn: 'Day No'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+	hierarchy 'Calender Date'
+		lineageTag: 035782e0-6388-4129-b991-0be33f87998b
+
+		level Year
+			lineageTag: 9f6b641e-24cc-4790-806e-28b52a0a26c5
+			column: Year
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level Quarter
+			lineageTag: dbde1c3e-4cd8-424e-9885-4eeb89eaf533
+			column: Quarter
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level Month
+			lineageTag: ae822352-33d7-4f30-b4f5-82a5114361e0
+			column: Month
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level Date
+			lineageTag: ec3862df-5cb5-4aed-9db5-a7ed7c177d45
+			column: Date
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+	partition Date = m
+		mode: import
+		queryGroup: '01 Dimensions'
+		source =
+				let
+				    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com","REPORTING_WH_XS",[Implementation="2.0", CommandTimeout=600, Role="REPORTER_ROLE", ConnectionTimeout=120]),
+				    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+				    MARTS_Schema = OLIST_ANALYTICS_DB_Database{[Name="MARTS",Kind="Schema"]}[Data],
+				    DIM_DATE_Table = MARTS_Schema{[Name="DIM_DATE",Kind="Table"]}[Data],
+				    #"Select: Contract Columns" = Table.SelectColumns(DIM_DATE_Table,{"YEAR_MONTH_NUMBER", "DATE_DAY", "YEAR_NUMBER", "QUARTER_NAME", "MONTH_NAME", "MONTH_SHORT_NAME", "MONTH_NUMBER", "YEAR_MONTH_NAME", "DAY_OF_WEEK_NAME", "DAY_OF_WEEK_NUMBER", "IS_WEEKEND"}),
+				    #"Rename: To Clear Ttile Case Names" = Table.RenameColumns(#"Select: Contract Columns",{{"DATE_DAY", "Date"}, {"YEAR_NUMBER", "Year"}, {"MONTH_NAME", "Month"}, {"MONTH_NUMBER", "Month No"}, {"YEAR_MONTH_NAME", "Month Year"}, {"QUARTER_NAME", "Quarter"}, {"IS_WEEKEND", "Is Weekend"}, {"DAY_OF_WEEK_NUMBER", "Day No"}, {"MONTH_SHORT_NAME", "Month Short"}, {"YEAR_MONTH_NUMBER", "Month-Year Sort"}}),
+				    #"Remove: Day of Week Name" = Table.RemoveColumns(#"Rename: To Clear Ttile Case Names",{"DAY_OF_WEEK_NAME"}),
+				    #"Add: Day Name Using Column From Example" = Table.AddColumn(#"Remove: Day of Week Name", "Day Name", each if [Day No] = 5 then "Friday" else if [Day No] = 6 then "Saturday" else if [Day No] = 0 then "Sunday" else if [Day No] = 1 then "Monday" else if [Day No] = 2 then "Tuesday" else if [Day No] = 3 then "Wednesday" else if [Day No] = 4 then "Thursday" else null, type text),
+				    #"Data Type: To Correct Data Types" = Table.TransformColumnTypes(#"Add: Day Name Using Column From Example",{{"Is Weekend", type logical}, {"Day No", Int64.Type}, {"Month No", Int64.Type}, {"Year", Int64.Type}, {"Month-Year Sort", Int64.Type}})
+				in
+				    #"Data Type: To Correct Data Types"
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MINIMIZE_POWER_QUERY_TRANSFORMATIONS"]}
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

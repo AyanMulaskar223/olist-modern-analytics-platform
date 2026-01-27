@@ -1,0 +1,28 @@
+relationship 54264f52-808d-7ab2-0ec8-cf34d847ef4b
+	fromColumn: Sales.'Customer SK'
+	toColumn: Customer.'Customer SK'
+
+relationship cc976cc4-f42c-b6f9-f7a0-f06d93eb1013
+	fromColumn: Sales.'Product SK'
+	toColumn: Product.'Product SK'
+
+relationship d9e6be45-ccda-7591-582a-8c336dc81c57
+	fromColumn: Sales.'Seller SK'
+	toColumn: Seller.'Seller SK'
+
+relationship e34d8c5d-35df-a472-2548-9152207b78b6
+	fromColumn: Sales.'Transaction Date'
+	toColumn: Date.Date
+
+relationship 7d3a7ca0-208e-cdf8-d280-60284b65c831
+	crossFilteringBehavior: bothDirections
+	securityFilteringBehavior: bothDirections
+	fromColumn: 'Security Rules'.'Access Value'
+	toColumn: 'Security Bridge'.'Access Value'
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["CHECK_IF_BI-DIRECTIONAL_AND_MANY-TO-MANY_RELATIONSHIPS_ARE_VALID"]}
+
+relationship ec956665-adff-84a5-c4d3-2f46578f1a89
+	fromColumn: Seller.'Seller State'
+	toColumn: 'Security Bridge'.'Seller State'
+

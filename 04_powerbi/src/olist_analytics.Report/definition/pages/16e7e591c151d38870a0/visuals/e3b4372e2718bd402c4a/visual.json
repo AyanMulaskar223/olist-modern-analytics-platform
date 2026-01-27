@@ -1,0 +1,167 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "e3b4372e2718bd402c4a",
+  "position": {
+    "x": 0,
+    "y": 224,
+    "z": 0,
+    "height": 352,
+    "width": 128,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Data Type Format"
+                }
+              },
+              "queryRef": "_Data Dictionary.Data Type Format",
+              "nativeQueryRef": "Data Type Format"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Description"
+                }
+              },
+              "queryRef": "_Data Dictionary.Description",
+              "nativeQueryRef": "Description"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Display Folder"
+                }
+              },
+              "queryRef": "_Data Dictionary.Display Folder",
+              "nativeQueryRef": "Display Folder"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Expression"
+                }
+              },
+              "queryRef": "_Data Dictionary.Expression",
+              "nativeQueryRef": "Expression"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Information View"
+                }
+              },
+              "queryRef": "_Data Dictionary.Information View",
+              "nativeQueryRef": "Information View"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Table"
+                }
+              },
+              "queryRef": "_Data Dictionary.Table",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Type"
+                }
+              },
+              "queryRef": "_Data Dictionary.Type",
+              "nativeQueryRef": "Type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Data Category"
+                }
+              },
+              "queryRef": "_Data Dictionary.Data Category",
+              "nativeQueryRef": "Data Category"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Data Dictionary"
+                    }
+                  },
+                  "Property": "Column/Measure/Relationship"
+                }
+              },
+              "queryRef": "_Data Dictionary.Column/Measure/Relationship",
+              "nativeQueryRef": "Column/Measure/Relationship"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Data Dictionary"
+                  }
+                },
+                "Property": "Description"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

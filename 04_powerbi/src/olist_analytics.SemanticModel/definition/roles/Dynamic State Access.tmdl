@@ -1,0 +1,11 @@
+role 'Dynamic State Access'
+	modelPermission: read
+
+	tablePermission 'Security Rules' = [User Email] = USERPRINCIPALNAME()
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["CHECK_IF_DYNAMIC_ROW_LEVEL_SECURITY_(RLS)_IS_NECESSARY"]}
+
+	annotation PBI_Id = aae0b153305b4960928e23d49724e7c0
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["REMOVE_ROLES_WITH_NO_MEMBERS"]}
+

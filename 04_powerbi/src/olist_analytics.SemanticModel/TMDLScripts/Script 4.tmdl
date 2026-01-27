@@ -1,0 +1,298 @@
+createOrReplace
+
+	/// The central fact table recording individual order items at the transactional grain. Each row represents a specific product within an order. Contains core metrics (Price, Freight) and keys linking to dimensional attributes (Customer, Product, Seller, Date). Includes 'Is Verified' flags for Data Quality governance.
+	/// 
+	/// 
+	table Sales
+		lineageTag: c4d71848-bb94-4c3e-b2c3-1a3b6cbae6a6
+
+		column 'Order Item SK'
+			dataType: string
+			isHidden
+			isKey
+			isAvailableInMdx: false
+			lineageTag: f4855a9f-a008-479a-b4fa-52371e5fe648
+			summarizeBy: none
+			sourceColumn: Order Item SK
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
+		column 'Customer SK'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: cc197641-de6a-4339-bd40-cc5d1435c935
+			summarizeBy: none
+			sourceColumn: Customer SK
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		column 'Product SK'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 53817caa-3765-4ea2-bbec-36658bf7434e
+			summarizeBy: none
+			sourceColumn: Product SK
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		column 'Seller SK'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 37ecb604-2315-4bba-b5ac-9db32b04b411
+			summarizeBy: none
+			sourceColumn: Seller SK
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		column 'Transaction Date'
+			dataType: dateTime
+			isHidden
+			formatString: mm/dd/yyyy
+			isAvailableInMdx: false
+			lineageTag: 8c5d313a-2b5d-41ad-85e8-a630adceabdc
+			summarizeBy: none
+			sourceColumn: Transaction Date
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		column 'Order ID'
+			dataType: string
+			lineageTag: e0c22080-151f-4c56-8173-3532b257a9a9
+			summarizeBy: none
+			sourceColumn: Order ID
+
+			annotation SummarizationSetBy = Automatic
+
+		column 'Item Price'
+			dataType: decimal
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 0996e3de-278c-41b4-b511-43cb2a5d628d
+			summarizeBy: none
+			sourceColumn: Item Price
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = User
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column 'Freight Value'
+			dataType: decimal
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 9cf99d43-af33-4333-bfb1-f9b458e50469
+			summarizeBy: none
+			sourceColumn: Freight Value
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = User
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column 'Customer Order Number'
+			dataType: int64
+			formatString: 0
+			lineageTag: 4443b1d3-642d-4fff-837d-eb4525b73d54
+			summarizeBy: none
+			sourceColumn: Customer Order Number
+
+			annotation SummarizationSetBy = User
+
+		column 'Days to Deliver'
+			dataType: int64
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: f4a1c6d4-ce6a-4af5-a64f-71490d095597
+			summarizeBy: none
+			sourceColumn: Days to Deliver
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = User
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column 'Is Delayed'
+			dataType: boolean
+			formatString: """TRUE"";""TRUE"";""FALSE"""
+			lineageTag: cd49846f-73bb-48b2-a951-dfd7faff7e6d
+			summarizeBy: none
+			sourceColumn: Is Delayed
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		column 'Is Verified'
+			dataType: boolean
+			formatString: """TRUE"";""TRUE"";""FALSE"""
+			lineageTag: 640f2558-8f96-433d-ad80-002c2d21f812
+			summarizeBy: none
+			sourceColumn: Is Verified
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES"]}
+
+		column 'Quality Issue'
+			dataType: string
+			lineageTag: d950fcb0-1df8-44db-a86a-9e956bd9d4ef
+			summarizeBy: none
+			sourceColumn: Quality Issue
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES"]}
+
+		column 'Order Status'
+			dataType: string
+			lineageTag: e8203ddf-46a9-459d-9de8-c92e2f19b30a
+			summarizeBy: none
+			sourceColumn: Order Status
+
+			annotation SummarizationSetBy = Automatic
+
+		partition Sales = m
+			mode: import
+			queryGroup: '02 Facts'
+			source = ```
+					let
+					    // 1. Source Connection
+					    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com", "REPORTING_WH_XS", [Implementation="2.0", CommandTimeout=600]),
+					    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+					    MARTS_SCHEMA = OLIST_ANALYTICS_DB_Database{[Name="MARTS",Kind="Schema"]}[Data],
+					    FCT_ORDER_ITEMS_Table = MARTS_SCHEMA{[Name="FCT_ORDER_ITEMS",Kind="Table"]}[Data],
+					
+					    // -----------------------------------------------------------
+					    // ⚡ STEP 2: INCREMENTAL REFRESH FILTER
+					    // -----------------------------------------------------------
+					    #"Filter: Incremental Logic" = Table.SelectRows(FCT_ORDER_ITEMS_Table, each 
+					        [ORDER_DATE_DT] >= Date.From(RangeStart) and 
+					        [ORDER_DATE_DT] < Date.From(RangeEnd)
+					    ),
+					
+					    // -----------------------------------------------------------
+					    // 🛑 STEP 3: THE DATA CONTRACT
+					    // -----------------------------------------------------------
+					    #"Select: Contract Columns" = Table.SelectColumns(
+					        #"Filter: Incremental Logic",
+					        {
+					            "ORDER_ITEM_SK",
+					            "ORDER_ID",
+					            "PRODUCT_SK",
+					            "SELLER_SK",
+					            "CUSTOMER_SK",
+					            "ORDER_DATE_DT",
+					            "ORDER_STATUS",         
+					            "PRICE_BRL",
+					            "FREIGHT_VALUE_BRL",
+					            "IS_VERIFIED",
+					            "QUALITY_ISSUE_REASON",
+					            "DELIVERY_TIME_DAYS",
+					            "IS_DELAYED",
+					            "ORDER_SEQUENCE_NUMBER"
+					        }
+					    ),
+					
+					    // -----------------------------------------------------------
+					    // 🎨 STEP 4: RENAMING
+					    // -----------------------------------------------------------
+					    #"Rename: Ttile Case" = Table.RenameColumns(
+					        #"Select: Contract Columns",
+					        {
+					            // KEYS
+					            {"ORDER_ITEM_SK", "Order Item SK"},
+					            {"PRODUCT_SK", "Product SK"},
+					            {"SELLER_SK", "Seller SK"},
+					            {"CUSTOMER_SK", "Customer SK"},
+					            {"ORDER_ID", "Order ID"},
+					            
+					            // DATES & STATUS
+					            {"ORDER_DATE_DT", "Transaction Date"},
+					            {"ORDER_STATUS", "Order Status"},      
+					            
+					            // METRICS (Semantic Truth)
+					            {"PRICE_BRL", "Item Price"},           
+					            {"FREIGHT_VALUE_BRL", "Freight Value"}, 
+					            
+					            // LOGISTICS & SEQUENCE
+					            {"DELIVERY_TIME_DAYS", "Days to Deliver"},
+					            {"ORDER_SEQUENCE_NUMBER", "Customer Order Number"}, 
+					            
+					            // FLAGS
+					            {"IS_VERIFIED", "Is Verified"},
+					            {"IS_DELAYED", "Is Delayed"},
+					            {"QUALITY_ISSUE_REASON", "Quality Issue"}
+					        }
+					    ),
+					
+					    // -----------------------------------------------------------
+					    // 🛠 STEP 5: FINAL TYPES
+					    // -----------------------------------------------------------
+					    #"Cast: Correct Types" = Table.TransformColumnTypes(
+					        #"Rename: Ttile Case",
+					        {
+					            // 💰 Money
+					            {"Item Price", Currency.Type},
+					            {"Freight Value", Currency.Type},
+					            
+					            // 📅 Dates
+					            {"Transaction Date", type datetime}, 
+					            
+					            // 🔤 Text
+					            {"Order Status", type text},             
+					            {"Quality Issue", type text},
+					            
+					            // 🚩 Flags
+					            {"Is Verified", type logical},
+					            {"Is Delayed", type logical},
+					            
+					            // 🔢 Whole Numbers
+					            {"Days to Deliver", Int64.Type},
+					            {"Customer Order Number", Int64.Type}, 
+					            
+					            // 🔑 ID Keys (Text)
+					            {"Order Item SK", type text},
+					            {"Product SK", type text},
+					            {"Seller SK", type text},
+					            {"Customer SK", type text},
+					            {"Order ID", type text}
+					        }
+					    ),
+					    #"Reorder: Columns" = Table.ReorderColumns(#"Cast: Correct Types",{"Order Item SK", "Seller SK", "Customer SK", "Product SK", "Order ID", "Order Status", "Transaction Date", "Item Price", "Freight Value", "Is Delayed", "Days to Deliver", "Customer Order Number", "Is Verified", "Quality Issue"})
+					
+					in
+					    #"Reorder: Columns"
+					```
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
+

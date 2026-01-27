@@ -1,0 +1,225 @@
+/// Centralized table housing all DAX Base Measures. Acts as the single source of truth for business logic, ensuring consistency across reports.
+table _Measures
+	lineageTag: 05034f40-15b1-455c-b867-c4c738536919
+
+	/// Calculates total gross revenue from delivered orders only. Sums the 'Item Price' column.
+	measure 'Total Revenue' = ```
+			
+			CALCULATE(
+			    SUM('Sales'[Item Price]), 
+			    'Sales'[Order Status] = "delivered"
+			)
+			```
+		formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+		displayFolder: 01. Sales Performance
+		lineageTag: 5631c624-8076-4039-b639-baf32c2d73e7
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	/// The count of unique Order IDs that have been successfully delivered. Excludes canceled or in-transit orders.
+	measure 'Total Orders' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Sales'[Order ID]),
+			    'Sales'[Order Status] = "delivered"
+			)
+		formatString: #,0
+		displayFolder: 01. Sales Performance
+		lineageTag: ed8ee8b0-01ed-4782-a3f7-9272993c84a5
+
+	/// Average revenue generated per delivered order. Calculated as Total Revenue divided by Total Orders.
+	measure 'Average Order Value (AOV)' = ```
+			
+			DIVIDE(
+			    [Total Revenue], 
+			    [Total Orders], 
+			    0
+			)
+			```
+		formatString: "R$"#,0.00;-"R$"#,0.00;"R$"#,0.00
+		displayFolder: 01. Sales Performance
+		lineageTag: 21c37371-087e-426d-9fe0-4a2fdcfed2d9
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Total shipping fees paid by customers for delivered orders. Sums the 'Freight Value' column.
+	measure 'Total Freight Value' =
+			
+			CALCULATE(
+			    SUM('Sales'[Freight Value]),
+			    'Sales'[Order Status] = "delivered"
+			)
+		formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+		displayFolder: 02. Logistics & Delivery
+		lineageTag: bfbbc9e6-2363-4089-b5e8-b20573879a3f
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// The average time (in days) taken to deliver an order. Calculated from approved date to actual delivery date.
+	measure 'Avg Days to Deliver' =
+			
+			CALCULATE(
+			    AVERAGE('Sales'[Days to Deliver]),
+			    'Sales'[Order Status] = "delivered"
+			)
+		formatString: 0.0
+		displayFolder: 02. Logistics & Delivery
+		lineageTag: adc21a0a-95d6-4b6f-8401-4b42b232d73c
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Percentage of orders delivered after the estimated delivery date.
+	measure 'Delivery Delay Rate %' = ```
+			
+			VAR DelayedOrders = 
+			    CALCULATE(
+			        [Total Orders], 
+			        'Sales'[Is Delayed] = TRUE()
+			    )
+			RETURN
+			    DIVIDE(DelayedOrders, [Total Orders], 0)
+			```
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 02. Logistics & Delivery
+		lineageTag: 5289b1ab-3538-4e77-a6ab-a47e5665934e
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Count of distinct customers who have placed 2 or more delivered orders in their lifetime.
+	measure '# Repeat Customers' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Sales'[Customer SK]),
+			    'Sales'[Customer Order Number] >= 2,
+			    'Sales'[Order Status] = "delivered"
+			)
+		formatString: #,0
+		displayFolder: 03. Customer Intelligence
+		lineageTag: e8548ea9-1286-4da2-bd75-f09e8c280307
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Count of distinct customers who have placed exactly 1 delivered order.
+	measure '# New Customers' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Sales'[Customer SK]),
+			    'Sales'[Customer Order Number] = 1,
+			    'Sales'[Order Status] = "delivered"
+			)
+		formatString: #,0
+		displayFolder: 03. Customer Intelligence
+		lineageTag: a2391e98-d66f-4f1e-87f1-f7e9a1319a50
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// The ratio of Repeat Customers to Total Customers. Indicates customer loyalty and retention.
+	measure 'Repeat Purchase Rate %' =
+			
+			VAR TotalUniqueCustomers = DISTINCTCOUNT('Sales'[Customer SK])
+			RETURN
+			    DIVIDE([# Repeat Customers], TotalUniqueCustomers, 0)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 03. Customer Intelligence
+		lineageTag: 8c69e6ac-dfc1-49a2-aa1a-101209aa69a3
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Revenue generated from orders that passed all data quality checks (Is Verified = TRUE).
+	measure 'Verified Revenue' = ```
+			
+			CALCULATE(
+			    [Total Revenue],
+			    'Sales'[Is Verified] = TRUE() 
+			)
+			```
+		formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+		displayFolder: 04. Data Quality (Verified Metrics)
+		lineageTag: 3f60b87b-a136-49f3-a65b-1831265cd7d3
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	/// Count of orders that passed all data quality checks (Is Verified = TRUE).
+	measure 'Verified Orders' =
+			
+			CALCULATE(
+			    [Total Orders],
+			    'Sales'[Is Verified] = TRUE()
+			)
+		formatString: #,0
+		displayFolder: 04. Data Quality (Verified Metrics)
+		lineageTag: 9643e84c-fb2d-4e63-ae5f-7875b0f08b7d
+
+	/// Revenue gap caused by data quality issues. Calculated as Total Revenue minus Verified Revenue.
+	measure 'Cost of Poor Quality (Revenue Risk)' =
+			
+			[Total Revenue] - [Verified Revenue]
+		formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+		displayFolder: 04. Data Quality (Verified Metrics)
+		lineageTag: c576cb3d-0017-46cd-b26a-f191d07186ed
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Percentage of Total Revenue flagged as risky due to data quality issues (e.g. negative values, missing dates).
+	measure '% Revenue at Risk' =
+			
+			DIVIDE(
+			    [Total Revenue] - [Verified Revenue],
+			    [Total Revenue],
+			    0
+			)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: 04. Data Quality (Verified Metrics)
+		lineageTag: b748919f-489f-4419-a8b2-c03eba44998a
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	/// Average delivery days for Verified Orders only. Used as a trusted baseline for logistics performance.
+	measure 'Verified Avg Days to Deliver' =
+			
+			CALCULATE(
+			    [Avg Days to Deliver],
+			    'Sales'[Is Verified] = TRUE()
+			)
+		formatString: 0.0
+		displayFolder: 04. Data Quality (Verified Metrics)
+		lineageTag: 090a1617-cd93-457a-8183-d5729d529217
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Average price of a single item sold. Calculated as Total Revenue divided by the count of items in delivered orders.
+	measure 'Avg Price per Item' = ```
+			
+			DIVIDE(
+			    [Total Revenue], 
+			    CALCULATE(COUNTROWS('Sales'), 'Sales'[Order Status] = "delivered"),
+			    0
+			)
+			```
+		formatString: "R$"#,0.00;-"R$"#,0.00;"R$"#,0.00
+		displayFolder: 05. Product & Seller Context
+		lineageTag: a11cf10c-d70e-48b0-a1e3-0caae4e4fec1
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ENSURE_TABLES_HAVE_RELATIONSHIPS"]}
+
