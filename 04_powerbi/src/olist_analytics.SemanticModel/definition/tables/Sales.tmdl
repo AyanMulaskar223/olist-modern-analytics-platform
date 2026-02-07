@@ -2,6 +2,124 @@
 table Sales
 	lineageTag: c4d71848-bb94-4c3e-b2c3-1a3b6cbae6a6
 
+	refreshPolicy
+		policyType: basic
+		rollingWindowGranularity: year
+		rollingWindowPeriods: 10
+		incrementalGranularity: month
+		incrementalPeriods: 1
+		incrementalPeriodsOffset: -1
+		sourceExpression = ```
+			let
+			    // 1. Source Connection
+			    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com", "REPORTING_WH_XS", [Implementation="2.0", CommandTimeout=600]),
+			    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+			    MARTS_SCHEMA = OLIST_ANALYTICS_DB_Database{[Name="MARTS",Kind="Schema"]}[Data],
+			    FCT_ORDER_ITEMS_Table = MARTS_SCHEMA{[Name="FCT_ORDER_ITEMS",Kind="Table"]}[Data],
+			
+			    // -----------------------------------------------------------
+			    // ⚡ STEP 2: INCREMENTAL REFRESH FILTER
+			    // -----------------------------------------------------------
+			    #"Filter: Incremental Logic" = Table.SelectRows(FCT_ORDER_ITEMS_Table, each 
+			        [ORDER_DATE_DT] >= Date.From(RangeStart) and 
+			        [ORDER_DATE_DT] < Date.From(RangeEnd)
+			    ),
+			
+			    // -----------------------------------------------------------
+			    // 🛑 STEP 3: THE DATA CONTRACT
+			    // -----------------------------------------------------------
+			    #"Select: Contract Columns" = Table.SelectColumns(
+			        #"Filter: Incremental Logic",
+			        {
+			            "ORDER_ITEM_SK",
+			            "ORDER_ID",
+			            "PRODUCT_SK",
+			            "SELLER_SK",
+			            "CUSTOMER_SK",
+			            "ORDER_DATE_DT",
+			            "ORDER_STATUS",         
+			            "PRICE_BRL",
+			            "FREIGHT_VALUE_BRL",
+			            "IS_VERIFIED",
+			            "QUALITY_ISSUE_REASON",
+			            "DELIVERY_TIME_DAYS",
+			            "IS_DELAYED",
+			            "ORDER_SEQUENCE_NUMBER"
+			        }
+			    ),
+			
+			    // -----------------------------------------------------------
+			    // 🎨 STEP 4: RENAMING
+			    // -----------------------------------------------------------
+			    #"Rename: Ttile Case" = Table.RenameColumns(
+			        #"Select: Contract Columns",
+			        {
+			            // KEYS
+			            {"ORDER_ITEM_SK", "Order Item SK"},
+			            {"PRODUCT_SK", "Product SK"},
+			            {"SELLER_SK", "Seller SK"},
+			            {"CUSTOMER_SK", "Customer SK"},
+			            {"ORDER_ID", "Order ID"},
+			            
+			            // DATES & STATUS
+			            {"ORDER_DATE_DT", "Transaction Date"},
+			            {"ORDER_STATUS", "Order Status"},      
+			            
+			            // METRICS (Semantic Truth)
+			            {"PRICE_BRL", "Item Price"},           
+			            {"FREIGHT_VALUE_BRL", "Freight Value"}, 
+			            
+			            // LOGISTICS & SEQUENCE
+			            {"DELIVERY_TIME_DAYS", "Days to Deliver"},
+			            {"ORDER_SEQUENCE_NUMBER", "Customer Order Number"}, 
+			            
+			            // FLAGS
+			            {"IS_VERIFIED", "Is Verified"},
+			            {"IS_DELAYED", "Is Delayed"},
+			            {"QUALITY_ISSUE_REASON", "Quality Issue"}
+			        }
+			    ),
+			
+			    // -----------------------------------------------------------
+			    // 🛠 STEP 5: FINAL TYPES
+			    // -----------------------------------------------------------
+			    #"Cast: Correct Types" = Table.TransformColumnTypes(
+			        #"Rename: Ttile Case",
+			        {
+			            // 💰 Money
+			            {"Item Price", Currency.Type},
+			            {"Freight Value", Currency.Type},
+			            
+			            // 📅 Dates
+			            {"Transaction Date", type datetime}, 
+			            
+			            // 🔤 Text
+			            {"Order Status", type text},             
+			            {"Quality Issue", type text},
+			            
+			            // 🚩 Flags
+			            {"Is Verified", type logical},
+			            {"Is Delayed", type logical},
+			            
+			            // 🔢 Whole Numbers
+			            {"Days to Deliver", Int64.Type},
+			            {"Customer Order Number", Int64.Type}, 
+			            
+			            // 🔑 ID Keys (Text)
+			            {"Order Item SK", type text},
+			            {"Product SK", type text},
+			            {"Seller SK", type text},
+			            {"Customer SK", type text},
+			            {"Order ID", type text}
+			        }
+			    ),
+			    #"Reorder: Columns" = Table.ReorderColumns(#"Cast: Correct Types",{"Order Item SK", "Seller SK", "Customer SK", "Product SK", "Order ID", "Order Status", "Transaction Date", "Item Price", "Freight Value", "Is Delayed", "Days to Deliver", "Customer Order Number", "Is Verified", "Quality Issue"}),
+			    #"Filtered Rows" = Table.SelectRows(#"Reorder: Columns", each [Transaction Date] >= RangeStart and [Transaction Date] < RangeEnd)
+			
+			in
+			    #"Filtered Rows"
+			```
+
 	/// Surrogate Primary Key for the line item. Generated via MD5 Hash of (Order ID + Item ID) in the ETL layer to ensure uniqueness. Hidden from report users as it is a technical artifact for distinct counting if needed.
 	column 'Order Item SK'
 		dataType: string
@@ -296,10 +414,11 @@ table Sales
 				            {"Order ID", type text}
 				        }
 				    ),
-				    #"Reorder: Columns" = Table.ReorderColumns(#"Cast: Correct Types",{"Order Item SK", "Seller SK", "Customer SK", "Product SK", "Order ID", "Order Status", "Transaction Date", "Item Price", "Freight Value", "Is Delayed", "Days to Deliver", "Customer Order Number", "Is Verified", "Quality Issue"})
+				    #"Reorder: Columns" = Table.ReorderColumns(#"Cast: Correct Types",{"Order Item SK", "Seller SK", "Customer SK", "Product SK", "Order ID", "Order Status", "Transaction Date", "Item Price", "Freight Value", "Is Delayed", "Days to Deliver", "Customer Order Number", "Is Verified", "Quality Issue"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Reorder: Columns", each [Transaction Date] >= RangeStart and [Transaction Date] < RangeEnd)
 				
 				in
-				    #"Reorder: Columns"
+				    #"Filtered Rows"
 				```
 
 	annotation PBI_NavigationStepName = Navigation

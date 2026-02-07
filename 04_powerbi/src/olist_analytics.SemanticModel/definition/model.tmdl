@@ -50,6 +50,7 @@ ref table 'Security Rules'
 ref table _Measures
 ref table 'Time Intelligence'
 ref table '_Data Dictionary'
+ref table 'Performance Metrics'
 
 ref role 'Dynamic State Access'
 

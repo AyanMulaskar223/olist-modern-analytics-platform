@@ -1,5 +1,6 @@
 /// Calculation group used to dynamically apply time-based logic (e.g., Previous Month, Year-to-Date, Growth %) to any measure selected in a report visual.
 table 'Time Intelligence'
+	isHidden
 	lineageTag: c00389d2-9621-4e72-a01f-e33252b9e388
 
 	calculationGroup
@@ -33,6 +34,7 @@ table 'Time Intelligence'
 
 	column 'Time Period'
 		dataType: string
+		isHidden
 		lineageTag: 9fdc1099-2971-457d-a1e7-3c30eeaa5e3e
 		summarizeBy: none
 		sourceColumn: Name
@@ -40,8 +42,11 @@ table 'Time Intelligence'
 
 		annotation SummarizationSetBy = Automatic
 
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
 	column Ordinal
 		dataType: int64
+		isHidden
 		formatString: 0
 		lineageTag: 8a01fa68-fb25-435c-9e82-f29fbe0f1736
 		summarizeBy: none

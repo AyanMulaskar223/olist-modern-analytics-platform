@@ -5,7 +5,7 @@
       "ordinal": 0,
       "scrollPosition": {
         "x": 0,
-        "y": 0
+        "y": 0.81699348986148834
       },
       "nodes": [
         {
@@ -16,10 +16,10 @@
           "nodeIndex": "Date",
           "nodeLineageTag": "56e2864e-8fa5-4e1b-bbea-1e88afefc9c5",
           "size": {
-            "height": 300,
+            "height": 491.25,
             "width": 234
           },
-          "zIndex": 10
+          "zIndex": 9
         },
         {
           "location": {
@@ -42,7 +42,7 @@
           "nodeIndex": "Seller",
           "nodeLineageTag": "f84b9609-4bd6-4484-bee5-24d4ba70b2f8",
           "size": {
-            "height": 242.63957264957264,
+            "height": 273.88957264957264,
             "width": 234
           },
           "zIndex": 7
@@ -81,7 +81,7 @@
           "nodeIndex": "Customer",
           "nodeLineageTag": "784e2cae-2e30-4949-ae5d-de4b25da4cc0",
           "size": {
-            "height": 176,
+            "height": 279.75,
             "width": 234
           },
           "zIndex": 6
@@ -94,7 +94,7 @@
           "nodeIndex": "Product",
           "nodeLineageTag": "0527677c-0516-4320-af66-50a0670f345e",
           "size": {
-            "height": 224,
+            "height": 326.5,
             "width": 234
           },
           "zIndex": 5
@@ -107,10 +107,10 @@
           "nodeIndex": "Sales",
           "nodeLineageTag": "c4d71848-bb94-4c3e-b2c3-1a3b6cbae6a6",
           "size": {
-            "height": 372,
+            "height": 438.25,
             "width": 234
           },
-          "zIndex": 9
+          "zIndex": 11
         },
         {
           "location": {
@@ -123,7 +123,7 @@
             "height": 249.60444660957904,
             "width": 234
           },
-          "zIndex": 11
+          "zIndex": 10
         },
         {
           "location": {
@@ -148,10 +148,23 @@
             "width": 234
           },
           "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 2394.5865656560914,
+            "y": 332.03456744396652
+          },
+          "nodeIndex": "Performance Metrics",
+          "nodeLineageTag": "ab53c34d-7e28-478a-b908-c16526208ef9",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 12
         }
       ],
       "name": "All tables",
-      "zoomValue": 74.860351134928266,
+      "zoomValue": 80,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": true,
       "hideKeyFieldsWhenCollapsed": false,

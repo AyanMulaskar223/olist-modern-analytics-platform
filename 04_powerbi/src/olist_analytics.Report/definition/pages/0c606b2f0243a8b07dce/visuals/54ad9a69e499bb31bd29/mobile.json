@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainerMobileState/2.2.0/schema.json",
+  "position": {
+    "x": 11,
+    "y": 14,
+    "z": 2000,
+    "height": 106,
+    "width": 313,
+    "tabOrder": 2000
+  },
+  "objects": {
+    "general": [
+      {
+        "properties": {
+          "paragraphs": [
+            {
+              "textRuns": [
+                {
+                  "value": "Data Quality & Integrity Audit",
+                  "textStyle": {
+                    "fontFamily": "DIN",
+                    "fontSize": "12pt"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
