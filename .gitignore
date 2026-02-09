@@ -106,3 +106,10 @@ desktop.ini
 
 #Other
 adlc.md
+# Power BI - Ignore Binary Files and Data Cache
+*.pbit
+
+# Ignore Power BI Project User Settings & Cache
+# (These contain your local paths and potentially cached data rows)
+**/.pbi/cache/
+**/.pbi/users.zip
