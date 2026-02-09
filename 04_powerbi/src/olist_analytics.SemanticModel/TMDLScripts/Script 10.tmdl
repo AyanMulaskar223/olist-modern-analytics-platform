@@ -1,0 +1,231 @@
+createOrReplace
+
+	/// Automated metadata table generated via DAX INFO functions. Provides a live inventory of all Measures, Columns, Tables, and Relationships for documentation and data governance.
+	table '_Data Dictionary'
+		lineageTag: 9a5aeb2a-3cbb-47f7-b01b-e6e7e42622e2
+
+		/// Categorizes the object type (e.g., Measure, Column, Table, Relationship).
+		column 'Information View'
+			dataType: string
+			lineageTag: a0a85493-2428-44e9-bc8a-666bc806d9d3
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Information View]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The name of the parent table where this object resides.
+		column Table
+			dataType: string
+			lineageTag: 94c795e0-c1de-4400-aa19-1bc45c574e6b
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Table]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The specific name of the measure, column, or relationship.
+		column Column/Measure/Relationship
+			dataType: string
+			lineageTag: df76ba5f-95f0-460c-829b-8044ae61ee7f
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Column/Measure/Relationship]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The technical logic, DAX formula, or relationship parameters defining this object.
+		column Expression
+			dataType: string
+			lineageTag: f18522bb-188a-4941-a500-c3ad7f9b3f5b
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Expression]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The logical folder structure used to organize this object within the interface.
+		column 'Display Folder'
+			dataType: string
+			lineageTag: d39b2e41-3093-4941-8867-8b56b4144225
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Display Folder]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The data type (e.g., Integer, String) and formatting string (e.g., Currency) applied to the object.
+		column 'Data Type Format'
+			dataType: string
+			lineageTag: e48dfd37-7077-48d7-9e5c-7dd5242b146a
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Data Type Format]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The semantic category of the data (e.g., City, URL, Barcode), used for special visual rendering.
+		column 'Data Category'
+			dataType: string
+			lineageTag: 43149558-8746-47be-9508-6a333ebe5d64
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Data Category]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The business definition and context provided for the object.
+		column Description
+			dataType: string
+			lineageTag: 9964db65-b04f-4c9c-936f-fa540defb0a6
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Description]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		/// The specific sub-type of the object (e.g., Calculated Measure vs. Standard Column).
+		column Type
+			dataType: string
+			lineageTag: d1cfc133-50b5-4215-b1e5-2341e1e00a8d
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Type]
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_VISIBLE_COLUMNS_NO_DESCRIPTION"]}
+
+		partition '_Data Dictionary' = calculated
+			mode: import
+			source = ```
+					
+					/* The column structure will follow as below:
+					Information View
+					Table
+					Column/Measure/Relationship
+					Expression
+					Display Folder
+					Data Type Format
+					Data Category
+					Description
+					Type
+					*/
+					
+					VAR _Column =
+					-- Building Table for INFO VIEW COLUMNS
+					SELECTCOLUMNS (
+					    FILTER (
+					        INFO.VIEW.COLUMNS (),
+					        [IsHidden] = FALSE
+					            && [Table] <> "_Data Dictionary"
+					            && NOT CONTAINSSTRING ( [Table], "LocalDateTable" )
+					            && NOT CONTAINSSTRING ( [Table], "DateTableTemplate" )
+					    ),
+					    "Information View", "Column",
+					    "Table", [Table],
+					    "Column/Measure/Relationship", [Name],
+					    "Expression", [Expression],
+					    "Display Folder", [DisplayFolder],
+					    "Data Type Format",
+					        IF (
+					            NOT ISBLANK ( [FormatString] ),
+					            [DataType] & ": " & [FormatString],
+					            [DataType]
+					        ),
+					    "Data Category", [DataCategory],
+					    "Description", [Description],
+					    "Type", [Type]
+					)
+					
+					VAR _Measure =
+					-- Building Table for INFO VIEW MEASURES
+					SELECTCOLUMNS (
+					    FILTER (
+					        INFO.VIEW.MEASURES (),
+					        [IsHidden] = FALSE
+					            && [Table] <> "_Data Dictionary"
+					    ),
+					    "Information View", "Measure",
+					    "Table", [Table],
+					    "Column/Measure/Relationship", [Name],
+					    "Expression", [Expression],
+					    "Display Folder", [DisplayFolder],
+					    "Data Type Format", [FormatStringDefinition],
+					    "Data Category", [DataCategory],
+					    "Description", [Description],
+					    "Type", "Calculated Measure"
+					)
+					
+					VAR _Table = 
+					-- Building Table for INFO VIEW TABLES
+					SELECTCOLUMNS (
+					    FILTER (
+					        INFO.VIEW.TABLES (),
+					        [IsHidden] = FALSE
+					            && [Name] <> "_Data Dictionary"
+					            && NOT CONTAINSSTRING ( [Name], "LocalDateTable" )
+					            && NOT CONTAINSSTRING ( [Name], "DateTableTemplate" )
+					    ),
+					    "Information View", "Table",
+					    "Table", [Name],
+					    "Column/Measure/Relationship", "",
+					    "Expression", [Expression],
+					    "Display Folder", "",
+					    "Data Type Format", [StorageMode],
+					    "Data Category", [DataCategory],
+					    "Description", [Description],
+					    "Type", "Table"
+					)
+					
+					VAR _Relationship =
+					-- Building Table for INFO VIEW RELATIONSHIP
+					SELECTCOLUMNS(
+					    FILTER(
+					        INFO.VIEW.RELATIONSHIPS(),
+					            NOT CONTAINSSTRING ( [ToTable], "DateTableTemplate" )
+					            && NOT CONTAINSSTRING ( [ToTable], "LocalDateTable" )
+					    ),        
+					    "Information View", "Relationship",
+					    "Table", [FromTable],
+					    "Column/Measure/Relationship",
+					        "From Table: " & [FromTable] & UNICHAR(10) &
+					        "From Column: " & [FromColumn] & UNICHAR(10) &
+					        "To Table: " & [ToTable] & UNICHAR(10) &
+					        "To Column" & [ToColumn],
+					    "Expression", [Relationship],
+					    "Display Folder", "",
+					    "Data Type Format", "",
+					    "Data Category", "",
+					    "Description",
+					        "From Cardinality: " & [FromCardinality] & UNICHAR(10) &
+					        "To Cardinality: " & [ToCardinality] & UNICHAR(10) &
+					        "Cross Filter Behavior: " & [CrossFilteringBehavior] & UNICHAR(10) &
+					        "Security Filter Behavior: " & [SecurityFilteringBehavior],
+					        "Type", "Relationship"
+					)
+					
+					RETURN
+					-- Bringing all variables together
+					UNION(_Column,_Measure,_Table, _Relationship)
+					```
+
+		annotation PBI_Id = 37f16a5749614261bcb3ca42f0722f8d
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ENSURE_TABLES_HAVE_RELATIONSHIPS","REDUCE_USAGE_OF_CALCULATED_TABLES"]}

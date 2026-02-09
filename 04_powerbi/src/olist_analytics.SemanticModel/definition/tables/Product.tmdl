@@ -1,0 +1,107 @@
+/// Dimension table containing product details and quality verification status. Sourced from OLIST_ANALYTICS_DB.MARTS.DIM_PRODUCTS. Includes the 'Is Verified' flag used to calculate Data Quality metrics.
+table Product
+	lineageTag: 0527677c-0516-4320-af66-50a0670f345e
+
+	/// dbt Surrogate Key (MD5 hash) linking 'Product' to the 'Sales' fact table. Optimized for 1:Many relationships and hidden to prevent filtering misuse.
+	column 'Product SK'
+		dataType: string
+		isHidden
+		isKey
+		isAvailableInMdx: false
+		lineageTag: 2285fb82-0864-488e-97b0-b5217bdbfbc2
+		summarizeBy: none
+		sourceColumn: Product SK
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	/// Natural Key from the Olist catalog source system. Uniquely identifies a specific SKU listing across all sellers; useful for detailed drill-through.
+	column 'Product ID'
+		dataType: string
+		lineageTag: 16ccc589-495f-4c9a-8d55-bc0b5c994f11
+		summarizeBy: none
+		sourceColumn: Product ID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// English translation of the product line (e.g., 'Health Beauty', 'Sports Leisure'). Use this field for standard category performance analysis (Business Question Q2).
+	column 'Product Category'
+		dataType: string
+		lineageTag: 6e92f627-6f8b-4176-9219-00d78e466ee8
+		summarizeBy: none
+		sourceColumn: Product Category
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Original Portuguese category name (e.g., 'beleza_saude') from the raw Olist data. Used for auditing translation mapping coverage; hidden from report viewers to ensure language consistency.
+	column 'Product Category (Source)'
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 07eaf11f-548a-433d-8b95-88dcab6b8c5f
+		summarizeBy: none
+		sourceColumn: Product Category (Source)
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
+	/// Data Quality Flag. Returns TRUE if the product record is complete (has dimensions, photos, and valid keys). Used to distinguish 'clean' vs 'incomplete' catalog items.
+	column 'Is Verified'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 56acf315-e089-4dd2-bbb1-c68909fb864b
+		summarizeBy: none
+		sourceColumn: Is Verified
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Specific diagnosis of data quality failures (e.g., 'Missing Photos', 'Zero Dimensions'). NULL for verified products. Used by the Analytics Engineering team for remediation prioritization.
+	column 'Quality Issue'
+		dataType: string
+		lineageTag: b9bbb364-e3da-457a-9d16-166e484feb3b
+		summarizeBy: none
+		sourceColumn: Quality Issue
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Standard analytical drill-path enabling navigation from the English Category aggregate level down to individual SKU granularity.
+	hierarchy 'Product Context'
+		lineageTag: 79557bcc-a486-4226-8ab1-13257bc1b58b
+
+		level 'Product Category'
+			lineageTag: 11951f0e-1109-4444-a9b6-04502e7b572d
+			column: 'Product Category'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level 'Product ID'
+			lineageTag: 5bbab5bf-62d4-4be0-8367-36f2956e4dee
+			column: 'Product ID'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+	partition Product = m
+		mode: import
+		queryGroup: '01 Dimensions'
+		source =
+				let
+				    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com","REPORTING_WH_XS",[Implementation="2.0", CommandTimeout=600, Role="REPORTER_ROLE", ConnectionTimeout=120]),
+				    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+				    MARTS_Schema = OLIST_ANALYTICS_DB_Database{[Name="MARTS",Kind="Schema"]}[Data],
+				    DIM_PRODUCTS_Table = MARTS_Schema{[Name="DIM_PRODUCTS",Kind="Table"]}[Data],
+				    #"Select: Contract Columns" = Table.SelectColumns(DIM_PRODUCTS_Table,{"PRODUCT_SK", "PRODUCT_ID", "PRODUCT_CATEGORY", "PRODUCT_CATEGORY_ORIGINAL", "IS_VERIFIED", "QUALITY_ISSUE_REASON"}),
+				    #"Rename: To Title Case" = Table.RenameColumns(#"Select: Contract Columns",{{"PRODUCT_ID", "Product ID"}, {"PRODUCT_CATEGORY", "Product Category"}, {"IS_VERIFIED", "Is Verified"}, {"QUALITY_ISSUE_REASON", "Quality Issue"}, {"PRODUCT_SK", "Product SK"}, {"PRODUCT_CATEGORY_ORIGINAL", "Product Category (Source)"}}),
+				    #"Data Type: Proper Types" = Table.TransformColumnTypes(#"Rename: To Title Case",{{"Is Verified", type logical}})
+				in
+				    #"Data Type: Proper Types"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,506 @@
+createOrReplace
+
+	/// Centralized table housing all DAX Base Measures. Acts as the single source of truth for business logic, ensuring consistency across reports.
+	table _Measures
+		lineageTag: 05034f40-15b1-455c-b867-c4c738536919
+
+		/// Calculates total gross revenue from delivered orders only. Sums the 'Item Price' column.
+		measure 'Total Revenue' = ```
+				
+				CALCULATE(
+				    SUM('Sales'[Item Price]), 
+				    'Sales'[Order Status] = "delivered"
+				)
+				```
+			formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+			displayFolder: 01. Sales Performance
+			lineageTag: 5631c624-8076-4039-b639-baf32c2d73e7
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		/// The count of unique Order IDs that have been successfully delivered. Excludes canceled or in-transit orders.
+		measure 'Total Orders' =
+				
+				CALCULATE(
+				    DISTINCTCOUNT('Sales'[Order ID]),
+				    'Sales'[Order Status] = "delivered"
+				)
+			formatString: #,0
+			displayFolder: 01. Sales Performance
+			lineageTag: ed8ee8b0-01ed-4782-a3f7-9272993c84a5
+
+		/// Average revenue generated per delivered order. Calculated as Total Revenue divided by Total Orders.
+		measure 'Average Order Value (AOV)' = ```
+				
+				DIVIDE(
+				    [Total Revenue], 
+				    [Total Orders], 
+				    0
+				)
+				```
+			formatString: "R$"#,0.00;-"R$"#,0.00;"R$"#,0.00
+			displayFolder: 01. Sales Performance
+			lineageTag: 21c37371-087e-426d-9fe0-4a2fdcfed2d9
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Total shipping fees paid by customers for delivered orders. Sums the 'Freight Value' column.
+		measure 'Total Freight Value' =
+				
+				CALCULATE(
+				    SUM('Sales'[Freight Value]),
+				    'Sales'[Order Status] = "delivered"
+				)
+			formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+			displayFolder: 02. Logistics & Delivery
+			lineageTag: bfbbc9e6-2363-4089-b5e8-b20573879a3f
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// The average time (in days) taken to deliver an order. Calculated from approved date to actual delivery date.
+		measure 'Avg Days to Deliver' =
+				
+				CALCULATE(
+				    AVERAGE('Sales'[Days to Deliver]),
+				    'Sales'[Order Status] = "delivered"
+				)
+			formatString: 0.0
+			displayFolder: 02. Logistics & Delivery
+			lineageTag: adc21a0a-95d6-4b6f-8401-4b42b232d73c
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Percentage of orders delivered after the estimated delivery date.
+		measure 'Delivery Delay Rate %' = ```
+				
+				VAR DelayedOrders = 
+				    CALCULATE(
+				        [Total Orders], 
+				        'Sales'[Is Delayed] = TRUE()
+				    )
+				RETURN
+				    DIVIDE(DelayedOrders, [Total Orders], 0)
+				```
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 02. Logistics & Delivery
+			lineageTag: 5289b1ab-3538-4e77-a6ab-a47e5665934e
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Count of distinct customers who have placed 2 or more delivered orders in their lifetime.
+		measure '# Repeat Customers' =
+				
+				CALCULATE(
+				    DISTINCTCOUNT('Sales'[Customer SK]),
+				    'Sales'[Customer Order Number] >= 2,
+				    'Sales'[Order Status] = "delivered"
+				)
+			formatString: #,0
+			displayFolder: 03. Customer Intelligence
+			lineageTag: e8548ea9-1286-4da2-bd75-f09e8c280307
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Count of distinct customers who have placed exactly 1 delivered order.
+		measure '# New Customers' =
+				
+				CALCULATE(
+				    DISTINCTCOUNT('Sales'[Customer SK]),
+				    'Sales'[Customer Order Number] = 1,
+				    'Sales'[Order Status] = "delivered"
+				)
+			formatString: #,0
+			displayFolder: 03. Customer Intelligence
+			lineageTag: a2391e98-d66f-4f1e-87f1-f7e9a1319a50
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// The ratio of Repeat Customers to Total Customers. Indicates customer loyalty and retention.
+		measure 'Repeat Purchase Rate %' =
+				
+				VAR TotalUniqueCustomers = DISTINCTCOUNT('Sales'[Customer SK])
+				RETURN
+				    DIVIDE([# Repeat Customers], TotalUniqueCustomers, 0)
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 03. Customer Intelligence
+			lineageTag: 8c69e6ac-dfc1-49a2-aa1a-101209aa69a3
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Revenue generated from orders that passed all data quality checks (Is Verified = TRUE).
+		measure 'Verified Revenue' = ```
+				
+				CALCULATE(
+				    [Total Revenue],
+				    'Sales'[Is Verified] = TRUE() 
+				)
+				```
+			formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 3f60b87b-a136-49f3-a65b-1831265cd7d3
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		/// Count of orders that passed all data quality checks (Is Verified = TRUE).
+		measure 'Verified Orders' =
+				
+				CALCULATE(
+				    [Total Orders],
+				    'Sales'[Is Verified] = TRUE()
+				)
+			formatString: #,0
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 9643e84c-fb2d-4e63-ae5f-7875b0f08b7d
+
+		/// Revenue gap caused by data quality issues. Calculated as Total Revenue minus Verified Revenue.
+		measure 'Cost of Poor Quality (Revenue Risk)' =
+				
+				[Total Revenue] - [Verified Revenue]
+			formatString: "R$"#,0;-"R$"#,0;"R$"#,0
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: c576cb3d-0017-46cd-b26a-f191d07186ed
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Percentage of Total Revenue flagged as risky due to data quality issues (e.g. negative values, missing dates).
+		measure '% Revenue at Risk' =
+				
+				DIVIDE(
+				    [Total Revenue] - [Verified Revenue],
+				    [Total Revenue],
+				    0
+				)
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: b748919f-489f-4419-a8b2-c03eba44998a
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_DESCRIPTIONS","TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Average delivery days for Verified Orders only. Used as a trusted baseline for logistics performance.
+		measure 'Verified Avg Days to Deliver' =
+				
+				CALCULATE(
+				    [Avg Days to Deliver],
+				    'Sales'[Is Verified] = TRUE()
+				)
+			formatString: 0.0
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 090a1617-cd93-457a-8183-d5729d529217
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		/// Average price of a single item sold. Calculated as Total Revenue divided by the count of items in delivered orders.
+		measure 'Avg Price per Item' = ```
+				
+				DIVIDE(
+				    [Total Revenue], 
+				    CALCULATE(COUNTROWS('Sales'), 'Sales'[Order Status] = "delivered"),
+				    0
+				)
+				```
+			formatString: "R$"#,0.00;-"R$"#,0.00;"R$"#,0.00
+			displayFolder: 05. Product & Seller Context
+			lineageTag: a11cf10c-d70e-48b0-a1e3-0caae4fec1
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_VISIBLE_NAMES"]}
+
+		/// Dynamic title for product visuals. Displays 'Top 10 Products by [Metric]' based on user selection.
+		measure 'Title Product Performance' =
+				
+				"Top 10 Products by " & MAX('Performance Metrics'[Performance Metrics])
+			displayFolder: _UX & Formatting
+			lineageTag: 92d67c2f-429b-4427-b678-c115580a6a8b
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Dynamic title for geographic visuals. Displays '[Metric] Distribution by State' based on user selection.
+		measure 'Title State Distribution' =
+				
+				MAX('Performance Metrics'[Performance Metrics]) & " Distribution by State"
+			displayFolder: _UX & Formatting
+			lineageTag: ffac2376-903d-47a8-b41d-2f674434a4e0
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Month-over-Month Revenue growth percentage. Compares the last fully completed month to the previous month.
+		measure 'Revenue MoM % (Completed Month)' = ```
+				
+				-- 1. Find the latest date in your data (e.g., Sep 3, 2018)
+				VAR MaxDate = MAX('Sales'[Transaction Date])
+				
+				-- 2. Jump back to the end of the PREVIOUS month (August 31) to get a full period
+				VAR EndCurrentMonth = EOMONTH(MaxDate, -1) 
+				VAR StartCurrentMonth = EOMONTH(MaxDate, -2) + 1
+				
+				-- 3. Define the month before that (July)
+				VAR EndPrevMonth = EOMONTH(MaxDate, -2)
+				VAR StartPrevMonth = EOMONTH(MaxDate, -3) + 1
+				
+				-- 4. Calculate Revenue for these full months
+				VAR CurrentRevenue = 
+				    CALCULATE(
+				        [Total Revenue], 
+				        DATESBETWEEN('Date'[Date], StartCurrentMonth, EndCurrentMonth)
+				    )
+				
+				VAR PrevRevenue = 
+				    CALCULATE(
+				        [Total Revenue], 
+				        DATESBETWEEN('Date'[Date], StartPrevMonth, EndPrevMonth)
+				    )
+				
+				RETURN
+				    DIVIDE(CurrentRevenue - PrevRevenue, PrevRevenue, 0)
+				```
+			displayFolder: 01. Sales Performance
+			lineageTag: 8a53a7f6-a620-4ec8-833e-b407393157d3
+
+			formatStringDefinition = " +0.0%;-0.0%;0.0%"
+
+		/// Conditional formatting HEX code for Revenue trend. Returns Green for positive MoM, Red for negative.
+		measure 'KPI Trend Color' = ```
+				
+				VAR MoM = [Revenue MoM % (Completed Month)]
+				RETURN
+				    IF(
+				        MoM >= 0, 
+				        "#008000", -- Green Hex Code
+				        "#FF0000"  -- Red Hex Code
+				    )
+				```
+			displayFolder: _UX & Formatting
+			lineageTag: 9c8385fc-daf2-42b1-b38e-bad3a26c67e0
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Month-over-Month Order volume growth percentage. Compares the last fully completed month to the previous month.
+		measure 'Orders MoM % (Stable)' = ```
+				
+				-- 1. Find the latest date in your data
+				VAR MaxDate = MAX('Sales'[Transaction Date])
+				
+				-- 2. Define "Current" as the LAST FULL MONTH (e.g., August)
+				VAR EndCurrentMonth = EOMONTH(MaxDate, -1) 
+				VAR StartCurrentMonth = EOMONTH(MaxDate, -2) + 1
+				
+				-- 3. Define "Previous" as the month before that (e.g., July)
+				VAR EndPrevMonth = EOMONTH(MaxDate, -2)
+				VAR StartPrevMonth = EOMONTH(MaxDate, -3) + 1
+				
+				-- 4. Calculate Orders
+				VAR CurrentOrders = 
+				    CALCULATE(
+				        [Total Orders], 
+				        DATESBETWEEN('Date'[Date], StartCurrentMonth, EndCurrentMonth)
+				    )
+				
+				VAR PrevOrders = 
+				    CALCULATE(
+				        [Total Orders], 
+				        DATESBETWEEN('Date'[Date], StartPrevMonth, EndPrevMonth)
+				    )
+				
+				RETURN
+				    DIVIDE(CurrentOrders - PrevOrders, PrevOrders, 0)
+				```
+			formatString: " +0.0%;-0.0%;0.0%"
+			displayFolder: 01. Sales Performance
+			lineageTag: 47667536-971e-4a71-88a8-7b5a79b3abe2
+
+			annotation PBI_FormatHint = {"isCustom":true}
+
+		/// Conditional formatting HEX code for Order volume trend. Returns Green for positive MoM, Red for negative.
+		measure 'Orders Trend Color' =
+				
+				IF( [Orders MoM % (Stable)] >= 0, "#008000", "#FF0000" )
+			displayFolder: _UX & Formatting
+			lineageTag: cb05a2e4-5968-4639-807e-4cb598fc34ca
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Month-over-Month Average Order Value (AOV) growth percentage. Compares the last fully completed month to the previous month.
+		measure 'AOV MoM % (Stable)' = ```
+				
+				-- 1. Find the latest date in your data
+				VAR MaxDate = MAX('Sales'[Transaction Date])
+				
+				-- 2. Define "Current" as the LAST FULL MONTH
+				VAR EndCurrentMonth = EOMONTH(MaxDate, -1) 
+				VAR StartCurrentMonth = EOMONTH(MaxDate, -2) + 1
+				
+				-- 3. Define "Previous" as the month before that
+				VAR EndPrevMonth = EOMONTH(MaxDate, -2)
+				VAR StartPrevMonth = EOMONTH(MaxDate, -3) + 1
+				
+				-- 4. Calculate AOV
+				VAR CurrentAOV = 
+				    CALCULATE(
+				        [Average Order Value (AOV)], 
+				        DATESBETWEEN('Date'[Date], StartCurrentMonth, EndCurrentMonth)
+				    )
+				
+				VAR PrevAOV = 
+				    CALCULATE(
+				        [Average Order Value (AOV)], 
+				        DATESBETWEEN('Date'[Date], StartPrevMonth, EndPrevMonth)
+				    )
+				
+				RETURN
+				    DIVIDE(CurrentAOV - PrevAOV, PrevAOV, 0)
+				```
+			displayFolder: 01. Sales Performance
+			lineageTag: a6d97bd0-60f9-48ec-95dd-34d8206242dd
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Conditional formatting HEX code for AOV trend. Returns Green for positive MoM, Red for negative.
+		measure 'AOV Trend Color' =
+				
+				IF( [AOV MoM % (Stable)] >= 0, "#008000", "#FF0000" )
+			displayFolder: _UX & Formatting
+			lineageTag: 490317b8-7861-4502-9a14-fea1ca84a7c6
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Dynamic text displaying the latest available date in the dataset (e.g., 'Data Current Until: Sep 03, 2018').
+		measure 'Info - Data Current' = ```
+				
+				"Data Current Until: " & FORMAT(MAX('System Info'[Data Current Until]), "MMM dd, YYYY")
+				
+				```
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 99ac2d34-80b0-4b26-a89b-13496bbfa18a
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Dynamic text displaying the timestamp of the last data transformation refresh (e.g., 'Last Refreshed: Jan 21, 2026').
+		measure 'Info - DBT Update' = ```
+				
+				"Last Refreshed: " & 
+				FORMAT(
+				    MAX('System Info'[Last Refreshed]), 
+				    "MMM dd, yyyy h:mm AM/PM"
+				)
+				```
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: e92ce221-0a4e-4eee-b18a-46b2663ff021
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Count of orders excluded from analysis due to data quality flags (e.g. Total Orders - Verified Orders).
+		measure 'Orders at Risk' = [Total Orders] - [Verified Orders]
+			formatString: 0
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 60db79b7-78ce-4968-9ecd-4c5158919887
+
+		/// Percentage of delivered orders that arrived on or before the estimated delivery date.
+		measure 'On-Time Rate %' = 1 - [Delivery Delay Rate %]
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 02. Logistics & Delivery
+			lineageTag: 4c212220-a313-4178-8ce6-f7c7b8fec817
+
+		/// Dynamic chart title for Customer Retention analysis, displaying the currently selected year context.
+		measure 'Title Loyalty' =
+				
+				"Customer Retention Trend (" & SELECTEDVALUE('Date'[Year], "All Time") & ")"
+			displayFolder: _UX & Formatting
+			lineageTag: 6b439fac-ab1f-4ee3-979b-3e9c75e1c0cc
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Dynamic title for Root Cause Decomposition Tree, showing the date range being analyzed.
+		measure 'Title Decomp Smart' = ```
+				
+				"Root Cause Analysis (" & 
+				FORMAT(MIN('Date'[Date]), "MMM yyyy") & " - " & 
+				FORMAT(MAX('Date'[Date]), "MMM yyyy") & ")"
+				```
+			displayFolder: _UX & Formatting
+			lineageTag: 93f3b8f3-bacf-4f71-a0af-2498bddadd50
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES"]}
+
+		/// Percentage of total orders flagged with data quality issues (e.g., missing status, invalid dates).
+		measure '% Orders at Risk' =
+				
+				VAR Total = [Total Orders]
+				VAR Verified = [Verified Orders]
+				RETURN
+				    DIVIDE(Total - Verified, Total, 0)
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 1a0a6711-1235-4604-9883-1dce64ed4036
+
+		/// Percentage of Product Catalog SKUs flagged with data quality issues (e.g., missing photos, invalid dimensions).
+		measure '% Catalog at Risk' =
+				
+				VAR TotalProducts = COUNTROWS('Product')
+				VAR VerifiedProducts = CALCULATE(COUNTROWS('Product'), 'Product'[Is Verified] = TRUE)
+				RETURN
+				    DIVIDE(TotalProducts - VerifiedProducts, TotalProducts, 0)
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 3dd64566-502b-43c9-b1f2-28750d605f8a
+
+		/// Count of unique product SKUs available in the catalog.
+		measure 'Total Products' = COUNTROWS('Product')
+			formatString: 0
+			displayFolder: 05. Product & Seller Context
+			lineageTag: 7760a94d-b18b-4f5f-a070-b469f6e333af
+
+		/// The delivery delay rate calculated ONLY on verified data, excluding records with logic errors (like negative shipping time).
+		measure 'Verified Delivery Delay Rate %' = ```
+				
+				VAR DelayedOrders = 
+				    CALCULATE(
+				        [Total Orders], 
+				        'Sales'[Is Delayed] = TRUE(),
+				        Sales[Is Verified] = TRUE()
+				    )
+				RETURN
+				    DIVIDE(DelayedOrders, [Total Orders], 0)
+				```
+			formatString: 0.000%;-0.000%;0.000%
+			displayFolder: 04. Data Quality (Verified Metrics)
+			lineageTag: 0e93ab33-01a7-4b0b-b353-d932fd3d0653
+
+		partition _Measures = m
+			mode: import
+			source =
+					let
+					    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+					    #"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+					in
+					    #"Removed Columns"
+
+		annotation PBI_ResultType = Table
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ENSURE_TABLES_HAVE_RELATIONSHIPS"]}

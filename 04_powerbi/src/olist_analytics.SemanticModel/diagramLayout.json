@@ -1,0 +1,176 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0.81699348986148834
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 284,
+            "y": 0
+          },
+          "nodeIndex": "Date",
+          "nodeLineageTag": "56e2864e-8fa5-4e1b-bbea-1e88afefc9c5",
+          "size": {
+            "height": 491.25,
+            "width": 234
+          },
+          "zIndex": 9
+        },
+        {
+          "location": {
+            "x": 1540.2321639466898,
+            "y": 375.06897435897434
+          },
+          "nodeIndex": "System Info",
+          "nodeLineageTag": "2a5da62e-a997-407d-b4d3-7075c84883cd",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 791.17927350427351,
+            "y": 0
+          },
+          "nodeIndex": "Seller",
+          "nodeLineageTag": "f84b9609-4bd6-4484-bee5-24d4ba70b2f8",
+          "size": {
+            "height": 273.88957264957264,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1029.3270512820513,
+            "y": 408.4422222222222
+          },
+          "nodeIndex": "Security Bridge",
+          "nodeLineageTag": "c9f53352-b659-4200-8ef3-6e72f1479725",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1203.3256410256411,
+            "y": 7.6012820512820465
+          },
+          "nodeIndex": "Security Rules",
+          "nodeLineageTag": "4e95e7bf-f7e0-47cc-824d-d8038aaa294b",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 97
+          },
+          "nodeIndex": "Customer",
+          "nodeLineageTag": "784e2cae-2e30-4949-ae5d-de4b25da4cc0",
+          "size": {
+            "height": 279.75,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 541.93846153846152,
+            "y": 0
+          },
+          "nodeIndex": "Product",
+          "nodeLineageTag": "0527677c-0516-4320-af66-50a0670f345e",
+          "size": {
+            "height": 326.5,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 532.70056665775417,
+            "y": 444.06913488793305
+          },
+          "nodeIndex": "Sales",
+          "nodeLineageTag": "c4d71848-bb94-4c3e-b2c3-1a3b6cbae6a6",
+          "size": {
+            "height": 438.25,
+            "width": 234
+          },
+          "zIndex": 11
+        },
+        {
+          "location": {
+            "x": 1542.5865656560914,
+            "y": 106.39555555555557
+          },
+          "nodeIndex": "_Measures",
+          "nodeLineageTag": "05034f40-15b1-455c-b867-c4c738536919",
+          "size": {
+            "height": 249.60444660957904,
+            "width": 234
+          },
+          "zIndex": 10
+        },
+        {
+          "location": {
+            "x": 1826.5865656560914,
+            "y": 298.61666666666667
+          },
+          "nodeIndex": "Time Intelligence",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 2110.5865656560914,
+            "y": 308.03456744396652
+          },
+          "nodeIndex": "_Data Dictionary",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 2394.5865656560914,
+            "y": 332.03456744396652
+          },
+          "nodeIndex": "Performance Metrics",
+          "nodeLineageTag": "ab53c34d-7e28-478a-b908-c16526208ef9",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 12
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 80,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": true,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

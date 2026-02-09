@@ -1,0 +1,67 @@
+createOrReplace
+
+	/// Hidden security table that maps User Emails to specific Access Roles. This table is the source of the Row Level Security (RLS) filter logic applied via the USERPRINCIPALNAME() function.
+	table 'Security Rules'
+		isHidden
+		lineageTag: 4e95e7bf-f7e0-47cc-824d-d8038aaa294b
+
+		column 'User Email'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 2769b4df-19a6-4583-a52f-8bb8860055cf
+			summarizeBy: none
+			sourceColumn: User Email
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		column 'Access Value'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 1b8ee9d7-50ba-41b6-9977-e79a8ffdd626
+			summarizeBy: none
+			sourceColumn: Access Value
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		column 'Role Name'
+			dataType: string
+			isHidden
+			isAvailableInMdx: false
+			lineageTag: 14fa0c5d-5b84-49c3-97b0-8771e62562ed
+			summarizeBy: none
+			sourceColumn: Role Name
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
+		partition 'Security Rules' = m
+			mode: import
+			queryGroup: '03 Security'
+			source =
+					let
+					    Source = Snowflake.Databases("wwbnoyo-yb53548.snowflakecomputing.com","REPORTING_WH_XS",[Implementation="2.0", CommandTimeout=600, Role="REPORTER_ROLE", ConnectionTimeout=120]),
+					    OLIST_ANALYTICS_DB_Database = Source{[Name="OLIST_ANALYTICS_DB",Kind="Database"]}[Data],
+					    SECURITY_Schema = OLIST_ANALYTICS_DB_Database{[Name="SECURITY",Kind="Schema"]}[Data],
+					    DIM_SECURITY_RLS_Table = SECURITY_Schema{[Name="DIM_SECURITY_RLS",Kind="Table"]}[Data],
+					    #"Select: Contract Columns" = Table.SelectColumns(DIM_SECURITY_RLS_Table,{"USER_EMAIL", "ACCESS_KEY", "ACCESS_LEVEL"}),
+					    #"Rename: To Title Case" = Table.RenameColumns(#"Select: Contract Columns",{{"USER_EMAIL", "User Email"}, {"ACCESS_KEY", "Access Value"}, {"ACCESS_LEVEL", "Role Name"}})
+					in
+					    #"Rename: To Title Case"
+
+		changedProperty = IsHidden
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
+

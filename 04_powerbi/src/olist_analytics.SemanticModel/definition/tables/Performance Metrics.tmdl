@@ -1,0 +1,53 @@
+/// A disconnected parameter table designed to drive dynamic metric selection in report visuals. This table has no relationships to the data model and is used solely in slicers to allow users to switch analysis contexts (e.g., toggling between Revenue, Orders, and Logistics performance).
+table 'Performance Metrics'
+	lineageTag: ab53c34d-7e28-478a-b908-c16526208ef9
+
+	column 'Performance Metrics'
+		lineageTag: e728571c-2b19-484c-bd6b-ff8864f2fdbf
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Performance Metrics Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Performance Metrics Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Performance Metrics Fields'
+		isHidden
+		lineageTag: 62e52175-b6f2-465e-9024-620fa3b77599
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Performance Metrics Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
+	column 'Performance Metrics Order'
+		isHidden
+		formatString: 0
+		lineageTag: cac1eba9-009a-4574-bbec-150586192a96
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Performance Metrics' = calculated
+		mode: import
+		source =
+				{
+				    ("Total Orders", NAMEOF([Total Orders]), 0),
+				    ("Total Revenue", NAMEOF([Total Revenue]), 1)
+				}
+
+	annotation PBI_Id = 9217711a17874c6c8707de4f53f6ac69
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ENSURE_TABLES_HAVE_RELATIONSHIPS","REDUCE_USAGE_OF_CALCULATED_TABLES"]}
+

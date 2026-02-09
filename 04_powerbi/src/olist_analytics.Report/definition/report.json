@@ -9,6 +9,15 @@
         "page": "2.3.0"
       },
       "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "NewExecutive",
+      "reportVersionAtImport": {
+        "visual": "2.5.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "SharedResources"
     }
   },
   "objects": {
@@ -19,6 +28,19 @@
             "expr": {
               "Literal": {
                 "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
               }
             }
           }
@@ -35,6 +57,202 @@
           "name": "CY25SU12",
           "path": "BaseThemes/CY25SU12.json",
           "type": "BaseTheme"
+        },
+        {
+          "name": "NewExecutive",
+          "path": "BuiltInThemes/NewExecutive.json",
+          "type": "CustomTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "money-bag15931153004736676.png",
+          "path": "money-bag15931153004736676.png",
+          "type": "Image"
+        },
+        {
+          "name": "package_(1)23007986994955598.png",
+          "path": "package_(1)23007986994955598.png",
+          "type": "Image"
+        },
+        {
+          "name": "tag0664540730306965.png",
+          "path": "tag0664540730306965.png",
+          "type": "Image"
+        },
+        {
+          "name": "database-security47847960909953047.png",
+          "path": "database-security47847960909953047.png",
+          "type": "Image"
+        },
+        {
+          "name": "sync9415021389247674.png",
+          "path": "sync9415021389247674.png",
+          "type": "Image"
+        },
+        {
+          "name": "shopping-bag962228203164534.png",
+          "path": "shopping-bag962228203164534.png",
+          "type": "Image"
+        },
+        {
+          "name": "money-bag_(1)8094804116864934.png",
+          "path": "money-bag_(1)8094804116864934.png",
+          "type": "Image"
+        },
+        {
+          "name": "express-delivery5894241367465513.png",
+          "path": "express-delivery5894241367465513.png",
+          "type": "Image"
+        },
+        {
+          "name": "warning28671200298090616.png",
+          "path": "warning28671200298090616.png",
+          "type": "Image"
+        },
+        {
+          "name": "calendar9507809576336114.png",
+          "path": "calendar9507809576336114.png",
+          "type": "Image"
+        },
+        {
+          "name": "group5440621913899866.png",
+          "path": "group5440621913899866.png",
+          "type": "Image"
+        },
+        {
+          "name": "3d-cube7475969322766561.png",
+          "path": "3d-cube7475969322766561.png",
+          "type": "Image"
+        },
+        {
+          "name": "tag_(1)22276797534921777.png",
+          "path": "tag_(1)22276797534921777.png",
+          "type": "Image"
+        },
+        {
+          "name": "home_(2)952084502775664.png",
+          "path": "home_(2)952084502775664.png",
+          "type": "Image"
+        },
+        {
+          "name": "home_(4)31620223349802423.png",
+          "path": "home_(4)31620223349802423.png",
+          "type": "Image"
+        },
+        {
+          "name": "home_(4)8498884160791552.png",
+          "path": "home_(4)8498884160791552.png",
+          "type": "Image"
+        },
+        {
+          "name": "cargo-truck4124387015769806.png",
+          "path": "cargo-truck4124387015769806.png",
+          "type": "Image"
+        },
+        {
+          "name": "cargo-truck_(1)9375920041019681.png",
+          "path": "cargo-truck_(1)9375920041019681.png",
+          "type": "Image"
+        },
+        {
+          "name": "cargo-truck_(1)41557107990677455.png",
+          "path": "cargo-truck_(1)41557107990677455.png",
+          "type": "Image"
+        },
+        {
+          "name": "shield8927630828816108.png",
+          "path": "shield8927630828816108.png",
+          "type": "Image"
+        },
+        {
+          "name": "shield_(1)6965373262528791.png",
+          "path": "shield_(1)6965373262528791.png",
+          "type": "Image"
+        },
+        {
+          "name": "shield_(1)9696162992662282.png",
+          "path": "shield_(1)9696162992662282.png",
+          "type": "Image"
+        },
+        {
+          "name": "open-book3930491045753496.png",
+          "path": "open-book3930491045753496.png",
+          "type": "Image"
+        },
+        {
+          "name": "open-book_(1)5322309387999691.png",
+          "path": "open-book_(1)5322309387999691.png",
+          "type": "Image"
+        },
+        {
+          "name": "open-book_(1)3318403530162175.png",
+          "path": "open-book_(1)3318403530162175.png",
+          "type": "Image"
+        },
+        {
+          "name": "filter_(1)24780877081872965.png",
+          "path": "filter_(1)24780877081872965.png",
+          "type": "Image"
+        },
+        {
+          "name": "close_(1)3823565842127947.png",
+          "path": "close_(1)3823565842127947.png",
+          "type": "Image"
+        },
+        {
+          "name": "arrows10372591800087017.png",
+          "path": "arrows10372591800087017.png",
+          "type": "Image"
+        },
+        {
+          "name": "arrows_(1)6314980394105126.png",
+          "path": "arrows_(1)6314980394105126.png",
+          "type": "Image"
+        },
+        {
+          "name": "arrows_(1)6255214840700387.png",
+          "path": "arrows_(1)6255214840700387.png",
+          "type": "Image"
+        },
+        {
+          "name": "filter_(2)5612595815852577.png",
+          "path": "filter_(2)5612595815852577.png",
+          "type": "Image"
+        },
+        {
+          "name": "filter_(2)3337785756000847.png",
+          "path": "filter_(2)3337785756000847.png",
+          "type": "Image"
+        },
+        {
+          "name": "close_(2)9987905556328065.png",
+          "path": "close_(2)9987905556328065.png",
+          "type": "Image"
+        },
+        {
+          "name": "close_(2)3298697305412247.png",
+          "path": "close_(2)3298697305412247.png",
+          "type": "Image"
+        },
+        {
+          "name": "home_(3)8290506970951148.png",
+          "path": "home_(3)8290506970951148.png",
+          "type": "Image"
+        },
+        {
+          "name": "cargo-truck_(1)21311540290453168.png",
+          "path": "cargo-truck_(1)21311540290453168.png",
+          "type": "Image"
+        },
+        {
+          "name": "cargo-truck0825892569715968.png",
+          "path": "cargo-truck0825892569715968.png",
+          "type": "Image"
         }
       ]
     }

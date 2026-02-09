@@ -1,0 +1,66 @@
+/// Hidden bridge table used to resolve Many-to-Many relationships for Row Level Security (RLS). Connects 'Security Rules' to dimension tables to propagate filter context based on Seller location.
+table 'Security Bridge'
+	isHidden
+	lineageTag: c9f53352-b659-4200-8ef3-6e72f1479725
+
+	/// The distinct security key that links a user's role (from 'Security Rules') to a set of data permissions. Represents the 'Many' side of the User-to-Bridge relationship.
+	column 'Access Value'
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: dabb19fb-1819-455e-bc98-f17ff77f92b6
+		summarizeBy: none
+		sourceColumn: Access Value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	/// The target filtering value applied to the Seller dimension. Propagates the RLS context from the bridge to the fact table by limiting visible sellers to specific states (e.g., 'SP', 'RJ').
+	column 'Seller State'
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 8f2d0dd7-5767-4c4b-be3c-fa22885a6d43
+		summarizeBy: none
+		sourceColumn: Seller State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	partition 'Security Bridge' = m
+		mode: import
+		queryGroup: '03 Security'
+		source =
+				let
+					Source = Snowflake.Databases(
+						"wwbnoyo-yb53548.snowflakecomputing.com",
+						"REPORTING_WH_XS",
+						[
+							Implementation = "2.0",
+							CommandTimeout = 600,
+							Role = "REPORTER_ROLE",
+							ConnectionTimeout = 120
+						]
+					),
+					OLIST_ANALYTICS_DB_Database = Source{[Name = "OLIST_ANALYTICS_DB", Kind = "Database"]}[Data],
+					MARTS_Schema = OLIST_ANALYTICS_DB_Database{[Name = "MARTS", Kind = "Schema"]}[Data],
+					DIM_RLS_BRIDGE_Table = MARTS_Schema{[Name = "DIM_RLS_BRIDGE", Kind = "Table"]}[Data],
+					#"Select: Contract Columns" = Table.SelectColumns(DIM_RLS_BRIDGE_Table, {"ACCESS_KEY", "SELLER_STATE_CODE"}),
+					#"Rename: To Clear Names" = Table.RenameColumns(
+						#"Select: Contract Columns", {{"ACCESS_KEY", "Access Value"}, {"SELLER_STATE_CODE", "Seller State"}}
+					)
+				in
+					#"Rename: To Clear Names"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

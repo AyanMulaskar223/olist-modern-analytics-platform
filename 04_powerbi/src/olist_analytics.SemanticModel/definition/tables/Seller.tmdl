@@ -1,0 +1,109 @@
+/// Dimension table containing seller profiles and locations. Sourced from OLIST_ANALYTICS_DB.MARTS.DIM_SELLERS. Used to analyze delivery performance and sales volume by Seller State and City.
+table Seller
+	lineageTag: f84b9609-4bd6-4484-bee5-24d4ba70b2f8
+
+	/// Surrogate key (MD5 Hash) for the Seller. Used for the One-to-Many relationship with the Sales fact table. Hidden from report view.
+	column 'Seller SK'
+		dataType: string
+		isHidden
+		isKey
+		isAvailableInMdx: false
+		lineageTag: 10d89c13-9794-4e79-bfa9-0bb373efdef7
+		summarizeBy: none
+		sourceColumn: Seller SK
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	/// Unique business identifier (natural key) for the seller. Sourced directly from the operational system.
+	column 'Seller ID'
+		dataType: string
+		lineageTag: 08ee81cf-10e5-4f3c-8a0d-d1a64f3cb637
+		summarizeBy: none
+		sourceColumn: Seller ID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// The city where the seller is based. Used for geographic analysis of seller distribution.
+	column 'Seller City'
+		dataType: string
+		lineageTag: 02559284-9f19-433f-a52a-c168231101a0
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Seller City
+
+		annotation SummarizationSetBy = Automatic
+
+	/// The state code (e.g., SP, RJ) where the seller is based. Part of the 'Seller Geography' hierarchy.
+	column 'Seller State'
+		dataType: string
+		lineageTag: 2562a2b5-4a4b-464b-a5f8-9deb0b9863bc
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Seller State
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["HIDE_FOREIGN_KEYS","TE3_BUILT_IN_HIDE_FOREIGN_KEYS","RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	hierarchy 'Seller Geography'
+		lineageTag: cc6b3232-8990-4926-9090-c641c5f275b4
+
+		level 'Seller State'
+			lineageTag: dae2c8bb-d35f-4715-b56b-aa8de09e91a7
+			column: 'Seller State'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+		level 'Seller City'
+			lineageTag: b5bce1c7-2287-483e-9301-437aa71b77bd
+			column: 'Seller City'
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["TE3_BUILT_IN_TRANSLATE_HIERARCHY_LEVELS"]}
+
+	partition Seller = m
+		mode: import
+		queryGroup: '01 Dimensions'
+		source =
+				let
+					Source = Snowflake.Databases(
+						"wwbnoyo-yb53548.snowflakecomputing.com",
+						"REPORTING_WH_XS",
+						[
+							Implementation = "2.0",
+							CommandTimeout = 600,
+							Role = "REPORTER_ROLE",
+							ConnectionTimeout = 120
+						]
+					),
+					OLIST_ANALYTICS_DB_Database = Source{[Name = "OLIST_ANALYTICS_DB", Kind = "Database"]}[Data],
+					MARTS_Schema = OLIST_ANALYTICS_DB_Database{[Name = "MARTS", Kind = "Schema"]}[Data],
+					DIM_SELLERS_Table = MARTS_Schema{[Name = "DIM_SELLERS", Kind = "Table"]}[Data],
+					#"Select: Contract Columns" = Table.SelectColumns(
+						DIM_SELLERS_Table, {"SELLER_SK", "SELLER_ID", "SELLER_CITY", "SELLER_STATE_CODE"}
+					),
+					#"Renamed Columns" = Table.RenameColumns(
+						#"Select: Contract Columns",
+						{
+							{"SELLER_SK", "Seller SK"},
+							{"SELLER_ID", "Seller ID"},
+							{"SELLER_CITY", "Seller City"},
+							{"SELLER_STATE_CODE", "Seller State"}
+						}
+					),
+					#"Reorder: Columns" = Table.ReorderColumns(
+						#"Renamed Columns", {"Seller SK", "Seller ID", "Seller State", "Seller City"}
+					),
+					#"Renamed Columns1" = Table.RenameColumns(#"Reorder: Columns", {{"Seller City", "Seller City"}})
+				in
+					#"Renamed Columns1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["SNOWFLAKE_SCHEMA_ARCHITECTURE"]}
+

@@ -1,0 +1,560 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.0.0/schema.json",
+  "displayName": "Doc Panel Closed ",
+  "name": "86561ad505f8bf78a238",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "8fd5e2ec1970f703c128",
+    "sections": {
+      "8fd5e2ec1970f703c128": {
+        "visualContainers": {
+          "0b03655661e65885164d": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "138dc0778466b622c0e7": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "20f440668cc1ff27edd1": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "6f2b4a85d5ec09ac5cd0",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Column/Measure/Relationship"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "textSlicer",
+              "objects": {}
+            }
+          },
+          "224f01558e9613d58f75": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "26d7ed4b309ed04cd354": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "e5e52ae6fee7009046f2",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Column/Measure/Relationship"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "fd00f20ddb5d00e7bf9d",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Type"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "391961e81ffceedfe129",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Data Type Format"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "cf112a7e60f73d28b583",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Table"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "ffccafcb080c324980f8",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Display Folder"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "076e51d441d73fb40ee3",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Description"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "5a97badc1cd3d5618145",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Expression"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Column/Measure/Relationship"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "2923dd63688a0a93a19b": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "4d678174342e87a47907": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "4dc86d2b8f53fde4bac1": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "c5e360bcd366d3d83d34",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Display Folder"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "selection": [
+                    {
+                      "properties": {
+                        "strictSingleSelect": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "false"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Display Folder"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "4f507e65b263f63634db": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "571d10f188c851f3be20": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "5f5eef9d10863cfaa630": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "659bdbee5ca7f0a366eb": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "6acf6c9b00dc90d2688e": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          },
+          "73bd37afa1f6c0d43df2": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "8042faa9e7b3f26f8c34",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Info - Data Current"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "bb6719a5ac6e88b66a8d",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "Info - DBT Update"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "cardVisual",
+              "objects": {}
+            }
+          },
+          "7be1cb48968a0f315d3d": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "8248872d114e290240da": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "88709cfd7f6aaefb26fa": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "900e3c4ad531d0a3f1b0": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "9670deed83296f37839c": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "97d839ad3fad43554912": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "ad1e8ae3f8ae36d4e989": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "add84e779e63159be59b": {
+            "singleVisual": {
+              "visualType": "textbox",
+              "objects": {}
+            }
+          },
+          "b47ab1b42f72de84f980": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "objects": {}
+            }
+          },
+          "e005e631b0b1ee376d46": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "cf74589608d5f385e3da",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Type"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "selection": [
+                    {
+                      "properties": {
+                        "strictSingleSelect": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "false"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Type"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "e943d81b4b1ffe9ec911": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "a254912786e35a7707d6",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Table"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "slicer",
+              "objects": {
+                "merge": {
+                  "data": [
+                    {
+                      "properties": {
+                        "mode": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "'Dropdown'"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "selection": [
+                    {
+                      "properties": {
+                        "strictSingleSelect": {
+                          "expr": {
+                            "Literal": {
+                              "Value": "false"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "activeProjections": {
+                "Values": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Data Dictionary"
+                        }
+                      },
+                      "Property": "Table"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "eb80b9ce0554ad4276e2": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "403bc4103e7eae35a59a": {
+            "isHidden": true
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

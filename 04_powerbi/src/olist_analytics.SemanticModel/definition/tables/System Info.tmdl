@@ -1,0 +1,60 @@
+/// Metadata table tracking pipeline freshness. Sourced from the OPS schema, it displays 'Last Refreshed' timestamp and 'Data Current Until' date to provide transparency to end users.
+table 'System Info'
+	lineageTag: 2a5da62e-a997-407d-b4d3-7075c84883cd
+
+	/// Timestamp indicating exactly when the data processing pipeline was last executed in Snowflake. Useful for debugging data latency issues.
+	column 'Last Refreshed'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b78a3de6-d66c-4fa4-ac38-f9839f54a422
+		summarizeBy: none
+		sourceColumn: Last Refreshed
+
+		annotation SummarizationSetBy = Automatic
+
+	/// The effective cut-off timestamp for business data. Indicates that all transactions occurring before this time are guaranteed to be included in the current report view.
+	column 'Data Current Until'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 87d6ab10-8c18-4cf7-8897-315beb508626
+		summarizeBy: none
+		sourceColumn: Data Current Until
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'System Info' = m
+		mode: import
+		queryGroup: '04 Meta'
+		source =
+				let
+					Source = Snowflake.Databases(
+						"wwbnoyo-yb53548.snowflakecomputing.com",
+						"REPORTING_WH_XS",
+						[
+							Implementation = "2.0",
+							CommandTimeout = 600,
+							Role = "REPORTER_ROLE",
+							ConnectionTimeout = 120
+						]
+					),
+					OLIST_ANALYTICS_DB_Database = Source{[Name = "OLIST_ANALYTICS_DB", Kind = "Database"]}[Data],
+					OPS_Schema = OLIST_ANALYTICS_DB_Database{[Name = "OPS", Kind = "Schema"]}[Data],
+					META_PROJECT_STATUS_Table = OPS_Schema{[Name = "META_PROJECT_STATUS", Kind = "Table"]}[Data],
+					#"Select: Contract Columns" = Table.SelectColumns(
+						META_PROJECT_STATUS_Table, {"PIPELINE_LAST_RUN_AT", "DATA_VALID_THROUGH"}
+					),
+					#"Rename: Clear Title Case Names" = Table.RenameColumns(
+						#"Select: Contract Columns",
+						{{"PIPELINE_LAST_RUN_AT", "Last Refreshed"}, {"DATA_VALID_THROUGH", "Data Current Until"}}
+					)
+				in
+					#"Rename: Clear Title Case Names"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ENSURE_TABLES_HAVE_RELATIONSHIPS"]}
+
