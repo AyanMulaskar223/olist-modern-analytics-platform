@@ -37,3 +37,13 @@ python-dotenv>=1.0.0 # Helps manage .env secrets safely
 # -------------------------------------------------------
 # If you write custom Python scripts, use this to test them.
 pytest>=8.0.0
+
+# -------------------------------------------------------
+# 6. DOCUMENTATION (MkDocs + Theme + Plugins)
+# -------------------------------------------------------
+# Enables local docs server and GitHub Pages deployment.
+mkdocs==1.6.1
+mkdocs-material==9.7.1
+mkdocs-awesome-pages-plugin==2.10.1
+mkdocs-glightbox==0.5.2
+pymdown-extensions==10.20.1

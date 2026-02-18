@@ -1,226 +1,195 @@
-# Architecture Overview – Olist Modern Analytics Platform (ADLC)
+# 🏗️ System Architecture Overview
 
-This document describes the end-to-end architecture for the Olist Modern Analytics Platform, aligned to the **ADLC (Acquire → Ingest & Land → Store → Process → Analyze & Share → Govern & Operate)** lifecycle. The platform is designed for repeatable, auditable ingestion and transformation of the **Olist public datasets** into **analytics-ready marts** consumed by **Power BI**.
+![Pattern](https://img.shields.io/badge/Pattern-Modern%20Data%20Stack-EA580C?style=for-the-badge)
+![Layers](https://img.shields.io/badge/Layers-RAW%E2%86%92STG%E2%86%92INT%E2%86%92MARTS-059669?style=for-the-badge)
+![Quality Gate](https://img.shields.io/badge/Quality%20Gate-559%20CI%20Tests-7C3AED?style=for-the-badge)
 
----
-
-## ADLC-Aligned Architecture
-
-### 1) Acquire (Source / Collect)
-
-**Primary sources**
-
-- Olist public datasets (CSV)
-
-**Optional sample formats (for ingestion demos / extensibility)**
-
-- JSON
-- Parquet
-
-**Source profiling & checks (recommended)**
-
-- **Schema drift detection**
-  - Columns added/removed/renamed
-  - Type changes (e.g., numeric → string)
-- **File validation**
-  - Row-count sanity checks (against prior loads, if available)
-  - Header presence and delimiter correctness
-  - Encoding (UTF-8 recommended)
-  - Null-rate / basic distribution checks for key columns (optional)
-- **Change tracking**
-  - Source versioning via file name conventions and/or checksum
-
-**Source metadata captured (recommended)**
-
-- Source name, dataset name
-- Extraction/created timestamp (if available)
-- File name and size
-- Checksum (MD5/SHA) for immutability verification
-- Ingestion batch/run identifier
+!!! warning "Portfolio Scenario — Architecture"
+⚠️ Portfolio Scenario: This architecture describes a simulated Digital Transformation implementation for the Olist public dataset. It documents design decisions and controls as production-style patterns for portfolio demonstration.
 
 ---
 
-### 2) Ingest & Land (Landing / Raw)
+!!! abstract "Scope"
+This file defines the **system architecture** and key engineering decisions.
 
-**Ingestion mode**
+!!! tip "Single Source of Truth (SSOT) Rule"
+Definitions live once, then referenced:
 
-- Batch file ingestion (local → **Azure Blob Storage**)
-- Optional scheduled ingestion via **GitHub Actions** (cron/manual dispatch)
-
-**Landing design principles**
-
-- **Immutable writes**: never update files in place; write new versions
-- **Idempotency**: reruns should not create duplicates (use checksums + run IDs)
-- **Traceability**: every file is attributable to a source and a run
-
-**Landing conventions**
-
-- Partitioning by time/run for easy discovery:
-  - `source=<source_name>/dataset=<dataset_name>/ingestion_date=YYYY-MM-DD/run_id=<id>/...`
-- Store a small **manifest** per run (recommended):
-  - list of files ingested
-  - validation results summary
-  - checksums
-  - start/end times and status
+    - Business definitions and KPI rules: [00_business_requirements.md](00_business_requirements.md)
+    - Column-level semantics: [02_data_dictionary.md](02_data_dictionary.md)
+    - Data quality framework and controls: [03_data_quality.md](03_data_quality.md)
+    - Semantic model design and DAX standards: [04_semantic_model.md](04_semantic_model.md)
+    - Engineering standards and DataOps controls: [06_engineering_standards.md](06_engineering_standards.md)
 
 ---
 
-### 3) Store (Landing Zone / System of Record)
+## 1. Architecture at a Glance
 
-**System of Record**
+**System Pattern:** Modern Data Stack (Azure Blob → Snowflake → dbt → Power BI).
 
-- **Azure Blob Storage** is the immutable system of record for as-received files.
+**Objective:** Provide a trustworthy, low-latency analytics platform with reproducible transformations, explicit quality gates, and governed semantic consumption.
 
-**Folder zones**
+![Modern Data Stack Architecture](architecture/architecture_hero.png){.architecture-preview-image}
 
-- `/landing/`
-  - As-received, immutable source files organized by source/dataset/run
-- `/archive/`
-  - Historical copies retained for audit/backfills (immutable)
-- `/rejected/`
-  - Files failing validation, with reason codes and validation logs
+### Evidence
 
-**Retention & access (recommended)**
+### System Lineage (DAG)
 
-- Define retention per zone (e.g., landing 30–90 days, archive long-term)
-- Restrict write permissions to ingestion identities only
-- Read access scoped by role (engineering vs. consumers)
+![dbt Lineage DAG](screenshots/03_dbt/lineage_dag.png)
+
+- Snowflake schema separation: [database.png](screenshots/02_snowflake/database.png)
+- Semantic model implementation: [semantic_model.png](screenshots/04_powerbi/semantic_model.png)
 
 ---
 
-### 4) Process (Load + Transform)
+## 2. Decision Log (Senior Format)
 
-**Warehouse**
-
-- **Snowflake** is the compute + curated storage layer for analytics.
-
-**Database layering (recommended)**
-
-- `RAW`
-  - Ingestion tables mirroring sources as closely as possible
-  - Minimal transformations (e.g., add load metadata columns)
-  - Append-only (avoid destructive updates)
-- `STAGING`
-  - Cleaned and typed models
-  - Standardized naming, null handling, deduplication, casting
-  - Derived columns when necessary (timestamps, normalized keys)
-- `MARTS`
-  - Analytics-ready dimensional/star schema
-  - Conformed dimensions and well-defined fact tables
-
-**dbt Core transformations**
-
-- Standardization
-  - naming conventions (snake_case)
-  - type casting and parsing (dates, numerics)
-  - consistent handling of nulls and blanks
-- Conformed dimensions (examples)
-  - `dim_customer`, `dim_seller`, `dim_product`, `dim_date`
-- Facts (examples)
-  - `fact_orders`, `fact_order_items`, `fact_payments`, `fact_deliveries`
-- Incremental models (where appropriate)
-  - Use stable unique keys + updated_at logic when available
-  - Prefer partition-aware strategies for larger facts
-
-**Modeling & engineering standards (recommended)**
-
-- Consistent naming:
-  - `stg_<source>__<entity>` for staging models
-  - `dim_<entity>` and `fact_<process>` for marts
-- Reusable macros for:
-  - audit columns (e.g., `loaded_at`, `source_file`, `run_id`)
-  - safe casting / parsing
-  - deduplication patterns
-- Documentation:
-  - dbt `schema.yml` descriptions for models and columns
-  - dbt lineage and exposure definitions for Power BI datasets
-- Environments:
-  - `dev` → `staging` → `prod` with isolated schemas/roles
+| Decision                                  | Rationale                                                                 | Trade-off                                                      | Evidence                                                                                                |
+| :---------------------------------------- | :------------------------------------------------------------------------ | :------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ |
+| **Warehouse: Snowflake**                  | Separated compute/storage, zero-copy cloning, strong dbt adapter maturity | Cost discipline required via warehouse sizing and auto-suspend | [warehouse.png](screenshots/02_snowflake/warehouse.png)                                                 |
+| **Modeling Pattern: Kimball Star Schema** | Faster BI queries, clear fact grain, reusable conformed dimensions        | More modeling upfront than wide flat-table approach            | [marts_data_model.png](architecture/marts_data_model.png)                                               |
+| **Transform Engine: dbt Core**            | SQL-first workflows, test-native framework, lineage auto-generation       | Requires strict naming/testing discipline                      | [test_passed_suite.png](screenshots/03_dbt/test_passed_suite.png)                                       |
+| **Consumption Mode: Power BI Import**     | Sub-2s dashboard interactions, predictable user experience                | Scheduled freshness vs real-time DirectQuery                   | [performance_analyzer_excutive_page.png](screenshots/04_powerbi/performance_analyzer_excutive_page.png) |
+| **Quality Policy: Blocking CI gates**     | Prevents bad models/metrics from reaching reports                         | Slower merges when tests fail                                  | [github_pr_checks_pass.png](screenshots/05_dataops/github_pr_checks_pass.png)                           |
 
 ---
 
-### 5) Analyze & Share (Consumption)
+## 3. End-to-End Flow (Concise)
 
-**BI tool**
+**Data Flow:** Azure Blob → Snowflake RAW → dbt STAGING/INTERMEDIATE/MARTS → Power BI Semantic Model.
 
-- **Power BI** (.pbip)
+### Flow Controls
 
-**Consumption approach**
+- **Ingestion control:** idempotent load pattern into RAW (`FORCE = FALSE` policy in ingestion scripts).
+- **Transformation control:** model dependencies enforced by dbt `ref()` lineage.
+- **Quality control:** 559 blocking tests in CI (`dbt build --target dev/prod`).
+- **Consumption control:** semantic model connects to MARTS only (no RAW/STAGING exposure).
 
-- Star-schema-first modeling for performance and clarity
-- Power BI semantic model aligned to `MARTS`
-
-**Deliverables**
-
-- Curated semantic model with:
-  - standardized KPIs/measures
-  - consistent dimension usage (conformed dimensions)
-  - clear business-friendly naming and descriptions
-- Dashboards and reports built on the semantic layer (not on RAW/STAGING)
-
-**Recommended practices**
-
-- Avoid many-to-many relationships where possible
-- Prefer surrogate keys for joins in the semantic model
-- Centralize business logic:
-  - transformations in dbt
-  - measures in Power BI (documented and versioned)
+!!! success "Quality Gate"
+**559 automated tests** execute as blocking checks in CI. Failed tests block promotion.
 
 ---
 
-### 6) Govern & Operate (Quality, CI/CD, Observability)
+## 4. Layer Responsibilities (No Repetition)
 
-**Data quality**
+For detailed naming, columns, and business definitions, use linked SSOT docs. This section only states architectural ownership and contracts.
 
-- dbt tests:
-  - `not_null`, `unique`, `relationships`
-  - `accepted_values` / range checks (where applicable)
-- Freshness (where applicable)
-  - define acceptable staleness per dataset
-- SQLFluff linting
-  - consistent style, readability, and maintainability
+### 4.1 RAW Layer
 
-**CI/CD (GitHub Actions)**
+- **Materialization:** Transient tables
+- **Contract:** Immutable landing zone + audit columns
+- **Owner:** Loader role
+- **Purpose:** Preserve source fidelity for replay/audit
 
-- Pull request validation (recommended)
-  - `dbt compile` / `dbt build` (scoped to changes when possible)
-  - dbt tests execution + artifact upload
-  - SQLFluff linting
-- Optional:
-  - publish dbt docs as a static site/artifact
-  - environment promotion gates (approval for prod)
+Evidence: [row_count.png](screenshots/02_snowflake/row_count.png)
 
-**Orchestration flow (recommended)**
+### 4.2 STAGING Layer
 
-1. Ingest files → Blob `/landing/`
-2. Load to Snowflake → `RAW`
-3. Transform → `STAGING`
-4. Build marts → `MARTS`
-5. Execute tests + freshness checks
-6. Publish artifacts (dbt docs, run results, test reports)
-7. Refresh Power BI semantic model (if applicable)
+- **Materialization:** Views
+- **Contract:** Type casting, standardization, no business joins
+- **Owner:** Analytics role
+- **Purpose:** Stable technical interface to source data
 
-**Observability (recommended)**
+Reference details: [02_data_dictionary.md](02_data_dictionary.md)
 
-- Persist artifacts:
-  - dbt `run_results.json`, `manifest.json`
-  - validation logs and rejected-file reasons
-- Alerting:
-  - notify on failures (email/Teams/Slack as applicable)
-  - include run ID, failing models/tests, and links to logs
+### 4.3 INTERMEDIATE Layer
 
-**Security & governance (recommended)**
+- **Materialization:** Ephemeral models
+- **Contract:** Business transformations and reusable joins
+- **Owner:** Analytics role
+- **Purpose:** Reusable business logic before mart serving
 
-- Snowflake RBAC with least privilege
-  - separate roles for ingestion, transformation, consumption
-  - environment isolation (`dev/staging/prod`)
-- Data classification
-  - PII tagging (if PII exists)
-  - column-level security / masking policies where required
-- Ownership & SLAs
-  - named owner per mart
-  - defined SLA for freshness and data-quality thresholds
-  - documented change management for schema changes
-- Auditability
-  - end-to-end lineage (source file → RAW → STAGING → MARTS → report)
-  - immutable storage and reproducible builds
+Reference details: [06_engineering_standards.md](06_engineering_standards.md)
+
+### 4.4 MARTS Layer
+
+- **Materialization:** Tables + incremental facts
+- **Contract:** Star schema optimized for BI
+- **Owner:** Analytics role (write), reporter role (read)
+- **Purpose:** Trusted analytical interface
+
+Evidence: [semantic_model.png](screenshots/04_powerbi/semantic_model.png)
+
+---
+
+## 5. Problem → Fix → Impact (Scan-Friendly)
+
+### 5.1 Dashboard Latency
+
+- **Problem:** Report interactions exceeded acceptable UX thresholds.
+- **Fix:** Import mode + star schema + incremental refresh policy.
+- **Impact:** Dashboard interactions reduced to sub-2s target range.
+- **Evidence:** [incremental_refresh.png](screenshots/04_powerbi/incremental_refresh.png), [performance_analyzer_excutive_page.png](screenshots/04_powerbi/performance_analyzer_excutive_page.png)
+
+### 5.2 Metric Inconsistency Across Stakeholders
+
+- **Problem:** Different report logic produced inconsistent KPI values.
+- **Fix:** Business logic centralized in dbt marts and semantic measures.
+- **Impact:** Revenue and core KPI definitions aligned through one governed model.
+- **Reference:** [00_business_requirements.md](00_business_requirements.md), [04_semantic_model.md](04_semantic_model.md)
+
+### 5.3 Risk of Broken Production Changes
+
+- **Problem:** Unvalidated model changes can break dashboards.
+- **Fix:** PR approvals + CI test gates + linting + deployment workflow.
+- **Impact:** Only validated changes are promoted.
+- **Evidence:** [ci_dbt_build_pass.png](screenshots/05_dataops/ci_dbt_build_pass.png), [github_pr_checks_pass.png](screenshots/05_dataops/github_pr_checks_pass.png)
+
+---
+
+## 6. Security and Access Boundaries
+
+### 6.1 Warehouse Security
+
+- Role hierarchy applies least-privilege boundaries between loading, transformation, and reporting responsibilities.
+- Production reporting role is read-only on marts.
+
+Evidence: [RBAC.png](screenshots/02_snowflake/RBAC.png)
+
+### 6.2 Semantic Security
+
+- RLS enforced in semantic layer using mapping table policy.
+- Regional access control validated through UAT scenarios.
+
+Evidence: [uat_rls_validation.png](screenshots/04_powerbi/uat_rls_validation.png)
+
+---
+
+## 7. Cost and Performance Guardrails
+
+- **Warehouse sizing:** X-Small defaults with aggressive auto-suspend.
+- **Storage strategy:** RAW transient + STAGING views to reduce overhead.
+- **Build strategy:** Incremental facts for shorter refresh windows.
+- **Monitoring:** Query/runtime checks and CI results reviewed per release.
+
+Reference details: [05_performance_optimization.md](05_performance_optimization.md)
+
+---
+
+## 9. Evidence Index
+
+### Infrastructure
+
+- Azure structure: [container_structure.png](screenshots/01_azure_blob_storage/container_structure.png)
+- Snowflake schemas: [database.png](screenshots/02_snowflake/database.png)
+- Snowflake warehouses: [warehouse.png](screenshots/02_snowflake/warehouse.png)
+
+### Transformation and Quality
+
+- dbt DAG: [lineage_dag.png](screenshots/03_dbt/lineage_dag.png)
+- dbt tests: [test_passed_suite.png](screenshots/03_dbt/test_passed_suite.png)
+- dbt contracts: [data_contracts.png](screenshots/03_dbt/data_contracts.png)
+
+### BI and Governance
+
+- Semantic model: [semantic_model.png](screenshots/04_powerbi/semantic_model.png)
+- Incremental refresh: [incremental_refresh.png](screenshots/04_powerbi/incremental_refresh.png)
+- RLS validation: [uat_rls_validation.png](screenshots/04_powerbi/uat_rls_validation.png)
+
+### DataOps
+
+- CI pass: [ci_dbt_build_pass.png](screenshots/05_dataops/ci_dbt_build_pass.png)
+- PR quality gates: [github_pr_checks_pass.png](screenshots/05_dataops/github_pr_checks_pass.png)
+- Roadmap tracking: [project_milestones_roadmap.png](screenshots/05_dataops/project_milestones_roadmap.png)
+
+---
