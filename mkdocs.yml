@@ -1,0 +1,99 @@
+site_name: Olist Modern Analytics Platform
+site_description: Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)
+site_author: Ayan Mulaskar
+site_url: https://ayanmulaskar223.github.io/olist-modern-analytics-platform/
+repo_name: AyanMulaskar223/olist-modern-analytics-platform
+repo_url: https://github.com/AyanMulaskar223/olist-modern-analytics-platform
+edit_uri: edit/feat/phase-6-business-insights/docs/
+
+docs_dir: docs
+site_dir: site
+exclude_docs: |
+  06_engineering_standards_old_backup.md
+  03_data_quality_old_backup.md
+
+theme:
+  name: material
+  language: en
+  custom_dir: docs/overrides
+  font:
+    text: Inter
+    code: JetBrains Mono
+  favicon: assets/images/favicon.svg
+  icon:
+    logo: material/chart-box
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - toc.integrate
+    - content.code.copy
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - search
+  - awesome-pages
+  - glightbox
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: "2-2"
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  social_image: screenshots/05_dataops/project_milestones_roadmap.png
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AyanMulaskar223
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Biz Requirements: 00_business_requirements.md
+  - Architecture: 01_architecture.md
+  - Design Notes: designs/003_marts_star_schema.md
+  - Data Dict: 02_data_dictionary.md
+  - Data Quality: 03_data_quality.md
+  - Semantic Model: 04_semantic_model.md
+  - Perf Optimization: 05_performance_optimization.md
+  - Eng Standards: 06_engineering_standards.md
+  - Analytics Insights: 07_analytics_insights.md
