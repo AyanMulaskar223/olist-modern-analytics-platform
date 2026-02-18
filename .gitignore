@@ -104,6 +104,20 @@ desktop.ini
 04_powerbi/**/localSettings.json
 04_powerbi/**/.pbitool.json
 
+# ----------------------
+# 8. MKDOCS (DOCUMENTATION SITE)
+# ----------------------
+# Generated static site — deployed to GitHub Pages, never committed
+site/
+# MkDocs Material plugin cache (speeds up local builds, not project code)
+.cache/
+
+# ----------------------
+# 9. ENVIRONMENT & SECRETS (ADDITIONAL)
+# ----------------------
+# direnv local env file — may contain Snowflake account IDs or credentials
+.envrc
+
 #Other
 adlc.md
 # Power BI - Ignore Binary Files and Data Cache
