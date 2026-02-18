@@ -5,7 +5,7 @@ exposures:
     label: "Olist Executive Dashboard (Power BI)"
     type: dashboard
     maturity: high
-    url: "https://app.powerbi.com/groups/me/reports/placeholder" # You will update this link later
+    url: "https://app.powerbi.com/groups/77a18257-e676-41b2-bb56-1a7e28906453/reports/79f1ed85-2792-4d31-9f3f-5e75e37d55c3/a4b03b8449d7abeeab74?experience=power-bi&bookmarkGuid=a14bb083b50f99c87b72" # You will update this link later
     description: >
       The primary Executive view for Olist E-Commerce.
       Tracks GMV, Order Trends, and Seller Performance.
@@ -13,7 +13,7 @@ exposures:
       **Key Consumers:** - CEO (Daily Subscription)
       - Regional Managers (Row-Level Security)
 
-      **Refresh Schedule:** - Daily at 8:00 AM UTC
+      **Refresh Schedule:** - Daily at 6:00 AM UTC
 
     owner:
       name: Analytics Team
@@ -29,7 +29,7 @@ exposures:
       - ref('dim_sellers')
       - ref('dim_date')
 
-      # 3. Security Tables (Crucial to list these as dependencies!)
+      # 3. Security Tables
       - ref('dim_security_rls')
       - ref('dim_rls_bridge')
 
