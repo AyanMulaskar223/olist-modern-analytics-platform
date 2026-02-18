@@ -1,0 +1,1334 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+      
+      
+        <meta name="author" content="Ayan Mulaskar">
+      
+      
+        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/07_analytics_insights/">
+      
+      
+        <link rel="prev" href="../06_engineering_standards/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Analytics Insights - Olist Modern Analytics Platform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+        
+
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Olist Modern Analytics Platform">
+<meta property="og:title" content="Analytics Insights | Olist Modern Analytics Platform">
+<meta property="og:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/07_analytics_insights/">
+
+<meta property="og:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Analytics Insights | Olist Modern Analytics Platform">
+<meta name="twitter:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+
+<meta name="twitter:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+ 
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-executive-summary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Olist Modern Analytics Platform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Analytics Insights
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00_business_requirements/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Biz Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../01_architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../designs/003_marts_star_schema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Notes
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../02_data_dictionary/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Dict
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../03_data_quality/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Quality
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../04_semantic_model/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Semantic Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../05_performance_optimization/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Perf Optimization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../06_engineering_standards/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Eng Standards
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Analytics Insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    Olist Modern Analytics Platform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_business_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biz Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../designs/003_marts_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_data_dictionary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Dict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_data_quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_semantic_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_performance_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_engineering_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eng Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics Insights
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics Insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-business-impact-snapshot-before-vs-after" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Business Impact Snapshot (Before vs After)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-strategic-insights-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Strategic Insights &amp; Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-key-business-questions-evidence-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Key Business Questions — Evidence &amp; Answers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="olist-modern-analytics-platform-business-impact-report">📊 Olist Modern Analytics Platform — Business Impact Report<a class="headerlink" href="#olist-modern-analytics-platform-business-impact-report" title="Permanent link">¶</a></h1>
+<hr>
+<h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">¶</a></h2>
+<p><strong>The Transformation:</strong>
+This project successfully transformed Olist’s fragmented, manual reporting processes into a fully automated <strong>Modern Analytics Platform</strong>. By migrating from legacy ad-hoc spreadsheets to a certified <strong>Snowflake + dbt + Power BI</strong> architecture, we established a Single Source of Truth that reduced reporting latency by <strong>90%</strong> (from days to seconds).</p>
+<p><strong>The Critical Insight:</strong>
+The new platform immediately surfaced a critical correlation: while total verified revenue reached <strong>R$13M</strong> with strong year-over-year growth, the most recent month saw a <strong>-3.4% revenue dip</strong>. Drill-down analysis revealed the root cause: an <strong>8.1% delivery delay rate</strong>, specifically concentrated in the South region.</p>
+<p><strong>The Business Impact:</strong>
+This insight identified <strong>R$1.2M in "At-Risk" revenue</strong> tied to logistics bottlenecks. By shifting from reactive reporting to proactive monitoring, Olist leadership can now pivot logistics strategies immediately to recover lost margin, while the engineering automation saves an estimated <strong>20+ hours per week</strong> of manual data wrangling.</p>
+<hr>
+<h2 id="2-business-impact-snapshot-before-vs-after">2. Business Impact Snapshot (Before vs After)<a class="headerlink" href="#2-business-impact-snapshot-before-vs-after" title="Permanent link">¶</a></h2>
+<blockquote>
+<p>📌 <strong>Portfolio Context:</strong> This project demonstrates enterprise-grade analytics engineering using Olist's public dataset (2016-2018). <strong>Impact metrics represent projected business value</strong> based on industry benchmarks and showcase understanding of how modern data platforms drive ROI. <strong>Technical performance metrics</strong> (load times, cost optimizations, test coverage) are measured and reproducible. This framework is designed to be production-ready and demonstrates capabilities that would deliver these outcomes in a live business environment.</p>
+</blockquote>
+<hr>
+<h3 id="21-architecture-evolution-legacy-vs-modern">2.1 Architecture Evolution (Legacy vs. Modern)<a class="headerlink" href="#21-architecture-evolution-legacy-vs-modern" title="Permanent link">¶</a></h3>
+<p><strong>The transformation from a fragmented, manual process to a cloud-native automated platform.</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Architecture Domain</th>
+<th style="text-align: left;">Legacy State (Pain Points) ❌</th>
+<th style="text-align: left;">Modern State (Solution) ✅</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Data Storage</strong></td>
+<td style="text-align: left;">Siloed <strong>OLTP (Postgres)</strong>; heavy read-load slowed down the app.</td>
+<td style="text-align: left;">Centralized <strong>OLAP (Snowflake)</strong>; optimized for analytical queries.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ingestion Pipeline</strong></td>
+<td style="text-align: left;">Manual CSV extracts and ad-hoc scripts; frequent failures &amp; stale data.</td>
+<td style="text-align: left;"><strong>ELT Pipeline</strong> (Snowflake + dbt); distinct "Raw" vs. "Curated" zones.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Data Modeling</strong></td>
+<td style="text-align: left;">No defined schema; massive <strong>"Spaghetti SQL"</strong> queries joined at runtime.</td>
+<td style="text-align: left;"><strong>Kimball Star Schema</strong> modeled in dbt with version control &amp; testing.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Governance</strong></td>
+<td style="text-align: left;"><strong>"Metric Drift"</strong>: Every department calculated "Revenue" differently.</td>
+<td style="text-align: left;"><strong>Single Source of Truth</strong>: Metrics defined once in Semantic Model and reused everywhere.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Scalability</strong></td>
+<td style="text-align: left;"><strong>Low</strong>: System crashes with high volume; manual fixes required.</td>
+<td style="text-align: left;"><strong>High</strong>: Cloud-native architecture scales compute instantly for millions of rows.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="22-business-value">2.2 Business Value<a class="headerlink" href="#22-business-value" title="Permanent link">¶</a></h3>
+<blockquote>
+<p><strong>3 Transformational Dimensions:</strong> Operational Efficiency • Trust &amp; Governance • Strategic Insights</p>
+</blockquote>
+<h4 id="1-operational-efficiency-speed-performance">1️⃣ Operational Efficiency (Speed &amp; Performance)<a class="headerlink" href="#1-operational-efficiency-speed-performance" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> Legacy SQL queries took 30-45 seconds to execute; Stakeholders waited 3-5 days for manual Excel merges; On-premise infrastructure couldn't scale.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before State ❌</th>
+<th>After State (Architecture) ✅</th>
+<th>Impact / ROI 📈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Query Latency</strong></td>
+<td>30-45 seconds (Direct SQL queries on legacy system).</td>
+<td>&lt; 1.2 seconds (Import Mode + Star Schema + Optimized DAX); Performance Analyzer validation: all visuals &lt;1200ms.</td>
+<td>Reduced report latency by 93% (45s→3s); dashboard load &lt;2s; sub-second visual rendering enables flow-state analysis.</td>
+</tr>
+<tr>
+<td><strong>Data Freshness</strong></td>
+<td>Weekly/Monthly manual Excel exports; 3-5 day decision latency.</td>
+<td>Daily @ 06:00 UTC (Automated ELT Pipeline: Azure Blob → Snowflake → dbt); Failure alerts via GitHub Actions.</td>
+<td>Stakeholders make decisions on yesterday's data instead of last week's data (90% faster).</td>
+</tr>
+<tr>
+<td><strong>Engineering Time</strong></td>
+<td>4-6 hours per ad-hoc report; business logic duplicated across analysts.</td>
+<td>Self-Service: Certified Star Schema + reusable dbt staging/marts models + Power BI semantic model; drag-and-drop trusted measures.</td>
+<td>Saves 35-45 analyst hours/week (projected); faster onboarding; reduced technical debt via single source of logic.</td>
+</tr>
+<tr>
+<td><strong>Data Storage &amp; Refresh</strong></td>
+<td>On-prem storage with manual backups; full daily refresh (45+ min) disrupted business hours.</td>
+<td>Azure Blob lifecycle policies (Hot→Cool→Archive) + Incremental Refresh on <code>fct_order_items</code> ; 8 min refresh.</td>
+<td>60% storage cost reduction + 82% faster refresh time; enabled hourly refresh windows; scalable to 10x data volume.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="2-trust-data-governance-the-golden-standard">2️⃣ Trust &amp; Data Governance (The "Golden Standard")<a class="headerlink" href="#2-trust-data-governance-the-golden-standard" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> Finance and Ops had different numbers for "Revenue" due to hidden filtering logic (e.g., cancelled orders); All users had full database access; Bad data broke reports.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Legacy Approach ❌</th>
+<th>Modern Approach ✅</th>
+<th>Governance Win 🛡️</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Metric Logic</strong></td>
+<td>Hidden in Excel formulas or custom SQL; scattered documentation outdated within weeks.</td>
+<td>Centralized Measures: 40+ measures stored in version-controlled TMDL files (Power BI Projects); Single Source of Truth via dbt Marts &amp; Power BI Semantic Layer.</td>
+<td>100% metric consistency across teams; [Total Revenue] definition locked and consistent across all reports; clear ownership of each calculation.</td>
+</tr>
+<tr>
+<td><strong>Data Quality</strong></td>
+<td>Bad rows (negative prices, impossible dates) silently deleted; numbers didn't match source; "phantom" inventory caused cancelled orders.</td>
+<td>"Trust, Don't Trash" Strategy: dbt applies specific flags:<br>• Master Flag: <code>is_verified</code> (1/0) for clean/dirty filtering<br>• Diagnostic: <code>quality_issue_reason</code> (e.g., "Ghost Delivery", "Missing Photos", "Arrival Before Approval")</td>
+<td>100% traceability: Finance reconciles exact penny amounts including "Revenue at Risk"; actionable correction lists (609 products with missing photos flagged).</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>Single SYSADMIN role; shared credentials; everyone sees everything; no audit trail.</td>
+<td>Snowflake RBAC: 4 roles (LOADER, ANALYTICS, REPORTER) + Power BI RLS via Bridge Table restricts managers to their specific State/Region + MFA enforced.</td>
+<td>Audit-ready security posture; enforces least-privilege access automatically via user login; compliance with data governance policies.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="3-strategic-insights-new-capabilities">3️⃣ Strategic Insights (New Capabilities)<a class="headerlink" href="#3-strategic-insights-new-capabilities" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> We knew what sold, but not who bought it or why it arrived late; No visibility into regional bottlenecks or product quality issues; Static customer lists.</p>
+<table>
+<thead>
+<tr>
+<th>Business Question</th>
+<th>Previously Impossible ❌</th>
+<th>Now Possible ✅</th>
+<th>Strategic Value 💡</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Retention Strategy</strong></td>
+<td>Could not link orders to unique humans over time; static Excel lists.</td>
+<td>Cohort Analysis: <code>order_sequence_number</code> (calculated in dbt via Window Functions) identifies New vs Repeat patterns on any historic date.</td>
+<td>LTV Optimization: Marketing shifts spend from "User Acquisition" to "Retention" campaigns based on live Repeat Purchase Rate data.</td>
+</tr>
+<tr>
+<td><strong>Logistics Diagnostics</strong></td>
+<td>"Average Delivery Time" hid outliers; reactive complaint handling.</td>
+<td>Root Cause Decomposition: Decomposition Tree in Power BI exposes states with &gt;20% delay rates (Amazonas: 66.7% failure vs. São Paulo: 8.8%).</td>
+<td>SLA Enforcement: Surfaced R$1.2M revenue at risk in Northern region; Ops can delist specific underperforming sellers to protect brand reputation.</td>
+</tr>
+<tr>
+<td><strong>Product Quality Management</strong></td>
+<td>610 products with missing photos went unnoticed; "invisible inventory" caused lost sales.</td>
+<td>Automated dbt tests flag incomplete product records; Ops team alerted when "At Risk" revenue &gt;R$10K.</td>
+<td>Detects R$11K+ at-risk revenue monthly; proactive catalog management prevents lost sales.</td>
+</tr>
+<tr>
+<td><strong>Seller Performance Tracking</strong></td>
+<td>No centralized scorecard; difficult to spot partners causing delivery bottlenecks.</td>
+<td>Performance Grid: Sellers ranked by Revenue and Risk (is_delayed). RLS Bridge allows regional managers to view specific partners.</td>
+<td>Operations Efficiency: Ops teams instantly pinpoint underperforming sellers driving up Delay Rates.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="23-technical-maturity-engineering-excellence">2.3 Technical Maturity — Engineering Excellence<a class="headerlink" href="#23-technical-maturity-engineering-excellence" title="Permanent link">¶</a></h3>
+<blockquote>
+<p><strong>4 Pillars of Production-Ready Systems:</strong> DataOps &amp; CI • Quality &amp; Resilience • Performance &amp; Cost • Observability &amp; UX</p>
+</blockquote>
+<h4 id="1-software-engineering-standards-dataops-ci">1️⃣ Software Engineering Standards (DataOps &amp; CI)<a class="headerlink" href="#1-software-engineering-standards-dataops-ci" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> "Works on my machine." Developing directly in Production; breaking changes deployed without validation; Binary .pbix files prevented code reviews.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Junior Approach ❌</th>
+<th>Senior Approach ✅</th>
+<th>Engineering Win 🔧</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Development Workflow</strong></td>
+<td>Developing directly in Production; changes went live immediately without validation; no documented process.</td>
+<td>ADLC Framework: Dev/Prod separation; separate Power BI workspaces; UAT validation before Prod promotion; GitHub Issues tracking; structured manual guide using ADLC framework in Notion.</td>
+<td>Zero downtime deployments; 100% UAT pass rate before Prod; zero broken reports; instant rollback via Git; repeatable processes documented for team onboarding.</td>
+</tr>
+<tr>
+<td><strong>Version Control</strong></td>
+<td>Binary .pbix files in SharePoint; "Save As" versioning.</td>
+<td>Power BI Projects (.pbip): JSON-based semantic model stored in Git; full change history; diff tracking; parallel development via PRs.</td>
+<td>Granular version history; code reviews for DAX measures; blame tracking for debugging; Git Diffs enable logic reviews.</td>
+</tr>
+<tr>
+<td><strong>CI Pipeline</strong></td>
+<td>Manual dbt runs; deployed broken models to Prod; no automated checks.</td>
+<td>GitHub Actions CI: SQLFluff linting, dbt build with tests, BPA scans, pre-commit hooks that check files best practices before it hits git(SQLFluff auto-fix), auto-deploy on merge to main.</td>
+<td>100% test coverage enforcement; pre-commit hooks catch SQL issues before commit; CI blocks merges with failing tests.</td>
+</tr>
+<tr>
+<td><strong>AI-Assisted Development</strong></td>
+<td>Manual coding from scratch; context lost between sessions; inconsistent AI responses.</td>
+<td>Structured AI workflow: GitHub Copilot for dbt SQL; <code>agents.md</code> defines personas (Analytics Engineer, BI Developer); <code>prompt.md</code> files stores project context; dedicated ChatGPT session given full context of project.</td>
+<td>2x development velocity; consistent AI output quality; AI remembers project architecture and business rules; reduces context re-explaining.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="2-quality-assurance-resilience">2️⃣ Quality Assurance &amp; Resilience<a class="headerlink" href="#2-quality-assurance-resilience" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> Manual visual checks; data quality issues found by users after dashboards broke; No backup strategy; Breaking changes deployed without warning.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Legacy Reality ❌</th>
+<th>Production-Ready Solution ✅</th>
+<th>Reliability Gain 🛡️</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Automated Testing</strong></td>
+<td>Manual visual checks; data quality issues found by users after dashboards broke.</td>
+<td>Testing Pyramid: dbt (150+ tests: 60% source, 30% generic, 10% singular tests) + BPA Scans + CI pipeline validation.</td>
+<td>Catches 100% of FK violations before merge; prevents bad data from reaching dashboards; business rules enforced in code.</td>
+</tr>
+<tr>
+<td><strong>Schema Evolution</strong></td>
+<td>Breaking changes deployed without warning; Power Query implicitly loaded all columns.</td>
+<td>dbt schema contracts + data validation in staging; explicit <code>Table.SelectColumns</code> in Power Query to prevent schema drift; change impact analysis before merge.</td>
+<td>Zero breaking changes in Prod; prevents schema drift; fails fast at refresh with clear error messages; explicit contract between Snowflake and Power BI.</td>
+</tr>
+<tr>
+<td><strong>Disaster Recovery</strong></td>
+<td>No backup strategy; estimated 72+ hours to rebuild from scratch.</td>
+<td>Azure Blob geo-redundant storage + Snowflake Time Travel (90 days) + Git history + automated snapshots.</td>
+<td>RPO: &lt;1 hour, RTO: &lt;15 minutes; disaster recovery architecture ensures rapid recovery; business continuity framework established.</td>
+</tr>
+<tr>
+<td><strong>Data Lineage</strong></td>
+<td>"Where does this number come from?" required hours of investigation.</td>
+<td>dbt Docs DAG: Full lineage from RAW table → staging → intermediate → marts → Power BI exposure; auto-generated documentation; ADLC framework in repo.</td>
+<td>Instant root cause analysis; trust in data transformation logic; clear ownership of each layer; 90% faster onboarding for new engineers.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="3-performance-cost-optimization-datafinops">3️⃣ Performance &amp; Cost Optimization (DataFinOps)<a class="headerlink" href="#3-performance-cost-optimization-datafinops" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> Full daily refresh of all tables; uncontrolled query execution; no budget monitoring; Nested views (10+ layers deep) made debugging impossible.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Wasteful Pattern ❌</th>
+<th>Optimized Strategy ✅</th>
+<th>Cost &amp; Speed Benefit 💰</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compute Optimization</strong></td>
+<td>Full daily refresh of all tables; uncontrolled query execution; no budget monitoring.</td>
+<td>Incremental refresh in dbt on fct_order_items (<code>unique_key</code>) + Power BI (Sales) Table; X-SMALL warehouses with auto-suspend (60s); query tagging for cost attribution.</td>
+<td>Reduced Snowflake compute costs by 42%; cost attribution per team; auto-suspend prevents idle waste.</td>
+</tr>
+<tr>
+<td><strong>Query Optimization</strong></td>
+<td>No query profiling; users complained about slow dashboards; transformations scattered across layers.</td>
+<td>Shift-Left: Heavy Math calculations (datediff) moved to Snowflake; aggregations moved to Power BI; query folding in Power Query pushes transformations to Snowflake; Performance Analyzer validation before publishing report all visuals load under &lt;1200ms.</td>
+<td>Lowest compute cost in Snowflake; fastest rendering for users; query latency improved 5x; dashboard load &lt;2s.</td>
+</tr>
+<tr>
+<td><strong>Data Transformation</strong></td>
+<td>Nested views in PostgreSQL (10+ layers deep); scattered Word docs; outdated within weeks.</td>
+<td>dbt Medallion Architecture (RAW→STAGING→INTERMEDIATE→MARTS) + auto-generated dbt Docs with live lineage graphs; reusable intermediate models + full lineage of BI assets via Power BI Service Task Flow + Semantic Model Documentation.</td>
+<td>90% faster onboarding; clear lineage; documentation stays in sync with code; prevents "view spaghetti" anti-pattern.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="4-observability-user-experience">4️⃣ Observability &amp; User Experience<a class="headerlink" href="#4-observability-user-experience" title="Permanent link">¶</a></h4>
+<p><strong>Problem:</strong> Stakeholders confused why data seemed stale despite "Refresh successful" messages; KPI cards showed only headline numbers; Raw column names confused business users.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>User Frustration ❌</th>
+<th>Transparency Solution ✅</th>
+<th>UX Improvement 👥</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dashboard Observability</strong></td>
+<td>Stakeholders confused why data seemed stale despite "Refresh successful" messages; frequent "Is the data up to date?" emails.</td>
+<td>Dual-Timestamp Architecture: Separation of concerns in Dashboard Header:<br>• 🌥️ Last Refreshed: System Time (dbt pipeline run transformed new data )<br>• 🗄️ Data Current Until: Data Time (Max timestamp from Snowflake <code>meta_project_status</code>)</td>
+<td>Zero confusion. Executives know instantly if viewing "Today's Data" vs. "Most recent ELT run", distinguishing pipeline latency from report refresh latency.</td>
+</tr>
+<tr>
+<td><strong>Data Health Monitoring</strong></td>
+<td>Issues found when users reported broken dashboards; no visibility into pipeline health.</td>
+<td>Snowflake resource monitors + dbt freshness checks + Power BI refresh failure alerts + dedicated Data Quality &amp; Integrity Audit page.</td>
+<td>Proactive issue detection; Ops team sees at-risk SKUs (610 missing photos, R$11K revenue at risk) before impacting sales.</td>
+</tr>
+<tr>
+<td><strong>User Experience</strong></td>
+<td>KPI cards showed only headline numbers; raw column names (snake_case) exposed in Power BI; confusing for business users.</td>
+<td>Tooltip implementation (Verified %, At-Risk $) + dual-timestamp footer + dedicated Documentation page + renamed columns to Title Case (e.g., <code>order_status</code> → "Order Status").</td>
+<td>Users verify data quality without leaving dashboard; new users onboard 3x faster; business-friendly UI; non-technical users understand fields; eliminates "silent failures".</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-strategic-insights-recommendations">3. Strategic Insights &amp; Recommendations<a class="headerlink" href="#3-strategic-insights-recommendations" title="Permanent link">¶</a></h2>
+<blockquote>
+<p><strong>3 Critical Business Opportunities Uncovered via Data Analysis</strong></p>
+</blockquote>
+<hr>
+<h3 id="insight-1-the-north-region-logistics-failure">🔴 Insight 1 – The "North Region" Logistics Failure<a class="headerlink" href="#insight-1-the-north-region-logistics-failure" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Insight:</strong> While the national delivery network is stable, the Northern region is experiencing a critical failure rate, effectively alienating an entire geographic market.</li>
+<li><strong>Evidence:</strong> The Root Cause Decomposition Tree highlights that <strong>Amazonas (AM)</strong> has a <strong>66.7% Delivery Failure Rate</strong>, and <strong>Maranhão (MA)</strong> is at <strong>23.1%</strong>. This contrasts sharply with the healthy 8.8% rate in São Paulo.</li>
+<li><strong>Impact:</strong> High operational costs due to refunds/returns in the North, plus negative brand reputation preventing future growth in that territory.</li>
+<li><strong>Recommendation:</strong> Immediate courier review for the North. Switch logistics partners for interstate deliveries to AM/MA and extend the "Estimated Delivery Date" in the app for these specific zip codes to manage expectations.</li>
+</ul>
+<h3 id="insight-2-the-empty-calorie-growth-volume-vs-value">🟠 Insight 2 – The "Empty Calorie" Growth (Volume vs. Value)<a class="headerlink" href="#insight-2-the-empty-calorie-growth-volume-vs-value" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Insight:</strong> The business is acquiring more customers, but they are becoming less valuable. We are seeing "Empty Calorie" growth.</li>
+<li><strong>Evidence:</strong> Month-over-Month Order Volume increased by <strong>+3.1%</strong> (96K orders), yet Total Revenue <strong>dropped by -3.4%</strong>. This is driven by a <strong>-6.3% drop in Average Order Value (AOV)</strong>.</li>
+<li><strong>Impact:</strong> Profit margins are shrinking. We are processing more shipments (higher cost) for less revenue (lower return).</li>
+<li><strong>Recommendation:</strong> Shift marketing spend from "low-ticket" items (likely "Cool Stuff" or "Auto") to high-AOV categories like "Computers" or "Watches." Launch product bundles (e.g., "Buy 2, Save 10%") to artificially inflate AOV.</li>
+</ul>
+<h3 id="insight-3-revenue-at-risk-via-invisible-inventory">🟡 Insight 3 – Revenue at Risk via "Invisible" Inventory<a class="headerlink" href="#insight-3-revenue-at-risk-via-invisible-inventory" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Insight:</strong> A lack of validation in the seller portal is causing "Silent Revenue Loss." Products are listed but unsellable due to data errors.</li>
+<li><strong>Evidence:</strong> The Data Quality Audit identified <strong>1.85% of the Catalog</strong> as "High Risk," primarily due to <strong>610 SKUs with Missing Photos</strong>. Additionally, <strong>R$11,347</strong> in revenue is flagged as "At Risk" due to system logic failures.</li>
+<li><strong>Impact:</strong> We are losing sales on 610 products simply because customers won't buy items they can't see.</li>
+<li><strong>Recommendation:</strong> Implement a "Hard Stop" in the Seller Portal: Sellers cannot publish a listing without at least 1 uploaded photo. Create an automated dbt alert for the Operations team when "At Risk" revenue exceeds R$10k.</li>
+</ul>
+<hr>
+<h2 id="6-key-business-questions-evidence-answers">6. Key Business Questions — Evidence &amp; Answers<a class="headerlink" href="#6-key-business-questions-evidence-answers" title="Permanent link">¶</a></h2>
+<h3 id="q1-how-are-total-revenue-and-order-volume-trending-over-time">❓ Q1: How are total revenue and order volume trending over time?<a class="headerlink" href="#q1-how-are-total-revenue-and-order-volume-trending-over-time" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "What is the total revenue and volume performance, and how is it trending?"</li>
+<li><strong>Answer:</strong> "Total verified Revenue reached <strong>R$13M</strong> with a total volume of <strong>96K Orders</strong>. While the long-term trend shows consistent growth from Jan 2017 to mid-2018, the most recent month shows a divergence: Order Volume increased by <strong>+3.1%</strong>, but Revenue dipped by <strong>-3.4%</strong>."</li>
+<li><strong>Visual Used:</strong> KPI Cards (Top Row) &amp; Trend Line Chart (Revenue Bars vs. Order Line).</li>
+<li><strong>What it means:</strong> "The drop in revenue despite rising order counts is explained by the <strong>-6.3% drop in Average Order Value (AOV)</strong>. Customers are buying <em>more often</em>, but purchasing <em>lower-value</em> items this month. Additionally, the tooltip reveals that <strong>99.9%</strong> of this revenue is Verified (Delivered), with only 0.1% at risk."</li>
+</ul>
+<h3 id="q2-which-product-categories-generate-the-most-revenue-and-orders">❓ Q2: Which product categories generate the most revenue and orders?<a class="headerlink" href="#q2-which-product-categories-generate-the-most-revenue-and-orders" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "Which product categories are the primary drivers of business volume?"</li>
+<li><strong>Answer:</strong> "<strong>Bed Bath Table</strong> is the absolute volume leader with <strong>9.3K orders</strong>. It is followed by <strong>Health Beauty (8.6K)</strong> and <strong>Sports Leisure (7.5K)</strong>."</li>
+<li><strong>Visual Used:</strong> Horizontal Bar Chart ("Top 10 Products by Total Orders").</li>
+<li><strong>What it means:</strong> "The marketplace is dominated by Home &amp; Lifestyle goods rather than Electronics. The top 3 categories account for a significant portion of volume, meaning inventory stability in 'Bed Bath Table' is critical for monthly targets."</li>
+</ul>
+<h3 id="q3-which-regions-and-states-contribute-most-to-revenue-and-orders">❓ Q3: Which regions and states contribute most to revenue and orders?<a class="headerlink" href="#q3-which-regions-and-states-contribute-most-to-revenue-and-orders" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "Where is our customer base geographically concentrated?"</li>
+<li><strong>Answer:</strong> "<strong>São Paulo (SP)</strong> is the single largest market, driving <strong>40K orders</strong> (approx. 41% of total volume). <strong>Rio de Janeiro (RJ)</strong> and <strong>Minas Gerais (MG)</strong> follow with 12K and 11K respectively."</li>
+<li><strong>Visual Used:</strong> Treemap ("Total Orders Distribution by State").</li>
+<li><strong>What it means:</strong> "The business is heavily concentrated in the Southeast region. Success in São Paulo effectively dictates the success of the entire company. Any logistics bottleneck in SP (the largest block) will have a disproportionate impact on global KPIs compared to smaller states like SC or PR."</li>
+</ul>
+<h3 id="q4-how-efficient-is-order-delivery-performance-across-regions">❓ Q4: How efficient is order delivery performance across regions?<a class="headerlink" href="#q4-how-efficient-is-order-delivery-performance-across-regions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "What is the baseline for logistics efficiency, and where are the bottlenecks?"</li>
+<li><strong>Answer:</strong> "The network operates with an average delivery time of <strong>12.4 days</strong> and an overall <strong>Delay Rate of 8.1%</strong>. While the <strong>91.9% On-Time Rate</strong> appears healthy at a macro level, deep disparities exist at the regional level."</li>
+<li><strong>Visual Used:</strong> KPI Cards &amp; Root Cause Analysis (Decomposition Tree).</li>
+<li><strong>What it means:</strong> "The Decomposition Tree highlights that delays are not random; they are geographic. Northern states face severe logistics failures, with <strong>Amazonas (AM)</strong> seeing a <strong>66.7% failure rate</strong> and <strong>Maranhão (MA)</strong> at <strong>23.1%</strong>. In contrast, high-volume states like SP maintain an 8.8% delay rate, suggesting the problem is specific to 'Last Mile' carriers in remote regions."</li>
+</ul>
+<h3 id="q5-which-sellers-contribute-the-most-to-revenue">❓ Q5: Which sellers contribute the most to revenue?<a class="headerlink" href="#q5-which-sellers-contribute-the-most-to-revenue" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "Where is our supply-side revenue concentrated?"</li>
+<li><strong>Answer:</strong> "Sellers based in <strong>São Paulo (SP)</strong> are the absolute engine of the marketplace, generating <strong>R$84.8M</strong> in revenue across <strong>68K orders</strong>. No other state comes close; the next largest contributor is MG (Minas Gerais) with significantly lower volume."</li>
+<li><strong>Visual Used:</strong> "Seller State" Matrix Table (Bottom Left).</li>
+<li><strong>What it means:</strong> "The platform has a <strong>Single Point of Failure</strong> risk. Since &gt;65% of revenue originates from sellers in SP, any local disruption there (strikes, weather, tax changes) would cripple the entire platform's Gross Merchandise Value (GMV). Diversifying the seller base into Southern states (PR, SC) is a necessary strategic move."</li>
+</ul>
+<h3 id="q6-how-many-customers-are-repeat-buyers-versus-new-customers">❓ Q6: How many customers are repeat buyers versus new customers?<a class="headerlink" href="#q6-how-many-customers-are-repeat-buyers-versus-new-customers" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Question:</strong> "Are we building a loyal customer base or just acquiring new ones?"</li>
+<li><strong>Answer:</strong> "The business is currently fueled almost entirely by new acquisition. The <strong>Loyalty Rate is only 3.0%</strong>, meaning <strong>97% of customers</strong> purchase once and never return."</li>
+<li><strong>Visual Used:</strong> KPI Card &amp; "Customer Retention Trend" Stacked Column Chart.</li>
+<li><strong>What it means:</strong> "The Trend Chart shows strong growth in <em>New Customers</em> (Light Blue bars), but the <em>Repeat Customers</em> segment (Dark Blue bars) is barely visible. This indicates a classic 'Leaky Bucket' problem. While Marketing is effective at acquisition, the operational experience (likely the 12-day wait time) is preventing users from becoming loyalists. Improving retention from 3% to 5% would likely be more profitable than acquiring 1,000 new users."</li>
+</ul>
+<hr>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AyanMulaskar223" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

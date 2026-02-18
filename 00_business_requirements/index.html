@@ -1,0 +1,1334 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+      
+      
+        <meta name="author" content="Ayan Mulaskar">
+      
+      
+        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/00_business_requirements/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../01_architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Biz Requirements - Olist Modern Analytics Platform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+        
+
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Olist Modern Analytics Platform">
+<meta property="og:title" content="Biz Requirements | Olist Modern Analytics Platform">
+<meta property="og:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/00_business_requirements/">
+
+<meta property="og:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Biz Requirements | Olist Modern Analytics Platform">
+<meta name="twitter:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+
+<meta name="twitter:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+ 
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#executive-summary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Olist Modern Analytics Platform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Biz Requirements
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Biz Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../01_architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../designs/003_marts_star_schema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Notes
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../02_data_dictionary/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Dict
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../03_data_quality/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Quality
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../04_semantic_model/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Semantic Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../05_performance_optimization/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Perf Optimization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../06_engineering_standards/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Eng Standards
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../07_analytics_insights/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Analytics Insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    Olist Modern Analytics Platform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biz Requirements
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biz Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-business-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1️⃣ Business Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-stakeholders-user-personas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2️⃣ Stakeholders &amp; User Personas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-objectives-success-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3️⃣ Objectives &amp; Success Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-key-business-questions-kbqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4️⃣ Key Business Questions (KBQs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-kpi-definitions-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5️⃣ KPI Definitions &amp; Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-business-rules-data-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6️⃣ Business Rules &amp; Data Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-data-scope-granularity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7️⃣ Data Scope &amp; Granularity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-non-functional-requirements-nfrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8️⃣ Non-Functional Requirements (NFRs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#out-of-scope-phase-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔟 Out of Scope (Phase 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-deliverables-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1️⃣1️⃣ Deliverables Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../designs/003_marts_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_data_dictionary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Dict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_data_quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_semantic_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_performance_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_engineering_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eng Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_analytics_insights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics Insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="phase-1-business-requirements-document-brd">🎯 Phase 1: Business Requirements Document (BRD)<a class="headerlink" href="#phase-1-business-requirements-document-brd" title="Permanent link">¶</a></h1>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Phase-1%20Complete-success?style=for-the-badge" data-desc-position="bottom"><img alt="Project Status" src="https://img.shields.io/badge/Phase-1%20Complete-success?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Stack-Modern%20Data%20Stack-blue?style=for-the-badge" data-desc-position="bottom"><img alt="Data Stack" src="https://img.shields.io/badge/Stack-Modern%20Data%20Stack-blue?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Domain-E--commerce%20Analytics-orange?style=for-the-badge" data-desc-position="bottom"><img alt="Domain" src="https://img.shields.io/badge/Domain-E--commerce%20Analytics-orange?style=for-the-badge"></a></p>
+<hr>
+<h2 id="executive-summary">📊 Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p>Olist's fragmented analytics ecosystem prevents leadership from making fast, confident data-driven decisions. Sales, Finance, and Operations teams report conflicting revenue numbers, lack visibility into delivery bottlenecks, and spend 4+ days monthly reconciling spreadsheets.</p>
+<p>This Modern Data Stack initiative establishes a <strong>single source of truth</strong> using Snowflake, dbt, and Power BI to standardize KPIs, reduce insight latency from <strong>weekly</strong> to <strong>daily</strong>, and enable self-service analytics for 4 key stakeholder groups.</p>
+<p><strong>Success Criteria:</strong></p>
+<ul>
+<li>✅ 100% revenue reconciliation with Finance audit trail</li>
+<li>✅ &lt;2 second dashboard load time for 95% of visuals</li>
+<li>✅ Zero critical data quality failures in production</li>
+<li>✅ 3-page executive app deployed with RLS regional filtering</li>
+</ul>
+<p><strong>Timeline:</strong> Phase 1-5 (Dec 2025 – Feb 2026) | improved decision velocity by 5x (Projected)</p>
+<hr>
+<h2 id="1-business-context">1️⃣ Business Context<a class="headerlink" href="#1-business-context" title="Permanent link">¶</a></h2>
+<h3 id="11-domain-overview">1.1 Domain Overview<a class="headerlink" href="#11-domain-overview" title="Permanent link">¶</a></h3>
+<p>Olist operates a multi-seller e-commerce marketplace in Brazil, connecting small merchants ("Sellers") to major marketplaces. The platform orchestrates a complex ecosystem of <strong>Orders, Payments, Logistics, and Reviews</strong>, acting as the connective tissue between decentralized sellers and centralized demand.</p>
+<h3 id="12-the-business-problem-the-trust-gap">1.2 The Business Problem (The "Trust Gap")<a class="headerlink" href="#12-the-business-problem-the-trust-gap" title="Permanent link">¶</a></h3>
+<p>As Olist scaled, its data ecosystem fragmented into siloed operational stores. Reporting became reactive, relying on manual CSV exports and fragile ad-hoc SQL scripts.</p>
+<ul>
+<li><strong>Pain Point 1:</strong> Sales, Finance, and Ops teams report different revenue numbers for the same period.</li>
+<li><strong>Pain Point 2:</strong> No visibility into "Lost Revenue" due to logistics failures or catalog errors.</li>
+<li><strong>Pain Point 3:</strong> Regional managers lack sub-second access to performance data, relying on stale weekly PDFs.</li>
+</ul>
+<h3 id="13-strategic-vision">1.3 Strategic Vision<a class="headerlink" href="#13-strategic-vision" title="Permanent link">¶</a></h3>
+<p>To transition from "Start-up" to "Scale-up," Olist must shift from gut-feel decision-making to precision analytics. This project establishes a <strong>Modern Data Stack (MDS)</strong>—utilizing Snowflake, dbt, and Power BI—to deliver a <strong>Single Source of Truth (SSOT)</strong>.</p>
+<hr>
+<h2 id="2-stakeholders-user-personas">2️⃣ Stakeholders &amp; User Personas<a class="headerlink" href="#2-stakeholders-user-personas" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">User Persona</th>
+<th style="text-align: left;">Role Focus</th>
+<th style="text-align: left;">Key Pain Point</th>
+<th style="text-align: left;">Decisions Enabled</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>C-Level Executives</strong></td>
+<td style="text-align: left;">Strategy &amp; Growth</td>
+<td style="text-align: left;">"I don't know if we are profitable on a unit-economics basis."</td>
+<td style="text-align: left;">Allocate capital to high-growth categories; Pivot strategy based on YoY trends.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ops Managers</strong></td>
+<td style="text-align: left;">Logistics &amp; SLA</td>
+<td style="text-align: left;">"I find out about delivery bottlenecks 3 days too late."</td>
+<td style="text-align: left;">Re-route orders from failing hubs; Switch logistics partners in high-fail states.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sales Managers</strong></td>
+<td style="text-align: left;">Seller Performance</td>
+<td style="text-align: left;">"I can't identify which sellers are hurting our brand reputation."</td>
+<td style="text-align: left;">Offboard high-risk sellers; Create "Gold Tier" rewards for top performers.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Finance Team</strong></td>
+<td style="text-align: left;">Revenue Audit</td>
+<td style="text-align: left;">"I spend 4 days a month reconciling spreadsheets."</td>
+<td style="text-align: left;">Close books faster with "Verified Revenue" vs. "Revenue at Risk" visibility.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-objectives-success-criteria">3️⃣ Objectives &amp; Success Criteria<a class="headerlink" href="#3-objectives-success-criteria" title="Permanent link">¶</a></h2>
+<h3 id="primary-objectives">Primary Objectives<a class="headerlink" href="#primary-objectives" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Metric Standardization:</strong> Enforce strict, code-based definitions for "Realized Revenue" and "Delivery Delay" to eliminate metric drift.</li>
+<li><strong>Latency Reduction:</strong> Reduce "Time-to-Insight" from <strong>Weekly</strong> (Manual) to <strong>Daily</strong> (Automated T-1 Refresh).</li>
+<li><strong>Self-Service:</strong> Empower non-technical managers to slice data by Region/Category without SQL requests.</li>
+</ol>
+<h3 id="success-metrics-definition-of-done">Success Metrics (Definition of Done)<a class="headerlink" href="#success-metrics-definition-of-done" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Data%20Quality-100%25%20Target-brightgreen" data-desc-position="bottom"><img alt="Quality Badge" src="https://img.shields.io/badge/Data%20Quality-100%25%20Target-brightgreen"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Query%20Time-%3C2s-blue" data-desc-position="bottom"><img alt="Performance Badge" src="https://img.shields.io/badge/Query%20Time-%3C2s-blue"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Reconciliation-100%25-success" data-desc-position="bottom"><img alt="Trust Badge" src="https://img.shields.io/badge/Reconciliation-100%25-success"></a></p>
+<ul>
+<li><strong>Trust:</strong> 100% numerical reconciliation between Finance "Gold Numbers" and Dashboard Revenue.</li>
+<li>📸 <em>Validation:</em> <a href="../screenshots/04_powerbi/uat_revenue_reconciliation.png">UAT Revenue Reconciliation</a></li>
+<li><strong>Performance:</strong> Dashboard report pages load in <strong>&lt; 2 seconds</strong> for 95% of queries.</li>
+<li>📸 <em>Validation:</em> <a href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png">Performance Analyzer Results</a></li>
+<li><strong>Data Quality:</strong> Zero critical failures (Duplicates, Null Primary Keys) allowed in the Production pipeline.</li>
+<li>📸 <em>Validation:</em> <a href="../screenshots/03_dbt/test_passed_suite.png">dbt Test Suite (100% Pass Rate)</a></li>
+</ul>
+<hr>
+<h2 id="4-key-business-questions-kbqs">4️⃣ Key Business Questions (KBQs)<a class="headerlink" href="#4-key-business-questions-kbqs" title="Permanent link">¶</a></h2>
+<p>The dashboard is designed to answer these specific strategic questions:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Business Question</th>
+<th style="text-align: left;">Analytics Type</th>
+<th style="text-align: left;">Value Add</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Q1</strong></td>
+<td style="text-align: left;">How are revenue and orders trending MoM/YoY?</td>
+<td style="text-align: left;">Descriptive</td>
+<td style="text-align: left;">Identifying growth stagnation early to adjust marketing spend.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Q2</strong></td>
+<td style="text-align: left;">Which product categories drive the most margin?</td>
+<td style="text-align: left;">Descriptive</td>
+<td style="text-align: left;">Prioritizing inventory and seller onboarding efforts.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Q3</strong></td>
+<td style="text-align: left;">Where is the demand concentrated geographically?</td>
+<td style="text-align: left;">Descriptive</td>
+<td style="text-align: left;">Optimizing logistics hub locations and shipping routes.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Q4</strong></td>
+<td style="text-align: left;">How efficient is our delivery network?</td>
+<td style="text-align: left;">Diagnostic</td>
+<td style="text-align: left;">Pinpointing failing carrier routes (e.g., "SP to RJ").</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Q5</strong></td>
+<td style="text-align: left;">Who are our "Whale" sellers vs. "Churn" risks?</td>
+<td style="text-align: left;">Descriptive</td>
+<td style="text-align: left;">Focused account management for top 1% of sellers.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Q6</strong></td>
+<td style="text-align: left;">Are we retaining customers (Loyalty)?</td>
+<td style="text-align: left;">Descriptive</td>
+<td style="text-align: left;">Shifting strategy from "Acquisition" to "Retention" (LTV).</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-kpi-definitions-logic">5️⃣ KPI Definitions &amp; Logic<a class="headerlink" href="#5-kpi-definitions-logic" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">KPI</th>
+<th style="text-align: left;">Business Definition</th>
+<th style="text-align: left;">Technical Logic / Calculation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Total Revenue</strong></td>
+<td style="text-align: left;">Gross value of delivered items.</td>
+<td style="text-align: left;"><code>SUM(price)</code> where <code>order_status = 'delivered'</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total Orders</strong></td>
+<td style="text-align: left;">Count of distinct valid orders.</td>
+<td style="text-align: left;"><code>COUNT(DISTINCT order_id)</code> where <code>order_status &lt;&gt; 'canceled'</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Avg Order Value (AOV)</strong></td>
+<td style="text-align: left;">Average spend per order.</td>
+<td style="text-align: left;"><code>Total Revenue</code> ÷ <code>Total Orders</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Delivery Delay Rate %</strong></td>
+<td style="text-align: left;">% of orders arriving late.</td>
+<td style="text-align: left;"><code>COUNT(late_orders)</code> ÷ <code>COUNT(delivered_orders)</code> where <code>delivered_at &gt; estimated_at</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>On-Time Delivery %</strong></td>
+<td style="text-align: left;">% of orders arriving on/before promise.</td>
+<td style="text-align: left;"><code>1 - Delay Rate %</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Revenue at Risk</strong></td>
+<td style="text-align: left;">Value of orders with data quality issues.</td>
+<td style="text-align: left;"><code>SUM(price)</code> where <code>is_verified = False</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-business-rules-data-logic">6️⃣ Business Rules &amp; Data Logic<a class="headerlink" href="#6-business-rules-data-logic" title="Permanent link">¶</a></h2>
+<p>These rules govern how raw data is translated into business insights:</p>
+<h3 id="core-business-rules">📋 Core Business Rules<a class="headerlink" href="#core-business-rules" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Enforcement Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Revenue Recognition</strong></td>
+<td style="text-align: left;">Revenue is strictly recognized only when <code>order_status = 'delivered'</code>. Shipped or Invoiced orders are tracked for Operations but excluded from Financial totals.</td>
+<td style="text-align: left;"><code>stg_orders.sql</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Efficiency Rule</strong></td>
+<td style="text-align: left;">A delivery is flagged "Late" strictly if <code>order_delivered_customer_date &gt; order_estimated_delivery_date</code>. Weekends/Holidays are included (Customer View).</td>
+<td style="text-align: left;"><code>int_orders_enriched.sql</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Identity Rule</strong></td>
+<td style="text-align: left;">A "Customer" is defined by <code>customer_unique_id</code> (The Human), NOT <code>customer_id</code> (The Transaction).</td>
+<td style="text-align: left;"><code>dim_customers.sql</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Verification Rule</strong></td>
+<td style="text-align: left;">We apply a <strong>"Trust, Don't Trash"</strong> philosophy. Records with quality issues are <strong>Flagged</strong> (<code>is_verified = False</code>) rather than deleted.</td>
+<td style="text-align: left;">All STAGING layer models</td>
+</tr>
+</tbody>
+</table>
+<p><strong>📸 Implementation Evidence:</strong></p>
+<ul>
+<li><a href="../screenshots/03_dbt/data_contracts.png">Data Contracts in dbt</a> - Business rules codified as tests</li>
+<li><a href="../screenshots/04_powerbi/trust_tooltip_ux.png">Trust Indicators in Power BI</a> - User-facing verification flags</li>
+</ul>
+<hr>
+<h2 id="7-data-scope-granularity">7️⃣ Data Scope &amp; Granularity<a class="headerlink" href="#7-data-scope-granularity" title="Permanent link">¶</a></h2>
+<h3 id="analytical-grain">Analytical Grain<a class="headerlink" href="#analytical-grain" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>📊 Fact Grain: One row per Order Line Item
+</code></pre></div>
+<p><strong>Justification:</strong> Analysis requires slicing by Product Category and Seller Location. A grain of "Order Header" would obscure multi-category orders.</p>
+<h3 id="assumptions-limitations">Assumptions &amp; Limitations<a class="headerlink" href="#assumptions-limitations" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Constraint</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Historical Range</strong></td>
+<td style="text-align: left;">Sep 2016 – Oct 2018 (Dataset Limitation)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Currency</strong></td>
+<td style="text-align: left;">BRL (Brazilian Real)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Timezone</strong></td>
+<td style="text-align: left;">UTC (Pipeline) / UTC-3 (Reporting)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="8-non-functional-requirements-nfrs">8️⃣ Non-Functional Requirements (NFRs)<a class="headerlink" href="#8-non-functional-requirements-nfrs" title="Permanent link">¶</a></h2>
+<h3 id="81-data-quality-trust">8.1 Data Quality &amp; Trust<a class="headerlink" href="#81-data-quality-trust" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Quality%20Threshold-95%25%20Pass%20Rate-critical" data-desc-position="bottom"><img alt="Data Quality" src="https://img.shields.io/badge/Quality%20Threshold-95%25%20Pass%20Rate-critical"></a></p>
+<ul>
+<li><strong>Constraint:</strong> The pipeline must halt if &gt;5% of daily volume fails validation.</li>
+<li><strong>Visibility:</strong> All "Raw" vs. "Verified" data discrepancies must be visible in a dedicated "Data Audit" page.</li>
+</ul>
+<p><strong>📸 Implementation Screenshots:</strong></p>
+<ul>
+<li><a href="../screenshots/04_powerbi/data_quality_audit.png">Data Quality Audit Dashboard</a> - Anomaly visibility</li>
+<li><a href="../screenshots/03_dbt/test_passed_suite.png">dbt Test Results</a> - Automated validation pipeline</li>
+</ul>
+<h3 id="82-security-access-rls">8.2 Security &amp; Access (RLS)<a class="headerlink" href="#82-security-access-rls" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Security-RLS%20Enabled-red" data-desc-position="bottom"><img alt="Security" src="https://img.shields.io/badge/Security-RLS%20Enabled-red"></a></p>
+<ul>
+<li><strong>Regional Restriction:</strong> Managers must only see data for their specific States (e.g., "SP Manager" sees only <code>customer_state = 'SP'</code>).</li>
+<li><strong>Implementation:</strong> Dynamic RLS via Bridge Table (<code>User Email</code> → <code>Access Key</code> → <code>State Code</code>).</li>
+</ul>
+<p><strong>📸 Implementation Screenshots:</strong></p>
+<ul>
+<li><a href="../screenshots/02_snowflake/RBAC.png">Snowflake RBAC Configuration</a> - Role-based access control</li>
+<li><a href="../screenshots/04_powerbi/uat_rls_validation.png">Power BI RLS Validation</a> - Regional data filtering test</li>
+</ul>
+<h3 id="83-performance">8.3 Performance<a class="headerlink" href="#83-performance" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/SLA-Daily%20Refresh%20by%2005%3A00-blue" data-desc-position="bottom"><img alt="Performance" src="https://img.shields.io/badge/SLA-Daily%20Refresh%20by%2005%3A00-blue"></a></p>
+<ul>
+<li><strong>Refresh:</strong> Data must be refreshed daily by 05:00 AM local time.</li>
+<li><strong>Interactivity:</strong> Visuals must render in &lt; 2 seconds.</li>
+</ul>
+<p><strong>📸 Implementation Screenshots:</strong></p>
+<ul>
+<li><a href="../screenshots/04_powerbi/incremental_refresh.png">Incremental Refresh Strategy</a> - Optimized data refresh</li>
+<li><a href="../screenshots/04_powerbi/query_folding.png">Query Folding Evidence</a> - Native query pushdown to Snowflake</li>
+</ul>
+<hr>
+<h2 id="out-of-scope-phase-1">🔟 Out of Scope (Phase 1)<a class="headerlink" href="#out-of-scope-phase-1" title="Permanent link">¶</a></h2>
+<p>| Feature                    | Status          |
+| :------------------------- | :-------------- | --- |
+| <strong>Sentiment Analysis</strong>     | ⏸️ Deferred     |
+| <strong>Predictive Forecasting</strong> | ⏸️ Deferred     |
+| <strong>Real-Time Streaming</strong>    | ❌ Not Required |     |</p>
+<hr>
+<h2 id="11-deliverables-checklist">1️⃣1️⃣ Deliverables Checklist<a class="headerlink" href="#11-deliverables-checklist" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-deliverables">✅ Phase 1 Deliverables<a class="headerlink" href="#phase-1-deliverables" title="Permanent link">¶</a></h3>
+<ul>
+<li>[x] <strong>Semantic Model:</strong> Certified Power BI Dataset (<code>.pbip</code>) with Star Schema architecture.</li>
+<li>📸 <a href="../screenshots/04_powerbi/semantic_model.png">Semantic Model Diagram</a></li>
+<li>📸 <a href="../screenshots/04_powerbi/lineage_graph_view.png">Data Lineage View</a></li>
+<li>[x] <strong>Executive App:</strong> 3-Page Dashboard (Overview, Logistics Deep Dive, Data Audit).</li>
+<li>📸 <a href="../screenshots/04_powerbi/org_app_view.png">Executive Overview</a></li>
+<li>📸 <a href="../screenshots/04_powerbi/supply_chain_analysis.png">Supply Chain Analysis</a></li>
+<li>📸 <a href="../screenshots/04_powerbi/data_quality_audit.png">Data Quality Audit</a></li>
+<li>[x] <strong>Documentation:</strong></li>
+<li><a href="../01_architecture/">Architecture Diagram</a></li>
+<li><a href="../02_data_dictionary/">Data Dictionary</a></li>
+<li>📸 <a href="../screenshots/03_dbt/dbt_docs_site.png">dbt Documentation Site</a></li>
+</ul>
+<hr>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AyanMulaskar223" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

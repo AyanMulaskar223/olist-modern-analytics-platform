@@ -1,0 +1,2287 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+      
+      
+        <meta name="author" content="Ayan Mulaskar">
+      
+      
+        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/">
+      
+      
+        <link rel="prev" href="../05_performance_optimization/">
+      
+      
+        <link rel="next" href="../07_analytics_insights/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Eng Standards - Olist Modern Analytics Platform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+        
+
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Olist Modern Analytics Platform">
+<meta property="og:title" content="Eng Standards | Olist Modern Analytics Platform">
+<meta property="og:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/">
+
+<meta property="og:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eng Standards | Olist Modern Analytics Platform">
+<meta name="twitter:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+
+<meta name="twitter:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+ 
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#document-purpose" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Olist Modern Analytics Platform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Eng Standards
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00_business_requirements/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Biz Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../01_architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../designs/003_marts_star_schema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Notes
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../02_data_dictionary/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Dict
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../03_data_quality/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Quality
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../04_semantic_model/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Semantic Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../05_performance_optimization/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Perf Optimization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Eng Standards
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../07_analytics_insights/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Analytics Insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    Olist Modern Analytics Platform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_business_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biz Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../designs/003_marts_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_data_dictionary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Dict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_data_quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_semantic_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_performance_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eng Standards
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eng Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#document-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Document Purpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-development-lifecycle-adlc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Development Lifecycle (ADLC)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-dataops-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. DataOps Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproducibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔟 Reproducibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-datafinops-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 🔶 DataFinOps Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-analytics-engineering-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 🧱 Analytics Engineering Standards
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-ai-assisted-development-agentic-analytics-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 🤖 AI-Assisted Development &amp; Agentic Analytics Workflows
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#productivity-cost-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔟 Productivity &amp; Cost Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-self-service-analytics-20-governance-focused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 📊 Self-Service Analytics 2.0 (Governance-Focused)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trust-indicators-data-freshness-quality-badges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔟 Trust Indicators (Data Freshness &amp; Quality Badges)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-scalability-reusability-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 🚀 Scalability &amp; Reusability Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculation-groups-for-time-intelligence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔟 Calculation Groups for Time Intelligence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_analytics_insights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics Insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="engineering-standards-operating-model">🏗️ Engineering Standards &amp; Operating Model<a class="headerlink" href="#engineering-standards-operating-model" title="Permanent link">¶</a></h1>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Framework-ADLC%205%20Phases-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="ADLC" src="https://img.shields.io/badge/Framework-ADLC%205%20Phases-2563EB?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/DataOps-CI%2FCD%20%2B%20Testing-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="DataOps" src="https://img.shields.io/badge/DataOps-CI%2FCD%20%2B%20Testing-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/AI%20Assisted-Human%20Validated-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="AI" src="https://img.shields.io/badge/AI%20Assisted-Human%20Validated-7C3AED?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Governance-Data%20Steward-DC2626?style=for-the-badge" data-desc-position="bottom"><img alt="Governance" src="https://img.shields.io/badge/Governance-Data%20Steward-DC2626?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Tests-559%20Automated-F59E0B?style=for-the-badge" data-desc-position="bottom"><img alt="Tests" src="https://img.shields.io/badge/Tests-559%20Automated-F59E0B?style=for-the-badge"></a></p>
+<p><strong>Project:</strong> Olist Modern Analytics Platform
+<strong>Framework:</strong> Analytics Development Life Cycle (ADLC)
+<strong>Tech Stack:</strong> Azure Blob → Snowflake → dbt → Power BI → GitHub
+<strong>Last Updated:</strong> February 2026</p>
+<hr>
+<h2 id="document-purpose">📋 Document Purpose<a class="headerlink" href="#document-purpose" title="Permanent link">¶</a></h2>
+<p>This document explains the <strong>engineering approach</strong> I used to build this analytics platform:</p>
+<p>✅ <strong>ADLC Framework:</strong> How I organized work into 5 structured phases
+✅ <strong>DataOps Practices:</strong> Automated testing, CI/CD, version control
+✅ <strong>Quality Engineering:</strong> 559 automated tests ensuring reliability
+✅ <strong>Deployment Strategy:</strong> Safe releases with rollback plans</p>
+<hr>
+<h2 id="1-development-lifecycle-adlc">1. Development Lifecycle (ADLC)<a class="headerlink" href="#1-development-lifecycle-adlc" title="Permanent link">¶</a></h2>
+<h3 id="11-what-is-adlc-why-i-used-it">1.1 What Is ADLC &amp; Why I Used It<a class="headerlink" href="#11-what-is-adlc-why-i-used-it" title="Permanent link">¶</a></h3>
+<p><strong>ADLC</strong> = Analytics Development Life Cycle. It's a <strong>5-phase structured approach</strong> that prevents you from getting lost in complex data projects.</p>
+<p><strong>The Problem It Solves:</strong>
+Without structure, you jump between writing SQL, building dashboards, and fixing data issues randomly. ADLC gives you a clear roadmap—complete Phase 1 before Phase 2, validate each step before moving forward.</p>
+<h3 id="the-5-phases-i-followed">The 5 Phases I Followed<a class="headerlink" href="#the-5-phases-i-followed" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Phase</th>
+<th style="text-align: left;">What I Built</th>
+<th style="text-align: left;">Validation Gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>1. Requirements</strong></td>
+<td style="text-align: left;">Business questions (Q1-Q6), KPI definitions</td>
+<td style="text-align: left;">Stakeholder sign-off</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2. Data Ingestion</strong></td>
+<td style="text-align: left;">Snowflake RAW layer (8 tables, 1.55M rows)</td>
+<td style="text-align: left;">85 source tests pass</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>3. Transformations</strong></td>
+<td style="text-align: left;">dbt models (staging → marts), star schema</td>
+<td style="text-align: left;">559 tests pass</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4. DataOps</strong></td>
+<td style="text-align: left;">CI/CD pipelines, GitHub Actions</td>
+<td style="text-align: left;">All checks green</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>5. BI Layer</strong></td>
+<td style="text-align: left;">Power BI semantic model, dashboards</td>
+<td style="text-align: left;">BPA validation pass</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/project_milestones_roadmap.png" data-desc-position="bottom"><img alt="Project Roadmap" src="../screenshots/05_dataops/project_milestones_roadmap.png"></a></p>
+<h3 id="why-adlc-worked">Why ADLC Worked<a class="headerlink" href="#why-adlc-worked" title="Permanent link">¶</a></h3>
+<p>✅ <strong>No Getting Lost:</strong> Clear checklist per phase
+✅ <strong>Quality Gates:</strong> Tests must pass to proceed—catches issues early
+✅ <strong>Traceability:</strong> Every dashboard metric links to Phase 1 business rules
+✅ <strong>Portfolio-Ready:</strong> Structured approach shows project management skills</p>
+<p><strong>Simple Before/After:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Without ADLC</th>
+<th style="text-align: left;">With ADLC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">😰 Jump between tasks randomly</td>
+<td style="text-align: left;">✅ Clear sequence: Requirements → Data → Models → BI</td>
+</tr>
+<tr>
+<td style="text-align: left;">😰 Fix issues after dashboard breaks</td>
+<td style="text-align: left;">✅ Catch errors early with automated tests</td>
+</tr>
+<tr>
+<td style="text-align: left;">😰 Unclear what's left to do</td>
+<td style="text-align: left;">✅ Phase checklists track progress</td>
+</tr>
+<tr>
+<td style="text-align: left;">😰 Hard to explain to recruiters</td>
+<td style="text-align: left;">✅ Industry-standard framework (like SDLC)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-dataops-practices">2. DataOps Practices<a class="headerlink" href="#2-dataops-practices" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/CI-GitHub%20Actions-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="CI" src="https://img.shields.io/badge/CI-GitHub%20Actions-2563EB?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Testing-dbt%20build%20%2B%20test-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="Tests" src="https://img.shields.io/badge/Testing-dbt%20build%20%2B%20test-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/SQLFluff-Enforced-F59E0B?style=for-the-badge" data-desc-position="bottom"><img alt="Lint" src="https://img.shields.io/badge/SQLFluff-Enforced-F59E0B?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Power%20BI-PBIP%20Versioned-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="PBIP" src="https://img.shields.io/badge/Power%20BI-PBIP%20Versioned-7C3AED?style=for-the-badge"></a></p>
+<h3 id="1-version-control">1️⃣ Version Control<a class="headerlink" href="#1-version-control" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Git for dbt, Snowflake SQL, Power BI (<code>.pbip</code>), and docs.</p>
+<p>→ <strong>What it is:</strong> Source-controlled analytics development with reviewable diffs and rollback safety.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Git tracks <code>03_dbt/</code>, <code>02_snowflake/</code>, <code>04_powerbi/src/olist_analytics.pbip</code>, <code>docs/</code>, and workflow files.</li>
+<li>Feature-branch workflow on protected <code>main</code>.</li>
+<li>Pull requests required for merge with checks.</li>
+<li>Commit naming standard used (<code>feat(scope): description</code>).</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Prevents unreviewed production changes.</li>
+<li>Shortens debugging via commit history and targeted rollback.</li>
+<li>Enables collaborative delivery without metric drift.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/github_pr_checks_pass.png" data-desc-position="bottom"><img alt="PR Checks" src="../screenshots/05_dataops/github_pr_checks_pass.png"></a></p>
+<hr>
+<h3 id="2-ci-continuous-integration">2️⃣ CI (Continuous Integration)<a class="headerlink" href="#2-ci-continuous-integration" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Automated PR validation pipelines.</p>
+<p>→ <strong>What it is:</strong> Every proposed change is tested before merge.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li><code>ci_dbt_test.yaml</code> runs dependency install + <code>dbt build --target ci --full-refresh</code>.</li>
+<li><code>ci_sql_lint.yaml</code> enforces SQLFluff quality checks.</li>
+<li>CI uses isolated Snowflake schema (<code>CI_PR_&lt;number&gt;</code>) and cleanup macro (<code>drop_ci_schema</code>).</li>
+<li>Merge blocks on failed CI checks.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Blocks broken models from reaching stakeholder dashboards.</li>
+<li>Keeps prod stable while enabling fast iteration.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/ci_dbt_build_pass.png" data-desc-position="bottom"><img alt="CI Build Pass" src="../screenshots/05_dataops/ci_dbt_build_pass.png"></a></p>
+<hr>
+<h3 id="3-automated-testing">3️⃣ Automated Testing<a class="headerlink" href="#3-automated-testing" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Multi-layer test automation across source, transform, and business logic.</p>
+<p>→ <strong>What it is:</strong> Data quality and business-rule assertions run automatically, not manually.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt generic tests: <code>not_null</code>, <code>unique</code>, <code>relationships</code>, accepted values.</li>
+<li>Singular tests for business logic (e.g., status coverage, retention sequence, quality flags).</li>
+<li>Source tests on RAW data plus marts-level relationship tests.</li>
+<li>Contracts and tests executed through <code>dbt build</code> / <code>dbt test</code>.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Detects broken joins/keys before report consumers are impacted.</li>
+<li>Preserves trust in KPI consistency across teams.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/test_passed_suite.png" data-desc-position="bottom"><img alt="dbt Test Suite" src="../screenshots/03_dbt/test_passed_suite.png"></a></p>
+<hr>
+<h3 id="4-dev-prod-separation">4️⃣ Dev / Prod Separation<a class="headerlink" href="#4-dev-prod-separation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Isolated development and production environments.</p>
+<p>→ <strong>What it is:</strong> Changes are validated in non-prod before promotion.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Snowflake separation via <code>OLIST_DEV_DB</code> and <code>OLIST_ANALYTICS_DB</code>.</li>
+<li>dbt targets: <code>dev</code>, <code>prod</code>, <code>ci</code> in <code>profiles.yml</code>.</li>
+<li>CI uses dedicated role/schema and then cleans up temporary schema.</li>
+<li>Power BI workspace separation strategy documented and validated in semantic-model workflow.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Prevents accidental production outages from in-progress development.</li>
+<li>Enables controlled releases with rollback path.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/dev_prod_strategy.png" data-desc-position="bottom"><img alt="Dev-Prod Strategy" src="../screenshots/04_powerbi/dev_prod_strategy.png"></a></p>
+<hr>
+<h3 id="5-data-contracts">5️⃣ Data Contracts<a class="headerlink" href="#5-data-contracts" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Contract-based interfaces between layers.</p>
+<p>→ <strong>What it is:</strong> Explicit model schemas and column expectations that fail fast on drift.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt contracts in MARTS models (<code>contract.enforced: true</code> in schema configs).</li>
+<li>Explicit column projection in semantic ingestion path (Power Query <code>SelectColumns</code> pattern).</li>
+<li>Failing contract/test blocks promotion path.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Prevents silent column drift breaking executive reports.</li>
+<li>Reduces incident response time by surfacing errors at build/refresh boundaries.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/data_contracts.png" data-desc-position="bottom"><img alt="Data Contracts" src="../screenshots/03_dbt/data_contracts.png"></a></p>
+<hr>
+<h3 id="6-incremental-processing">6️⃣ Incremental Processing<a class="headerlink" href="#6-incremental-processing" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Delta-based processing at transform and BI refresh layers.</p>
+<p>→ <strong>What it is:</strong> Process only new/changed data instead of full table rebuilds.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt incremental fact model <code>fct_order_items</code> with <code>unique_key='order_item_sk'</code>.</li>
+<li>Incremental boundary based on max <code>order_date_dt</code> in target.</li>
+<li>Power BI incremental refresh configured on sales table.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Cuts recurring refresh runtime and compute usage.</li>
+<li>Improves operational freshness windows for decision users.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/incremental_model.png" data-desc-position="bottom"><img alt="Incremental Model" src="../screenshots/03_dbt/incremental_model.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/incremental_refresh.png" data-desc-position="bottom"><img alt="Incremental Refresh" src="../screenshots/04_powerbi/incremental_refresh.png"></a></p>
+<hr>
+<h3 id="7-observability-monitoring">7️⃣ Observability &amp; Monitoring<a class="headerlink" href="#7-observability-monitoring" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Runtime health visibility across data, compute, and BI refresh.</p>
+<p>→ <strong>What it is:</strong> Detect pipeline and freshness issues before users report them.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt freshness/testing execution in CI pipeline.</li>
+<li>Snowflake resource monitor and warehouse-level policies.</li>
+<li>Power BI refresh and performance validation evidence (BPA/Performance Analyzer artifacts).</li>
+<li><code>meta_project_status</code> table for pipeline and data-valid-through timestamps.</li>
+<li>Power BI footer metadata implemented with dual clocks: <strong>Last Refreshed</strong> (system time) and <strong>Data Current Until</strong> (business data timestamp).</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Shortens detection-to-resolution cycle for data incidents.</li>
+<li>Gives business users explicit freshness confidence.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/BPA_scan_after.png" data-desc-position="bottom"><img alt="BPA After" src="../screenshots/04_powerbi/BPA_scan_after.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/dashboard.png" data-desc-position="bottom"><img alt="Dashboard Footer Timestamps" src="../screenshots/04_powerbi/dashboard.png"></a></p>
+<hr>
+<h3 id="8-data-lineage">8️⃣ Data Lineage<a class="headerlink" href="#8-data-lineage" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> End-to-end lineage from RAW to report exposure.</p>
+<p>→ <strong>What it is:</strong> Clear dependency graph for impact analysis and debugging.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt DAG for model-level lineage.</li>
+<li>dbt exposures linking marts assets to Power BI dashboard dependencies.</li>
+<li>Layered flow maintained: RAW → STAGING → INTERMEDIATE → MARTS.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster impact assessment before changing critical models.</li>
+<li>Lower risk of hidden downstream breakage.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/lineage_dag.png" data-desc-position="bottom"><img alt="Lineage DAG" src="../screenshots/03_dbt/lineage_dag.png"></a></p>
+<hr>
+<h3 id="9-documentation-as-code">9️⃣ Documentation-as-Code<a class="headerlink" href="#9-documentation-as-code" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Technical standards and model docs versioned with code.</p>
+<p>→ <strong>What it is:</strong> Documentation evolves with implementation, not after it.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>YAML model docs in dbt schema files.</li>
+<li>Auto-generated dbt docs catalog and DAG.</li>
+<li>MkDocs site for architecture, quality, performance, and operations playbooks.</li>
+<li>Markdown docs maintained under <code>docs/</code> and reviewed in PR flow.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduces onboarding time for new contributors.</li>
+<li>Keeps governance and delivery knowledge current.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/dbt_docs_site.png" data-desc-position="bottom"><img alt="dbt Docs" src="../screenshots/03_dbt/dbt_docs_site.png"></a></p>
+<hr>
+<h2 id="reproducibility">🔟 Reproducibility<a class="headerlink" href="#reproducibility" title="Permanent link">¶</a></h2>
+<p><strong>Practice:</strong> Environment parity and deterministic project setup.</p>
+<p>→ <strong>What it is:</strong> Same code + same config should reproduce same outputs.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Python dependencies pinned in <code>requirements.txt</code>.</li>
+<li>dbt package locking via <code>package-lock.yml</code>.</li>
+<li>formatting/editor rules via <code>.editorconfig</code>.</li>
+<li>pre-commit automation via <code>.pre-commit-config.yaml</code>.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Prevents “works on my machine” failures.</li>
+<li>Stabilizes CI and release predictability.</li>
+</ul>
+<hr>
+<h3 id="11-deployment-automation">1️⃣1️⃣ Deployment Automation<a class="headerlink" href="#11-deployment-automation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Merge-driven deployment controls with mandatory validation.</p>
+<p>→ <strong>What it is:</strong> Promotion happens only after checks pass.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>PR validation through GitHub Actions.</li>
+<li>dbt build/test and lint checks as merge prerequisites.</li>
+<li>schema cleanup post-CI to keep environments clean.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Lowers production release risk.</li>
+<li>Increases release cadence with guardrails.</li>
+</ul>
+<hr>
+<h3 id="12-shift-left-quality">1️⃣2️⃣ Shift-Left Quality<a class="headerlink" href="#12-shift-left-quality" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Catch issues during development/CI, not in dashboards.</p>
+<p>→ <strong>What it is:</strong> Quality gates move earlier in the lifecycle.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>tests and lint run before merge.</li>
+<li>dbt contract/test failures block delivery.</li>
+<li>BPA scans used in semantic-model QA and release validation.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduces business-facing report failures.</li>
+<li>Protects stakeholder trust in KPI reliability.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/BPA_scan_after.png" data-desc-position="bottom"><img alt="BPA Validation" src="../screenshots/04_powerbi/BPA_scan_after.png"></a></p>
+<div class="admonition note">
+<p class="admonition-title">BPA Automation Status</p>
+</div>
+<p>dbt and SQL quality checks are fully enforced in CI. BPA is currently integrated in semantic-model validation workflow and release checks, with the same fail-fast standard applied in BI QA.</p>
+<hr>
+<h2 id="3-datafinops-practices">3. 🔶 DataFinOps Practices<a class="headerlink" href="#3-datafinops-practices" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Resource%20Monitor-100%20Credits-DC2626?style=for-the-badge" data-desc-position="bottom"><img alt="Quota" src="https://img.shields.io/badge/Resource%20Monitor-100%20Credits-DC2626?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Auto%20Suspend-60s%20%2F%20300s-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="Suspend" src="https://img.shields.io/badge/Auto%20Suspend-60s%20%2F%20300s-2563EB?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Query%20Tagging-Enabled-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="Query Tag" src="https://img.shields.io/badge/Query%20Tagging-Enabled-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Query%20Folding-Validated-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="Folding" src="https://img.shields.io/badge/Query%20Folding-Validated-7C3AED?style=for-the-badge"></a></p>
+<h3 id="1-warehouse-sizing-strategy">1️⃣ Warehouse Sizing Strategy<a class="headerlink" href="#1-warehouse-sizing-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Right-size Snowflake compute with strict suspend/resume settings.</p>
+<p>→ <strong>What it is:</strong> Keep warehouses small and elastic for cost control.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>X-SMALL warehouses for loading, transform, and reporting.</li>
+<li><code>AUTO_SUSPEND = 60</code> (loading/transform), <code>300</code> (reporting), <code>AUTO_RESUME = TRUE</code>.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduces idle-credit burn while preserving responsiveness.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/warehouse.png" data-desc-position="bottom"><img alt="Warehouse" src="../screenshots/02_snowflake/warehouse.png"></a></p>
+<hr>
+<h3 id="2-incremental-compute-optimization">2️⃣ Incremental Compute Optimization<a class="headerlink" href="#2-incremental-compute-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Avoid full-refresh compute where delta processing is sufficient.</p>
+<p>→ <strong>What it is:</strong> Rebuild only changed slices.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt incremental fact in MARTS with unique-key merge logic.</li>
+<li>Power BI incremental refresh for large fact consumption path.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster refresh cycles and lower recurring compute costs.</li>
+</ul>
+<hr>
+<h3 id="3-query-optimization">3️⃣ Query Optimization<a class="headerlink" href="#3-query-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Push heavy logic to warehouse transforms and keep serving layer efficient.</p>
+<p>→ <strong>What it is:</strong> Minimize expensive runtime calculations in report layer.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>heavy transformation logic implemented in dbt intermediate/marts models.</li>
+<li>avoid nested legacy-style reporting queries by layered model design.</li>
+<li>date-driven incremental boundaries for efficient fact updates.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Lower query latency and more predictable dashboard performance.</li>
+</ul>
+<hr>
+<h3 id="4-resource-monitoring">4️⃣ Resource Monitoring<a class="headerlink" href="#4-resource-monitoring" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Budget guardrails at platform level.</p>
+<p>→ <strong>What it is:</strong> Prevent uncontrolled warehouse spend.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>resource monitor <code>OLIST_MONTHLY_LIMIT</code> with 75/90/100 trigger actions.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Hard stop against cost overruns and earlier cost alerts.</li>
+</ul>
+<hr>
+<h3 id="5-storage-lifecycle-strategy">5️⃣ Storage Lifecycle Strategy<a class="headerlink" href="#5-storage-lifecycle-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Tier storage and retention according to access pattern.</p>
+<p>→ <strong>What it is:</strong> Keep hot data fast and archival data cheap.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Azure Blob lifecycle artifacts documented (Hot → Cool → Archive).</li>
+<li>Snowflake retention optimized (<code>RAW=0d</code>, <code>ANALYTICS=1d</code>).</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Storage spend scales without sacrificing required recoverability.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/01_azure_blob_storage/lifecycle_policy.png" data-desc-position="bottom"><img alt="Azure Lifecycle" src="../screenshots/01_azure_blob_storage/lifecycle_policy.png"></a></p>
+<hr>
+<h3 id="6-compute-pushdown">6️⃣ Compute Pushdown<a class="headerlink" href="#6-compute-pushdown" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Transform close to data engine, not inside report client.</p>
+<p>→ <strong>What it is:</strong> Query folding and warehouse pushdown as default pattern.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Query folding validated in Power Query via native-query checks.</li>
+<li>BI model consumes transformed marts layer instead of raw processing in reports.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Better runtime efficiency and lower client-side overhead.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/query_folding.png" data-desc-position="bottom"><img alt="Query Folding" src="../screenshots/04_powerbi/query_folding.png"></a></p>
+<hr>
+<h3 id="7-performance-budget">7️⃣ Performance Budget<a class="headerlink" href="#7-performance-budget" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Explicit SLA targets for dashboard and refresh.</p>
+<p>→ <strong>What it is:</strong> Define measurable performance thresholds before release.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dashboard load target set to <code>&lt;2s</code>.</li>
+<li>refresh benchmark tracked with incremental strategy.</li>
+<li>performance analyzer captures runtime evidence before publish.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Predictable user experience for operational decision-making.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png" data-desc-position="bottom"><img alt="Performance Analyzer" src="../screenshots/04_powerbi/performance_analyzer_excutive_page.png"></a></p>
+<hr>
+<h3 id="8-cost-transparency">8️⃣ Cost Transparency<a class="headerlink" href="#8-cost-transparency" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Make cost drivers attributable and auditable.</p>
+<p>→ <strong>What it is:</strong> Costs mapped to workload and execution context.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>warehouse tags: <code>COST_CENTER</code>, <code>ENVIRONMENT</code>.</li>
+<li>dbt session query tags by environment and invocation.</li>
+<li>monthly projection and benchmark reporting captured in performance docs.</li>
+<li>Power BI report-level metadata surfaces refresh transparency through <strong>Last Refreshed</strong> and <strong>Data Current Until</strong> footer fields for stakeholder clarity.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Supports budget planning and prioritization of optimization work.</li>
+</ul>
+<hr>
+<h2 id="4-analytics-engineering-standards">4. 🧱 Analytics Engineering Standards<a class="headerlink" href="#4-analytics-engineering-standards" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Architecture-RAW→STG→INT→MARTS-059669?style=for-the-badge" data-desc-position="bottom"><img alt="MDS" src="https://img.shields.io/badge/Architecture-RAW→STG→INT→MARTS-059669?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Modeling-Kimball%20Star%20Schema-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="Schema" src="https://img.shields.io/badge/Modeling-Kimball%20Star%20Schema-7C3AED?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Quality-Flag%20Don%E2%80%99t%20Drop-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="Quality" src="https://img.shields.io/badge/Quality-Flag%20Don%E2%80%99t%20Drop-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Lineage-dbt%20Exposures-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="Lineage" src="https://img.shields.io/badge/Lineage-dbt%20Exposures-2563EB?style=for-the-badge"></a></p>
+<h3 id="1-modeling-philosophy">1️⃣ Modeling Philosophy<a class="headerlink" href="#1-modeling-philosophy" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Business-first modeling with centralized metric definitions.</p>
+<p>→ <strong>What it is:</strong> Design models for decision use-cases, not source-system convenience.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>metrics and KPI rules anchored in business requirements and semantic model docs.</li>
+<li>heavy transformations happen in dbt layers before BI consumption.</li>
+<li>dashboard layer reuses curated measures, not ad-hoc SQL logic.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Consistent KPIs across stakeholders and reduced logic duplication.</li>
+</ul>
+<hr>
+<h3 id="2-layered-data-architecture-transformation-discipline">2️⃣ Layered Data Architecture (Transformation Discipline)<a class="headerlink" href="#2-layered-data-architecture-transformation-discipline" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Strict RAW → STAGING → INTERMEDIATE → MARTS flow.</p>
+<p>→ <strong>What it is:</strong> Separate ingestion, cleaning, business logic, and serving responsibilities.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>no direct reporting from RAW.</li>
+<li>staging models standardize and type data.</li>
+<li>intermediate models encapsulate reusable logic.</li>
+<li>marts expose BI-ready star schema tables.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster change impact analysis and lower regression risk.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/lineage_dag.png" data-desc-position="bottom"><img alt="Layered Lineage" src="../screenshots/03_dbt/lineage_dag.png"></a></p>
+<hr>
+<h3 id="3-dimensional-modeling-standards">3️⃣ Dimensional Modeling Standards<a class="headerlink" href="#3-dimensional-modeling-standards" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Kimball star schema with explicit grain and key strategy.</p>
+<p>→ <strong>What it is:</strong> One central fact with conformed dimensions and deterministic joins.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>fact table grain defined at order-item level.</li>
+<li>surrogate keys for dimension relationships.</li>
+<li>single-direction relationships in semantic model.</li>
+<li>date dimension supports role-based usage in BI analysis.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster queries, simpler BI semantics, fewer join ambiguities.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/lineage_graph_view.png" data-desc-position="bottom"><img alt="Relationship Graph" src="../screenshots/04_powerbi/lineage_graph_view.png"></a></p>
+<hr>
+<h3 id="4-business-logic-implementation">4️⃣ Business Logic Implementation<a class="headerlink" href="#4-business-logic-implementation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Shift-left logic into dbt, keep BI logic lightweight.</p>
+<p>→ <strong>What it is:</strong> Warehouse computes reusable fields; BI focuses on presentation and aggregation.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>pre-calculated operational fields in dbt intermediate/marts.</li>
+<li>integer/flag patterns retained for efficient filtering.</li>
+<li>verified-vs-raw strategy preserved via <code>is_verified</code> and <code>quality_issue_reason</code>.</li>
+<li>ghost/invalid record cases surfaced as flags, not silently removed.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Transparent data quality with better root-cause diagnostics.</li>
+</ul>
+<hr>
+<h3 id="5-semantic-consistency-principles">5️⃣ Semantic Consistency Principles<a class="headerlink" href="#5-semantic-consistency-principles" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Single source of truth from marts to semantic model.</p>
+<p>→ <strong>What it is:</strong> One governed definition path for measures and dimensions.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>marts models feed the semantic model directly.</li>
+<li>naming harmonization between dbt entities and BI display fields.</li>
+<li>measure organization and business-domain grouping in semantic layer.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Eliminates conflicting numbers across reports and teams.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/semantic_model.png" data-desc-position="bottom"><img alt="Semantic Model" src="../screenshots/04_powerbi/semantic_model.png"></a></p>
+<hr>
+<h3 id="6-data-quality-engineering">6️⃣ Data Quality Engineering<a class="headerlink" href="#6-data-quality-engineering" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Validate every layer while preserving anomaly visibility.</p>
+<p>→ <strong>What it is:</strong> Source + transform + business-rule checks with no silent row deletion.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>tests at source and transform layers.</li>
+<li>business-rule singular tests for key scenarios.</li>
+<li>anomalies are flagged and exposed to downstream analytics.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Keeps trust high while enabling explicit risk reporting.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">DQ Detail</p>
+</div>
+<p>Detailed quality framework is documented in <a href="../03_data_quality/">03_data_quality.md</a>.</p>
+<hr>
+<h3 id="7-naming-conventions-standard">7️⃣ Naming Conventions Standard<a class="headerlink" href="#7-naming-conventions-standard" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Consistent technical and business naming across dbt and Power BI.</p>
+<p>→ <strong>What it is:</strong> Enforce predictable model naming in warehouse and human-readable naming in semantic/reporting layers.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt model conventions: <code>stg_</code>, <code>int_</code>, <code>fct_</code>, <code>dim_</code> prefixes with <code>snake_case</code> column naming.</li>
+<li>semantic/report layer conventions: business-friendly <strong>Title Case</strong> display names for end users.</li>
+<li>standardized measure and table naming in Power BI to align with dbt lineage and business glossary.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Speeds onboarding for engineers and analysts.</li>
+<li>Reduces misinterpretation between technical tables and business-facing fields.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/semantic_model_doc.png" data-desc-position="bottom"><img alt="Semantic Model Documentation" src="../screenshots/04_powerbi/semantic_model_doc.png"></a></p>
+<hr>
+<h3 id="8-documentation-as-code">8️⃣ Documentation-as-Code<a class="headerlink" href="#8-documentation-as-code" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Metadata and business definitions embedded in code assets.</p>
+<p>→ <strong>What it is:</strong> Model descriptions, column metadata, and lineage generated from source-controlled files.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>YAML model/column docs in dbt.</li>
+<li>auto-generated lineage and catalog via dbt docs.</li>
+<li>architecture and operations decisions versioned in markdown.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduces knowledge silos and speeds team onboarding.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/dbt_docs_site.png" data-desc-position="bottom"><img alt="dbt Docs Site" src="../screenshots/03_dbt/dbt_docs_site.png"></a></p>
+<hr>
+<h3 id="9-lineage-downstream-awareness">9️⃣ Lineage &amp; Downstream Awareness<a class="headerlink" href="#9-lineage-downstream-awareness" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Change decisions are made with full downstream visibility.</p>
+<p>→ <strong>What it is:</strong> Link upstream models to BI consumers and evaluate blast radius before release.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>dbt exposures configured for Power BI dashboard dependencies.</li>
+<li>traceability maintained from RAW tables to MARTS to semantic layer.</li>
+<li>impact-aware PR checks and release validation.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduces report breakages and strengthens release confidence.</li>
+</ul>
+<hr>
+<h2 id="5-ai-assisted-development-agentic-analytics-workflows">5. 🤖 AI-Assisted Development &amp; Agentic Analytics Workflows<a class="headerlink" href="#5-ai-assisted-development-agentic-analytics-workflows" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Copilot-GitHub%20%2B%20Editor-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="AI" src="https://img.shields.io/badge/Copilot-GitHub%20%2B%20Editor-2563EB?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/ChatGPT-Context%20Management-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="LLM" src="https://img.shields.io/badge/ChatGPT-Context%20Management-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Control-Human%20Validated-DC2626?style=for-the-badge" data-desc-position="bottom"><img alt="Governance" src="https://img.shields.io/badge/Control-Human%20Validated-DC2626?style=for-the-badge"></a></p>
+<h3 id="1-purpose-philosophy">1️⃣ Purpose &amp; Philosophy<a class="headerlink" href="#1-purpose-philosophy" title="Permanent link">¶</a></h3>
+<p><strong>Principle:</strong> AI augments engineers — it does not replace governance or human validation.</p>
+<p>This project integrates AI to:</p>
+<ul>
+<li>Accelerate development velocity</li>
+<li>Improve code quality and readability</li>
+<li>Reduce repetitive boilerplate work</li>
+<li>Enhance documentation consistency</li>
+<li>Maintain strict validation controls</li>
+</ul>
+<p><strong>Critical Control:</strong> All AI outputs are reviewed, tested, and version-controlled before deployment.</p>
+<hr>
+<h3 id="2-structured-ai-context-management">2️⃣ Structured AI Context Management<a class="headerlink" href="#2-structured-ai-context-management" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Persistent project context through dedicated configuration files.</p>
+<p>→ <strong>What it is:</strong> Pre-configured AI personas and project context that eliminates repetitive context-sharing.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li><strong>GitHub Copilot Instructions:</strong> <code>.github/copilot-instructions.md</code> defines project identity, tech stack, business rules, and coding standards.</li>
+<li><strong>Agent Definitions:</strong> <code>.github/agents/02_Analytics_Engineer.agent.md</code> creates specialized AI persona for dbt/Snowflake development.</li>
+<li><strong>Prompt Templates:</strong> <code>.github/prompts/*.prompt.md</code> stores reusable context for intermediate/marts layer development.</li>
+<li><strong>Dedicated ChatGPT Project:</strong> Full project context loaded upfront with architecture docs, business requirements, and data dictionary.</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Eliminates 15-20 minutes of context re-explanation per session.</li>
+<li>Ensures consistent AI output quality aligned with project standards.</li>
+<li>AI "remembers" critical business rules (delivered-only revenue, repeat customer logic).</li>
+<li>Reduces context drift across development phases.</li>
+</ul>
+<p><strong>Result:</strong> 2x development velocity with maintained quality standards.</p>
+<hr>
+<h3 id="3-sql-dbt-development-assistance">3️⃣ SQL &amp; dbt Development Assistance<a class="headerlink" href="#3-sql-dbt-development-assistance" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> AI-accelerated SQL generation with human-enforced quality gates.</p>
+<p>→ <strong>What it is:</strong> Use GitHub Copilot and ChatGPT to draft dbt models faster while maintaining production standards.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Tools Used:</strong></p>
+<ul>
+<li>GitHub Copilot for inline SQL suggestions</li>
+<li>ChatGPT for complex CTE refactoring and optimization</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Generate boilerplate staging models (type casting, rename, light cleaning)</li>
+<li>Suggest optimized JOIN strategies for intermediate models</li>
+<li>Refactor complex CTEs for readability</li>
+<li>Draft initial test configurations in YAML</li>
+</ul>
+<p><strong>Validation Controls:</strong></p>
+<ul>
+<li>SQLFluff linting enforced via pre-commit hooks</li>
+<li>dbt tests (generic + singular) run in CI</li>
+<li>Manual code review for business logic correctness</li>
+<li>CI pipeline blocks merge on test failures</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduced SQL drafting time by ~40% without sacrificing quality.</li>
+<li>Faster iteration on model refactoring during code review.</li>
+<li>Maintained 100% test coverage through automated enforcement.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/test_passed_suite.png" data-desc-position="bottom"><img alt="dbt Test Suite" src="../screenshots/03_dbt/test_passed_suite.png"></a></p>
+<hr>
+<h3 id="4-dax-measure-optimization">4️⃣ DAX Measure Optimization<a class="headerlink" href="#4-dax-measure-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> AI-assisted Power BI measure development with performance validation.</p>
+<p>→ <strong>What it is:</strong> Use AI to improve DAX patterns and measure efficiency.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Rewrite slow iterator-based measures to use variables</li>
+<li>Suggest <code>CALCULATE</code> filter context optimizations</li>
+<li>Implement time intelligence patterns</li>
+<li>Improve measure readability and maintainability</li>
+</ul>
+<p><strong>Validation:</strong></p>
+<ul>
+<li>BPA (Best Practice Analyzer) enforcement before publish</li>
+<li>Performance Analyzer validation for visual load times</li>
+<li>Manual verification of calculation accuracy</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster measure development with verified performance improvement.</li>
+<li>Reduced visual render time through optimized DAX patterns.</li>
+<li>Maintained semantic model quality standards.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/BPA_scan_after.png" data-desc-position="bottom"><img alt="BPA Validation" src="../screenshots/04_powerbi/BPA_scan_after.png"></a></p>
+<hr>
+<h3 id="5-documentation-automation">5️⃣ Documentation Automation<a class="headerlink" href="#5-documentation-automation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> AI-generated documentation with human review.</p>
+<p>→ <strong>What it is:</strong> Convert technical implementation into clear business-readable documentation.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Convert dbt model SQL into YAML column descriptions</li>
+<li>Generate markdown documentation from business logic</li>
+<li>Standardize formatting across documentation files</li>
+<li>Improve clarity of technical explanations</li>
+</ul>
+<p><strong>Control:</strong></p>
+<ul>
+<li>Manual review of all AI-generated docs</li>
+<li>Git versioning before publish</li>
+<li>Cross-reference with actual implementation</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Comprehensive documentation maintained without excessive manual effort.</li>
+<li>Consistent documentation style across project.</li>
+<li>Faster onboarding for new team members.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/dbt_docs_site.png" data-desc-position="bottom"><img alt="dbt Docs" src="../screenshots/03_dbt/dbt_docs_site.png"></a></p>
+<hr>
+<h3 id="6-pattern-based-code-generation">6️⃣ Pattern-Based Code Generation<a class="headerlink" href="#6-pattern-based-code-generation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Controlled AI automation for repetitive tasks.</p>
+<p>→ <strong>What it is:</strong> AI generates repetitive code templates that follow established patterns.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>AI Used To:</strong></p>
+<ul>
+<li>Generate dimension model templates with consistent structure</li>
+<li>Create test scaffolding for new models</li>
+<li>Suggest naming conventions adherence</li>
+<li>Draft YAML schema files</li>
+</ul>
+<p><strong>Human Validates:</strong></p>
+<ul>
+<li>Business logic correctness</li>
+<li>Adherence to star schema principles</li>
+<li>Test coverage completeness</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Reduced boilerplate coding time by 50%.</li>
+<li>Ensured consistency across similar model types.</li>
+<li>Freed engineer time for complex logic development.</li>
+</ul>
+<hr>
+<h3 id="7-ai-as-pre-commit-code-reviewer">7️⃣ AI as Pre-Commit Code Reviewer<a class="headerlink" href="#7-ai-as-pre-commit-code-reviewer" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> AI-suggested improvements before commit.</p>
+<p>→ <strong>What it is:</strong> Use AI to detect anti-patterns and suggest improvements during development.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Before Commit:</strong></p>
+<ul>
+<li>AI suggests performance improvements (e.g., CTE efficiency)</li>
+<li>Detects SQL anti-patterns (SELECT *, missing WHERE clauses)</li>
+<li>Flags overly complex logic for refactoring</li>
+</ul>
+<p><strong>Still Enforced By:</strong></p>
+<ul>
+<li>SQLFluff linting in CI</li>
+<li>dbt build + test execution</li>
+<li>Manual code review in PR</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Earlier detection of code quality issues.</li>
+<li>Reduced back-and-forth in code review cycles.</li>
+<li>Improved SQL readability and maintainability.</li>
+</ul>
+<hr>
+<h3 id="8-ai-for-data-quality-pattern-detection">8️⃣ AI for Data Quality Pattern Detection<a class="headerlink" href="#8-ai-for-data-quality-pattern-detection" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> AI-assisted anomaly detection and test suggestion.</p>
+<p>→ <strong>What it is:</strong> Use AI to identify unusual data patterns and suggest validation tests.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>AI Used To:</strong></p>
+<ul>
+<li>Identify unusual anomalies in delivery timing patterns</li>
+<li>Suggest additional dbt tests for edge cases</li>
+<li>Detect inconsistent metric logic across layers</li>
+</ul>
+<p><strong>Final Decision:</strong></p>
+<ul>
+<li>Human validates business context</li>
+<li>Domain expert confirms anomaly vs. legitimate pattern</li>
+<li>Test implementation follows standard validation workflow</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Proactive data quality issue detection.</li>
+<li>Comprehensive test coverage through AI-suggested edge cases.</li>
+<li>Maintained data trust through validation rigor.</li>
+</ul>
+<hr>
+<h3 id="9-governance-first-ai-usage">9️⃣ Governance-First AI Usage<a class="headerlink" href="#9-governance-first-ai-usage" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Strict controls on AI-generated code and logic.</p>
+<p>→ <strong>What it is:</strong> Treat AI as an accelerator, not a source of truth.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Risk</th>
+<th style="text-align: left;">Control</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Incorrect SQL generation</td>
+<td style="text-align: left;">dbt tests + CI validation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Insecure logic</td>
+<td style="text-align: left;">Code review + PR workflow</td>
+</tr>
+<tr>
+<td style="text-align: left;">Metric inconsistency</td>
+<td style="text-align: left;">Central semantic layer enforcement</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hallucinated transformations</td>
+<td style="text-align: left;">Manual verification against raw schema</td>
+</tr>
+<tr>
+<td style="text-align: left;">Credential exposure</td>
+<td style="text-align: left;">Never share credentials with AI tools</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Zero AI-generated code deployed without human validation.</li>
+<li>Maintained security and governance standards.</li>
+<li>Protected business logic integrity.</li>
+</ul>
+<hr>
+<h2 id="productivity-cost-impact">🔟 Productivity &amp; Cost Impact<a class="headerlink" href="#productivity-cost-impact" title="Permanent link">¶</a></h2>
+<p><strong>Practice:</strong> Measurable efficiency gains from AI integration.</p>
+<p>→ <strong>What it is:</strong> Quantified development acceleration and cost optimization.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Development Efficiency:</strong></p>
+<ul>
+<li>30-50% faster SQL drafting (measured by commit velocity)</li>
+<li>Faster DAX prototyping (reduced measure development time)</li>
+<li>Reduced boilerplate writing (dimension/test templates)</li>
+</ul>
+<p><strong>Cost Efficiency:</strong></p>
+<ul>
+<li>AI-suggested query optimizations reduced compute cost</li>
+<li>Improved incremental logic reduced warehouse load</li>
+<li>Refactoring reduced redundant table scans</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Faster project delivery without sacrificing quality.</li>
+<li>Lower operational costs through optimization.</li>
+<li>Scalable development approach for future phases.</li>
+</ul>
+<hr>
+<h3 id="11-limitations-responsible-use">1️⃣1️⃣ Limitations &amp; Responsible Use<a class="headerlink" href="#11-limitations-responsible-use" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Transparent boundaries on AI capabilities.</p>
+<p>→ <strong>What it is:</strong> Clear guardrails on what AI can and cannot do.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>AI Outputs Are Never Deployed Directly To Production.</strong></p>
+<p><strong>All Generated Code Must Pass:</strong></p>
+<ul>
+<li>dbt tests (generic + singular)</li>
+<li>CI checks (SQLFluff + build validation)</li>
+<li>BPA validation (Power BI semantic model)</li>
+<li>Manual code review by human engineer</li>
+</ul>
+<p><strong>Never Exposed to AI:</strong></p>
+<ul>
+<li>Snowflake credentials</li>
+<li>Azure connection strings</li>
+<li>Production database access tokens</li>
+<li>Sensitive business logic details</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Maintained security posture and compliance.</li>
+<li>Prevented AI hallucinations from reaching production.</li>
+<li>Protected intellectual property and business rules.</li>
+</ul>
+<hr>
+<h2 id="6-self-service-analytics-20-governance-focused">6. 📊 Self-Service Analytics 2.0 (Governance-Focused)<a class="headerlink" href="#6-self-service-analytics-20-governance-focused" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Semantic%20Layer-Single%20Source%20of%20Truth-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="Semantic" src="https://img.shields.io/badge/Semantic%20Layer-Single%20Source%20of%20Truth-7C3AED?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/RLS-Dynamic%20Bridge%20Pattern-DC2626?style=for-the-badge" data-desc-position="bottom"><img alt="Security" src="https://img.shields.io/badge/RLS-Dynamic%20Bridge%20Pattern-DC2626?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Trust-Verified%20vs%20Raw-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="Quality" src="https://img.shields.io/badge/Trust-Verified%20vs%20Raw-16A34A?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Role-Data%20Guardian-DC2626?style=for-the-badge" data-desc-position="bottom"><img alt="Steward" src="https://img.shields.io/badge/Role-Data%20Guardian-DC2626?style=for-the-badge"></a></p>
+<h3 id="1-the-ai-generated-analytics-crisis-solution">1️⃣ The AI-Generated Analytics Crisis &amp; Solution<a class="headerlink" href="#1-the-ai-generated-analytics-crisis-solution" title="Permanent link">¶</a></h3>
+<div class="admonition danger">
+<p class="admonition-title">The Problem: AI Flood of Bad Data</p>
+</div>
+<p>GenAI tools (ChatGPT, Power BI Copilot) enable anyone to generate charts instantly — but without governance, this creates a flood of professional-looking reports with mathematical errors and hallucinated numbers. Traditional self-service democratization without controls leads to metric chaos.</p>
+<div class="admonition success">
+<p class="admonition-title">The Solution: Data Steward Model</p>
+</div>
+<p><strong>Role Evolution:</strong> Analysts shift from "report builders" to <strong>"data guardians"</strong> who certify semantic layers. This project implements governance-first self-service:</p>
+<div class="highlight"><pre><span></span><code>- ✅ Centralized metric definitions prevent conflicting calculations
+- ✅ Certified semantic layer ensures AI tools consume correct data
+- ✅ Quality transparency (Verified vs Raw) maintains trust
+- ✅ RLS + contracts enforce security and schema integrity
+</code></pre></div>
+<p><strong>Result:</strong> Users self-serve with AI acceleration, but data stewards guarantee accuracy.</p>
+<hr>
+<h3 id="2-certified-semantic-layer-as-control-point">2️⃣ Certified Semantic Layer as Control Point<a class="headerlink" href="#2-certified-semantic-layer-as-control-point" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Power BI semantic model as the governed data access layer.</p>
+<p>→ <strong>What it is:</strong> Pre-built, tested, certified data model that users consume instead of raw tables.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Power BI semantic model connected to dbt MARTS layer</li>
+<li>Pre-defined relationships (star schema)</li>
+<li>Certified measures with business-validated logic</li>
+<li>Access controlled through workspace roles</li>
+<li>RLS enforced at semantic layer, not report level</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Users cannot accidentally create incorrect joins.</li>
+<li>Metrics remain consistent across all reports.</li>
+<li>Governance enforced at consumption layer, not source.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/semantic_model.png" data-desc-position="bottom"><img alt="Semantic Model" src="../screenshots/04_powerbi/semantic_model.png"></a></p>
+<hr>
+<h3 id="3-centralized-metric-definitions-single-source-of-truth">3️⃣ Centralized Metric Definitions (Single Source of Truth)<a class="headerlink" href="#3-centralized-metric-definitions-single-source-of-truth" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> All KPIs defined once in semantic model and reused everywhere.</p>
+<p>→ <strong>What it is:</strong> Measures stored in version-controlled semantic model, not scattered across individual reports.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>40+ measures stored in Power BI semantic model TMDL files</li>
+<li>Each measure documented with business definition</li>
+<li>Version controlled through .pbip format in Git</li>
+<li>dbt intermediate/marts models pre-calculate complex fields</li>
+<li>Report developers drag-and-drop certified measures</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Total Revenue =
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nf">CALCULATE</span><span class="p">(</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nf">SUM</span><span class="p">(</span><span class="na">Sales[order_total]</span><span class="p">),</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="na">Sales[is_verified]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">TRUE</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span>
+</code></pre></div>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Zero "metric drift" — Finance and Ops see identical numbers.</li>
+<li>Clear ownership of each calculation.</li>
+<li>Changes propagate to all consuming reports automatically.</li>
+</ul>
+<hr>
+<h3 id="4-role-based-access-data-security-rls-rbac">4️⃣ Role-Based Access &amp; Data Security (RLS + RBAC)<a class="headerlink" href="#4-role-based-access-data-security-rls-rbac" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Dynamic security without duplicating data or logic.</p>
+<p>→ <strong>What it is:</strong> Regional managers see only their state's data through automated RLS.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Snowflake RBAC:</strong></p>
+<ul>
+<li>4 roles: <code>LOADER_ROLE</code>, <code>ANALYTICS_ROLE</code>, <code>REPORTER_ROLE</code>, <code>SYSADMIN</code></li>
+<li>Least-privilege access enforced</li>
+<li>MFA required for all roles</li>
+</ul>
+<p><strong>Power BI RLS:</strong></p>
+<ul>
+<li>Bridge table pattern: <code>dim_security_rls</code> → <code>dim_rls_bridge</code> → <code>dim_sellers</code> → <code>fct_order_items</code></li>
+<li>User email mapped to access keys</li>
+<li>Dynamic filtering via <code>USERPRINCIPALNAME()</code> DAX</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Regional managers cannot accidentally see competitor region data.</li>
+<li>Audit-ready security posture.</li>
+<li>Scalable: add users by updating security table, not DAX code.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/uat_rls_validation.png" data-desc-position="bottom"><img alt="RLS Validation" src="../screenshots/04_powerbi/uat_rls_validation.png"></a></p>
+<hr>
+<h3 id="5-verified-vs-raw-transparency-strategy">5️⃣ Verified vs Raw Transparency Strategy<a class="headerlink" href="#5-verified-vs-raw-transparency-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Flag data quality issues instead of hiding them.</p>
+<p>→ <strong>What it is:</strong> "Trust, Don't Trash" approach — keep all data but mark quality status.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>dbt Logic:</strong></p>
+<ul>
+<li><code>is_verified</code> boolean flag (1 = clean, 0 = has issues)</li>
+<li><code>quality_issue_reason</code> text field (e.g., "Ghost Delivery", "Missing Photos")</li>
+<li>All records retained in MARTS layer</li>
+</ul>
+<p><strong>Power BI Logic:</strong></p>
+<ul>
+<li>Default visuals filter to <code>is_verified = TRUE</code></li>
+<li>Dedicated Data Quality Audit page shows flagged records</li>
+<li>KPI cards display "At-Risk Revenue" for unverified transactions</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Finance can reconcile to the penny (nothing is deleted).</li>
+<li>Operations can investigate and fix root causes (ghost products, etc.).</li>
+<li>Users trust the numbers because quality is transparent.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/data_quality_audit.png" data-desc-position="bottom"><img alt="Data Quality Audit" src="../screenshots/04_powerbi/data_quality_audit.png"></a></p>
+<hr>
+<h3 id="6-data-contracts-between-dbt-and-power-bi">6️⃣ Data Contracts Between dbt and Power BI<a class="headerlink" href="#6-data-contracts-between-dbt-and-power-bi" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Explicit schema contracts prevent silent breaking changes.</p>
+<p>→ <strong>What it is:</strong> dbt enforces output schema; Power BI fails fast on drift.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>dbt Side:</strong></p>
+<ul>
+<li><code>contract.enforced: true</code> in MARTS models</li>
+<li>Schema defined in YAML with data types</li>
+<li>Build fails if output doesn't match contract</li>
+</ul>
+<p><strong>Power BI Side:</strong></p>
+<ul>
+<li>Explicit <code>Table.SelectColumns</code> in Power Query</li>
+<li>No implicit "select all columns" patterns</li>
+<li>Refresh fails immediately on schema mismatch</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Breaking changes detected at build time, not report refresh time.</li>
+<li>Zero silent column drift breaking dashboards.</li>
+<li>Clear error messages when contracts break.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/data_contracts.png" data-desc-position="bottom"><img alt="Data Contracts" src="../screenshots/03_dbt/data_contracts.png"></a></p>
+<hr>
+<h3 id="7-business-user-enablement-drag-and-drop-without-sql">7️⃣ Business User Enablement (Drag-and-Drop Without SQL)<a class="headerlink" href="#7-business-user-enablement-drag-and-drop-without-sql" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Non-technical users can build reports without writing code.</p>
+<p>→ <strong>What it is:</strong> Self-service via certified measures and dimensions.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Star schema relationships pre-configured</li>
+<li>Measures pre-built and business-validated</li>
+<li>Dimensions have human-friendly column names (Title Case)</li>
+<li>Report creators drag fields to canvas</li>
+<li>No SQL, DAX, or M code required for standard analysis</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>3x faster report creation for business users.</li>
+<li>Reduced backlog on analytics engineering team.</li>
+<li>Empowered users without compromising governance.</li>
+</ul>
+<hr>
+<h3 id="8-guardrails-against-metric-drift">8️⃣ Guardrails Against Metric Drift<a class="headerlink" href="#8-guardrails-against-metric-drift" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Central enforcement prevents ad-hoc metric redefinition.</p>
+<p>→ <strong>What it is:</strong> Report creators cannot override certified measure logic.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Measures locked in semantic model (not editable in reports)</li>
+<li>Report-level measures flagged in BPA scans</li>
+<li>Code review enforces semantic model updates over report-level measures</li>
+<li>Documentation clarifies when to request semantic model changes</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Prevents "shadow metrics" that diverge from certified definitions.</li>
+<li>Maintains metric consistency across teams.</li>
+<li>Clear escalation path for new metric requests.</li>
+</ul>
+<hr>
+<h3 id="9-data-dictionary-built-in-documentation">9️⃣ Data Dictionary &amp; Built-In Documentation<a class="headerlink" href="#9-data-dictionary-built-in-documentation" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Self-documenting semantic model.</p>
+<p>→ <strong>What it is:</strong> Every measure and column has inline description visible to users.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<ul>
+<li>Power BI measure descriptions stored in semantic model</li>
+<li>dbt column descriptions auto-generated in docs site</li>
+<li>Dedicated Documentation page in Power BI with metric definitions</li>
+<li>Links to external docs (data dictionary, architecture)</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Users understand what metrics mean without asking analysts.</li>
+<li>Reduced "What does this field mean?" questions by 80%.</li>
+<li>Self-service with confidence.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/semantic_model_doc.png" data-desc-position="bottom"><img alt="Semantic Model Doc" src="../screenshots/04_powerbi/semantic_model_doc.png"></a></p>
+<hr>
+<h2 id="trust-indicators-data-freshness-quality-badges">🔟 Trust Indicators (Data Freshness &amp; Quality Badges)<a class="headerlink" href="#trust-indicators-data-freshness-quality-badges" title="Permanent link">¶</a></h2>
+<p><strong>Practice:</strong> Explicit transparency on data state.</p>
+<p>→ <strong>What it is:</strong> Dashboard footer displays when data was last refreshed and current-through date.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>Dual-Clock Architecture:</strong></p>
+<ul>
+<li><strong>Last Refreshed:</strong> System time (when dbt pipeline ran)</li>
+<li><strong>Data Current Until:</strong> Business data timestamp (max order date in source)</li>
+</ul>
+<p><strong>Quality Indicators:</strong></p>
+<ul>
+<li>Tooltip on KPI cards shows "Verified %" and "At-Risk $"</li>
+<li>Visual cue when data quality drops below threshold</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Zero confusion about data freshness.</li>
+<li>Users know instantly if viewing "yesterday's data" or "last month's data".</li>
+<li>Trust maintained through transparency.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/trust_tooltip_ux.png" data-desc-position="bottom"><img alt="Trust Tooltip UX" src="../screenshots/04_powerbi/trust_tooltip_ux.png"></a></p>
+<hr>
+<h3 id="11-governance-controls-in-cicd">1️⃣1️⃣ Governance Controls in CI/CD<a class="headerlink" href="#11-governance-controls-in-cicd" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Quality gates before promotion to production.</p>
+<p>→ <strong>What it is:</strong> Automated checks prevent low-quality semantic models from reaching users.</p>
+<p>→ <strong>How I implemented it (project-specific):</strong></p>
+<p><strong>CI Pipeline:</strong></p>
+<ul>
+<li>dbt build + test execution</li>
+<li>BPA scan on semantic model</li>
+<li>Failed checks block merge</li>
+</ul>
+<p><strong>Pre-Production Validation:</strong></p>
+<ul>
+<li>UAT testing before prod promotion</li>
+<li>Revenue reconciliation test between dev and prod</li>
+<li>Performance validation (load time &lt; 2s)</li>
+</ul>
+<p>→ <strong>Why it matters (business impact):</strong></p>
+<ul>
+<li>Self-service without compromising quality.</li>
+<li>Governance enforced automatically, not manually.</li>
+<li>Prevents users from accessing broken semantic models.</li>
+</ul>
+<hr>
+<h3 id="12-data-steward-as-guardian-of-truth">1️⃣2️⃣ Data Steward as Guardian of Truth<a class="headerlink" href="#12-data-steward-as-guardian-of-truth" title="Permanent link">¶</a></h3>
+<p><strong>Practice:</strong> Analyst role shifts from report factory to data certification.</p>
+<p>→ <strong>What it is:</strong> Respond to AI-generated analytics flood by certifying semantic layers, not building individual reports.</p>
+<p>→ <strong>How I implemented it:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Old Model (Report Factory)</th>
+<th style="text-align: left;">New Model (Data Steward)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ad-hoc report requests</td>
+<td style="text-align: left;">Certify semantic model once</td>
+</tr>
+<tr>
+<td style="text-align: left;">Build SQL + Power BI for each ask</td>
+<td style="text-align: left;">Users self-serve from certified layer</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linear scaling (more requests = hire)</td>
+<td style="text-align: left;">Maintains metric accuracy + quality rules</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>Why it matters:</strong></p>
+<p>Scalable analytics without headcount growth. When marketing uses AI to generate charts, they consume pre-validated data. Steward prevents "hallucinated metrics" from reaching stakeholders.</p>
+<div class="admonition quote">
+<p class="admonition-title">Modern Data Professional Value</p>
+</div>
+<p>"Anyone can generate a chart with AI. Your value is ensuring the numbers are correct."</p>
+<hr>
+<h2 id="7-scalability-reusability-architecture">7. 🚀 Scalability &amp; Reusability Architecture<a class="headerlink" href="#7-scalability-reusability-architecture" title="Permanent link">¶</a></h2>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Design-Build%20Once%20Reuse%20Everywhere-059669?style=for-the-badge" data-desc-position="bottom"><img alt="Modular" src="https://img.shields.io/badge/Design-Build%20Once%20Reuse%20Everywhere-059669?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Processing-Delta%20Only-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="Incremental" src="https://img.shields.io/badge/Processing-Delta%20Only-2563EB?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Reports-Thin%20Layer%20Pattern-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="Thin" src="https://img.shields.io/badge/Reports-Thin%20Layer%20Pattern-7C3AED?style=for-the-badge"></a></p>
+<h3 id="1-reusable-assets-inventory">1️⃣ Reusable Assets Inventory<a class="headerlink" href="#1-reusable-assets-inventory" title="Permanent link">¶</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">10 Core Reusable Components</p>
+</div>
+<p><strong>Infrastructure &amp; Ingestion:</strong></p>
+<div class="highlight"><pre><span></span><code>1. Raw data in Azure Blob / Snowflake (ingestion pipelines)
+2. Staging models (`stg_*`) in dbt (type-safe source abstraction)
+
+**Transformation Assets:**
+
+3. Dimension models (`dim_customer`, `dim_date`, `dim_product`, `dim_sellers`)
+4. Common intermediate models (`int_orders_enriched`, `int_customers_aggregated`)
+5. dbt tests, docs, exposures, sources, macros (quality framework)
+
+**Consumption Layer:**
+
+6. Semantic layer (Power BI dataset with certified measures)
+7. Power BI semantic model (shared dataset mode for thin reports)
+
+**DevOps &amp; Governance:**
+
+8. Git repo + branch strategy (version control and CI/CD)
+9. CI/CD pipelines (GitHub Actions for dbt validation)
+10. Data contracts &amp; catalog (schema enforcement and lineage)
+</code></pre></div>
+<p>→ <strong>Impact:</strong> New projects start 70% complete by reusing existing assets.</p>
+<hr>
+<h3 id="2-design-philosophy">2️⃣ Design Philosophy<a class="headerlink" href="#2-design-philosophy" title="Permanent link">¶</a></h3>
+<p>→ <strong>Principle:</strong> Invest in reusable assets, not one-off reports.</p>
+<p>→ <strong>Traditional:</strong> Each report duplicates logic. Changes = update every report.</p>
+<p>→ <strong>Modern:</strong> Centralized transformations. Change once, propagate everywhere.</p>
+<p>→ <strong>Impact:</strong> 10x faster report creation, maintainable at scale.</p>
+<hr>
+<h3 id="3-modular-elt-architecture">3️⃣ Modular ELT Architecture<a class="headerlink" href="#3-modular-elt-architecture" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Strict layer separation enables reuse at every stage.</p>
+<p>→ <strong>How implemented:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">Purpose</th>
+<th style="text-align: left;">Reuse Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">RAW</td>
+<td style="text-align: left;">Immutable source</td>
+<td style="text-align: left;">Never transformed</td>
+</tr>
+<tr>
+<td style="text-align: left;">STAGING</td>
+<td style="text-align: left;">Type casting, standardization</td>
+<td style="text-align: left;">Multiple intermediate models consume</td>
+</tr>
+<tr>
+<td style="text-align: left;">INTERMEDIATE</td>
+<td style="text-align: left;">Business logic, joins</td>
+<td style="text-align: left;">Feeds multiple facts (<code>fct_orders</code>, <code>fct_order_items</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">MARTS</td>
+<td style="text-align: left;">Star schema</td>
+<td style="text-align: left;">Dimensions reused across all facts</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>Why it matters:</strong> Change logic once, propagates everywhere. New facts reuse existing staging/intermediate.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/lineage_dag.png" data-desc-position="bottom"><img alt="Lineage DAG" src="../screenshots/03_dbt/lineage_dag.png"></a></p>
+<hr>
+<h3 id="4-intermediate-layer-as-building-blocks">4️⃣ Intermediate Layer as Building Blocks<a class="headerlink" href="#4-intermediate-layer-as-building-blocks" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Pre-joined datasets consumed by multiple marts.</p>
+<p>→ <strong>How implemented:</strong> <code>int_orders_enriched</code> (payment + customer + product joins) feeds both <code>fct_orders</code> and <code>fct_order_items</code>. No join duplication.</p>
+<p>→ <strong>Why it matters:</strong> Consistent logic, faster queries, single update point.</p>
+<hr>
+<h3 id="5-incremental-processing">5️⃣ Incremental Processing<a class="headerlink" href="#5-incremental-processing" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Delta-only processing vs full rebuilds.</p>
+<p>→ <strong>How implemented:</strong></p>
+<ul>
+<li>dbt: <code>fct_order_items</code> incremental with <code>unique_key</code>, boundary = <code>MAX(order_date_dt)</code></li>
+<li>Power BI: 10-year rolling window, 1-month refresh grain</li>
+<li>Only recent data refreshed during daily updates</li>
+</ul>
+<p>→ <strong>Why it matters:</strong> 82% faster refresh (8 min vs 45 min), lower compute costs, scalable to 10x volume.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/incremental_model.png" data-desc-position="bottom"><img alt="Incremental Model" src="../screenshots/03_dbt/incremental_model.png"></a></p>
+<hr>
+<h3 id="6-surrogate-key-standardization">6️⃣ Surrogate Key Standardization<a class="headerlink" href="#6-surrogate-key-standardization" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Deterministic keys via <code>dbt_utils.generate_surrogate_key()</code>.</p>
+<p>→ <strong>How implemented:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">{{</span><span class="w"> </span><span class="n">dbt_utils</span><span class="p">.</span><span class="n">generate_surrogate_key</span><span class="p">([</span><span class="s1">'customer_id'</span><span class="p">])</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">customer_sk</span>
+</code></pre></div>
+<p>All dimensions have <code>_sk</code>, all facts reference via <code>_sk</code> FK.</p>
+<p>→ <strong>Why it matters:</strong> Predictable joins, supports SCD Type 2, consistent semantic model.</p>
+<hr>
+<h3 id="7-golden-dataset-pattern">7️⃣ Golden Dataset Pattern<a class="headerlink" href="#7-golden-dataset-pattern" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> One certified semantic model → many thin reports.</p>
+<p>→ <strong>How implemented:</strong> dbt MARTS → Power BI semantic model (published) → Multiple reports reference same model. Reports = visuals only, no transformations.</p>
+<p>→ <strong>Why it matters:</strong> Consistent metrics, 5x faster report creation, changes propagate automatically.</p>
+<hr>
+<h3 id="8-thin-reports-architecture">8️⃣ Thin Reports Architecture<a class="headerlink" href="#8-thin-reports-architecture" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Reports = visualization only. No Power Query, no report-level DAX.</p>
+<p>→ <strong>How implemented:</strong> Reports reference certified semantic model. Developers focus on UX, not data prep.</p>
+<p>→ <strong>Why it matters:</strong> Faster performance, easier troubleshooting, scalable governance.</p>
+<hr>
+<h3 id="9-environment-separation">9️⃣ Environment Separation<a class="headerlink" href="#9-environment-separation" title="Permanent link">¶</a></h3>
+<p>→ <strong>What it is:</strong> Dev mirrors prod for safe testing.</p>
+<p>→ <strong>How implemented:</strong></p>
+<ul>
+<li>Snowflake: <code>OLIST_DEV_DB</code> vs <code>OLIST_ANALYTICS_DB</code>, switch via <code>--target</code></li>
+<li>Power BI: Dev workspace vs Prod workspace with parameters</li>
+</ul>
+<p>→ <strong>Why it matters:</strong> Zero prod outages, deployment confidence, fast rollback.</p>
+<hr>
+<h2 id="calculation-groups-for-time-intelligence">🔟 Calculation Groups for Time Intelligence<a class="headerlink" href="#calculation-groups-for-time-intelligence" title="Permanent link">¶</a></h2>
+<p>→ <strong>What it is:</strong> Define time calculations (YTD, YoY, MoM) once, apply to any measure.</p>
+<p>→ <strong>How implemented:</strong> Base measures without time logic. Calculation group applies dynamically.</p>
+<p>→ <strong>Why it matters:</strong> Define once, reuse for 40+ measures. No duplication, consistent time logic.</p>
+<hr>
+<h2 id="8-related-documentation">8. Related Documentation<a class="headerlink" href="#8-related-documentation" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../00_business_requirements/">00_business_requirements.md</a></li>
+<li><a href="../01_architecture/">01_architecture.md</a></li>
+<li><a href="../02_data_dictionary/">02_data_dictionary.md</a></li>
+<li><a href="../03_data_quality/">03_data_quality.md</a></li>
+<li><a href="../04_semantic_model/">04_semantic_model.md</a></li>
+<li><a href="../05_performance_optimization/">05_performance_optimization.md</a></li>
+<li><a href="../07_analytics_insights/">07_analytics_insights.md</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AyanMulaskar223" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

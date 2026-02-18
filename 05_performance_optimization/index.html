@@ -1,0 +1,1360 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+      
+      
+        <meta name="author" content="Ayan Mulaskar">
+      
+      
+        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/05_performance_optimization/">
+      
+      
+        <link rel="prev" href="../04_semantic_model/">
+      
+      
+        <link rel="next" href="../06_engineering_standards/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Perf Optimization - Olist Modern Analytics Platform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+        
+
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Olist Modern Analytics Platform">
+<meta property="og:title" content="Perf Optimization | Olist Modern Analytics Platform">
+<meta property="og:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/05_performance_optimization/">
+
+<meta property="og:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Perf Optimization | Olist Modern Analytics Platform">
+<meta name="twitter:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+
+<meta name="twitter:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
+ 
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-objective-of-this-document" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Olist Modern Analytics Platform
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Perf Optimization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00_business_requirements/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Biz Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../01_architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../designs/003_marts_star_schema/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design Notes
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../02_data_dictionary/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Dict
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../03_data_quality/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Quality
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../04_semantic_model/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Semantic Model
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Perf Optimization
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../06_engineering_standards/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Eng Standards
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../07_analytics_insights/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Analytics Insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
+
+    </a>
+    Olist Modern Analytics Platform
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    AyanMulaskar223/olist-modern-analytics-platform
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_business_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Biz Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../designs/003_marts_star_schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_data_dictionary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Dict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_data_quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_semantic_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semantic Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Optimization
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-objective-of-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1️⃣ Objective of This Document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-a-snowflake-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟦 SECTION A — Snowflake Optimization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-b-dbt-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟩 SECTION B — dbt Optimization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-c-power-bi-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟨 SECTION C — Power BI Optimization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-d-ux-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟪 SECTION D — UX Performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-e-datafinops-cost-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟧 SECTION E — DataFinOps (Cost Optimization)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-f-monitoring-alerting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟥 SECTION F — Monitoring &amp; Alerting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-performance-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17️⃣ Performance Comparison Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-h-production-readiness-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟦 SECTION H — Production Readiness Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_engineering_standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eng Standards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_analytics_insights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analytics Insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="end-to-end-performance-cost-optimization-strategy">🚀 End-to-End Performance &amp; Cost Optimization Strategy<a class="headerlink" href="#end-to-end-performance-cost-optimization-strategy" title="Permanent link">¶</a></h1>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Dashboard%20Load-SLA%20%3C%202s-10B981?style=for-the-badge" data-desc-position="bottom"><img alt="Dashboard SLA" src="https://img.shields.io/badge/Dashboard%20Load-SLA%20%3C%202s-10B981?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Power%20BI-Incremental%20Refresh-3B82F6?style=for-the-badge" data-desc-position="bottom"><img alt="Refresh Strategy" src="https://img.shields.io/badge/Power%20BI-Incremental%20Refresh-3B82F6?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Snowflake-AutoSuspend%2060s-9333EA?style=for-the-badge" data-desc-position="bottom"><img alt="Warehouse Policy" src="https://img.shields.io/badge/Snowflake-AutoSuspend%2060s-9333EA?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/DataFinOps-Tagging%20%2B%20Quota-F59E0B?style=for-the-badge" data-desc-position="bottom"><img alt="Cost Controls" src="https://img.shields.io/badge/DataFinOps-Tagging%20%2B%20Quota-F59E0B?style=for-the-badge"></a></p>
+<div class="admonition warning">
+<p class="admonition-title">Portfolio Scenario — Evidence Scope</p>
+</div>
+<p>This file documents implemented optimization controls and benchmark evidence for a portfolio deployment. Benchmark numbers are tied to screenshots and captured runs in this repository.</p>
+<div class="admonition tip">
+<p class="admonition-title">Single Source of Truth</p>
+</div>
+<p>Performance implementation details live in one place and are referenced here:</p>
+<ul>
+<li>Architecture and component boundaries: <a href="../01_architecture/">01_architecture.md</a></li>
+<li>MARTS contracts and grains: <a href="../02_data_dictionary/">02_data_dictionary.md</a></li>
+<li>Semantic model implementation and refresh details: <a href="../04_semantic_model/">04_semantic_model.md</a></li>
+</ul>
+<hr>
+<h2 id="1-objective-of-this-document">1️⃣ Objective of This Document<a class="headerlink" href="#1-objective-of-this-document" title="Permanent link">¶</a></h2>
+<p>Why performance matters in analytics systems:</p>
+<ul>
+<li>Fast dashboards protect user trust and increase adoption.</li>
+<li>Predictable refresh cycles keep KPI decisions timely.</li>
+<li>Compute guardrails prevent optimization gains from being erased by cost drift.</li>
+</ul>
+<p>Performance vs usability trade-offs:</p>
+<ul>
+<li>Import mode gives low-latency visuals but uses scheduled freshness.</li>
+<li>Incremental strategies reduce refresh cost but require partition governance.</li>
+<li>Strong CI gates improve reliability but add feedback-loop overhead.</li>
+</ul>
+<p>Target benchmarks used in this project:</p>
+<ul>
+<li>Dashboard load time: <strong>&lt; 2 seconds</strong></li>
+<li>Visual render time: <strong>&lt; 1200ms</strong></li>
+<li>Power BI refresh time: <strong>&lt; 10 minutes</strong></li>
+<li>Snowflake warehouse auto-suspend: <strong>&lt;= 60 seconds</strong> for ingestion/transform</li>
+</ul>
+<hr>
+<h2 id="section-a-snowflake-optimization">🟦 SECTION A — Snowflake Optimization<a class="headerlink" href="#section-a-snowflake-optimization" title="Permanent link">¶</a></h2>
+<h3 id="a1-warehouse-sizing-and-suspend-policy">A1. Warehouse sizing and suspend policy<a class="headerlink" href="#a1-warehouse-sizing-and-suspend-policy" title="Permanent link">¶</a></h3>
+<p><strong>Decision:</strong> X-SMALL warehouses for <code>LOADING_WH_XS</code>, <code>TRANSFORM_WH_XS</code>, and <code>REPORTING_WH_XS</code>.</p>
+<p><strong>Action:</strong></p>
+<ul>
+<li><code>AUTO_SUSPEND = 60</code> on loading and transform warehouses.</li>
+<li><code>AUTO_SUSPEND = 300</code> on reporting warehouse to balance interactive reuse.</li>
+<li>Single-cluster limits (<code>MIN_CLUSTER_COUNT = 1</code>, <code>MAX_CLUSTER_COUNT = 1</code>) for cost discipline.</li>
+</ul>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li>SQL implementation: <code>02_snowflake/01_setup/01_infrastructure.sql</code> (warehouse section)</li>
+<li>Screenshot: <a href="../screenshots/02_snowflake/warehouse.png">warehouse.png</a></li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/warehouse.png" data-desc-position="bottom"><img alt="Snowflake Warehouses" src="../screenshots/02_snowflake/warehouse.png"></a></p>
+<h3 id="a2-storage-retention-and-table-persistence-strategy">A2. Storage retention and table persistence strategy<a class="headerlink" href="#a2-storage-retention-and-table-persistence-strategy" title="Permanent link">¶</a></h3>
+<p><strong>Decision:</strong> Keep RAW cheap, keep analytics recoverable.</p>
+<p><strong>Action:</strong></p>
+<ul>
+<li><code>OLIST_RAW_DB</code> retention set to 0 days.</li>
+<li><code>OLIST_ANALYTICS_DB</code> retention set to 1 day.</li>
+<li>RAW layer uses transient tables to minimize fail-safe overhead.</li>
+</ul>
+<p><strong>Evidence:</strong> <code>02_snowflake/01_setup/01_infrastructure.sql</code> (retention section)</p>
+<h3 id="a3-resource-monitor-and-hard-budget-guardrails">A3. Resource monitor and hard budget guardrails<a class="headerlink" href="#a3-resource-monitor-and-hard-budget-guardrails" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> Unbounded warehouse usage risk.</p>
+<p><strong>Fix:</strong> <code>OLIST_MONTHLY_LIMIT</code> with notify/suspend/suspend_immediate triggers.</p>
+<p><strong>Impact:</strong> Enforced compute ceiling and pre-limit alerting.</p>
+<p><strong>Evidence:</strong> <code>02_snowflake/01_setup/01_infrastructure.sql</code> (resource monitor section)</p>
+<h3 id="a4-finops-tagging-for-attribution">A4. FinOps tagging for attribution<a class="headerlink" href="#a4-finops-tagging-for-attribution" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Applied warehouse tags (<code>COST_CENTER</code>, <code>ENVIRONMENT</code>) on all three warehouses.</p>
+<p><strong>Impact:</strong> Cost slice by ingestion, transformation, and reporting workloads.</p>
+<p><strong>Evidence:</strong> <code>02_snowflake/01_setup/01_infrastructure.sql</code> (tagging section)</p>
+<h3 id="a5-environment-isolation-via-zero-copy-clone">A5. Environment isolation via zero-copy clone<a class="headerlink" href="#a5-environment-isolation-via-zero-copy-clone" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> <code>OLIST_DEV_DB CLONE OLIST_ANALYTICS_DB</code> for development/test isolation.</p>
+<p><strong>Impact:</strong> Faster environment setup with lower storage overhead than full duplication.</p>
+<p><strong>Evidence:</strong> <code>02_snowflake/01_setup/01_infrastructure.sql</code> (clone section)</p>
+<hr>
+<h2 id="section-b-dbt-optimization">🟩 SECTION B — dbt Optimization<a class="headerlink" href="#section-b-dbt-optimization" title="Permanent link">¶</a></h2>
+<h3 id="b1-materialization-strategy-by-layer">B1. Materialization strategy by layer<a class="headerlink" href="#b1-materialization-strategy-by-layer" title="Permanent link">¶</a></h3>
+<p><strong>Decision log:</strong></p>
+<ul>
+<li>STAGING: <code>view</code></li>
+<li>INTERMEDIATE: <code>ephemeral</code></li>
+<li>MARTS dimensions: <code>table</code></li>
+<li>MARTS facts: <code>incremental</code></li>
+</ul>
+<p><strong>Impact:</strong> Low storage overhead upstream, low query latency in consumption layer.</p>
+<p><strong>Evidence:</strong> <code>03_dbt/dbt_project.yml</code> (models materialization section)</p>
+<h3 id="b2-incremental-fact-pipeline-in-marts">B2. Incremental fact pipeline in MARTS<a class="headerlink" href="#b2-incremental-fact-pipeline-in-marts" title="Permanent link">¶</a></h3>
+<p><strong>Model:</strong> <code>marts.sales.fct_order_items</code></p>
+<p><strong>Action:</strong></p>
+<ul>
+<li><code>materialized='incremental'</code></li>
+<li><code>unique_key='order_item_sk'</code></li>
+<li><code>on_schema_change='append_new_columns'</code></li>
+<li>Incremental filter driven by latest <code>order_date_dt</code> in target table.</li>
+</ul>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li>Model SQL: <code>03_dbt/models/marts/sales/fct_order_items.sql</code></li>
+<li>Screenshot: <a href="../screenshots/03_dbt/incremental_model.png">incremental_model.png</a></li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/incremental_model.png" data-desc-position="bottom"><img alt="dbt Incremental Model" src="../screenshots/03_dbt/incremental_model.png"></a></p>
+<h3 id="b3-query-tagging-and-run-observability">B3. Query tagging and run observability<a class="headerlink" href="#b3-query-tagging-and-run-observability" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> dbt run-start hook sets Snowflake <code>QUERY_TAG</code> with environment + invocation id.</p>
+<p><strong>Impact:</strong> Traceable compute usage by run context.</p>
+<p><strong>Evidence:</strong> <code>03_dbt/dbt_project.yml</code> (on-run-start hook)</p>
+<h3 id="b4-parallel-execution-configuration">B4. Parallel execution configuration<a class="headerlink" href="#b4-parallel-execution-configuration" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong></p>
+<ul>
+<li><code>threads: 4</code> in <code>dev</code> and <code>ci</code></li>
+<li><code>threads: 8</code> in <code>prod</code></li>
+</ul>
+<p><strong>Impact:</strong> Better wall-clock build performance while preserving role/warehouse controls.</p>
+<p><strong>Evidence:</strong> <code>03_dbt/profiles.yml</code></p>
+<h3 id="b5-contract-first-schemas-and-test-gate-scale">B5. Contract-first schemas and test gate scale<a class="headerlink" href="#b5-contract-first-schemas-and-test-gate-scale" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong></p>
+<ul>
+<li>Enforced schema contracts at marts layer.</li>
+<li>dbt test run artifact shows broad test coverage (including warnings tracked separately).</li>
+</ul>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li>Contract screenshot: <a href="../screenshots/03_dbt/data_contracts.png">data_contracts.png</a></li>
+<li>Test evidence: <a href="../screenshots/03_dbt/test_passed_suite.png">test_passed_suite.png</a></li>
+<li>Artifact: <code>03_dbt/target/run_results.json</code></li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/test_passed_suite.png" data-desc-position="bottom"><img alt="dbt Test Suite" src="../screenshots/03_dbt/test_passed_suite.png"></a></p>
+<div class="admonition info">
+<p class="admonition-title">Coverage Note</p>
+</div>
+<p>Current run artifact includes a large automated suite with pass + warn outcomes; warnings are intentional for monitored anomalies, while blocking failures remain zero in successful CI passes.</p>
+<h3 id="b6-ci-execution-scope-and-cleanup-optimization">B6. CI execution scope and cleanup optimization<a class="headerlink" href="#b6-ci-execution-scope-and-cleanup-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong></p>
+<ul>
+<li>CI triggers only on relevant dbt/workflow file changes.</li>
+<li>CI builds isolated schema (<code>CI_PR_&lt;number&gt;</code>).</li>
+<li>Post-run cleanup executes <code>drop_ci_schema</code> operation.</li>
+</ul>
+<p><strong>Impact:</strong> Lower waste compute and reduced orphaned-object overhead.</p>
+<p><strong>Evidence:</strong> <code>.github/workflows/ci_dbt_test.yaml</code></p>
+<hr>
+<h2 id="section-c-power-bi-optimization">🟨 SECTION C — Power BI Optimization<a class="headerlink" href="#section-c-power-bi-optimization" title="Permanent link">¶</a></h2>
+<h3 id="c1-storage-mode-decision">C1. Storage mode decision<a class="headerlink" href="#c1-storage-mode-decision" title="Permanent link">¶</a></h3>
+<p><strong>Decision:</strong> Import mode.</p>
+<p><strong>Rationale:</strong> Consistent low-latency interactions for target usage pattern.</p>
+<p><strong>Evidence:</strong> <a href="../04_semantic_model/#51-storage-mode">04_semantic_model.md</a></p>
+<h3 id="c2-incremental-refresh-policy">C2. Incremental refresh policy<a class="headerlink" href="#c2-incremental-refresh-policy" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Configured long archive with rolling refresh window and change detection.</p>
+<p><strong>Measured benchmark (portfolio run):</strong></p>
+<ul>
+<li>Refresh time improvement from ~12m to ~2.5m</li>
+<li>Significantly lower transferred rows and Snowflake compute during refresh</li>
+</ul>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li>Config + benchmark notes: <a href="../04_semantic_model/#52-data-refresh-strategy">04_semantic_model.md</a></li>
+<li>Screenshot: <a href="../screenshots/04_powerbi/incremental_refresh.png">incremental_refresh.png</a></li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/incremental_refresh.png" data-desc-position="bottom"><img alt="Power BI Incremental Refresh" src="../screenshots/04_powerbi/incremental_refresh.png"></a></p>
+<h3 id="c3-query-folding-discipline">C3. Query folding discipline<a class="headerlink" href="#c3-query-folding-discipline" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Keep transformation path foldable; validate with "View Native Query".</p>
+<p><strong>Status:</strong> Query folding validated for ingestion path used by the model.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/query_folding.png">query_folding.png</a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/query_folding.png" data-desc-position="bottom"><img alt="Query Folding Validation" src="../screenshots/04_powerbi/query_folding.png"></a></p>
+<h3 id="c4-star-schema-performance-characteristics">C4. Star schema performance characteristics<a class="headerlink" href="#c4-star-schema-performance-characteristics" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Single central fact with dimension-driven filters and one-to-many joins.</p>
+<p><strong>Impact:</strong> Lower visual query complexity vs denormalized many-join alternatives.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/lineage_graph_view.png">lineage_graph_view.png</a></p>
+<h3 id="c5-visual-performance-instrumentation">C5. Visual performance instrumentation<a class="headerlink" href="#c5-visual-performance-instrumentation" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Use Performance Analyzer traces as release evidence.</p>
+<p><strong>Benchmark evidence:</strong> <a href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png">performance_analyzer_excutive_page.png</a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png" data-desc-position="bottom"><img alt="Performance Analyzer" src="../screenshots/04_powerbi/performance_analyzer_excutive_page.png"></a></p>
+<hr>
+<h2 id="section-d-ux-performance">🟪 SECTION D — UX Performance<a class="headerlink" href="#section-d-ux-performance" title="Permanent link">¶</a></h2>
+<h3 id="d1-page-complexity-budget">D1. Page complexity budget<a class="headerlink" href="#d1-page-complexity-budget" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Keep each page scoped to high-signal visuals and move depth to drillthrough.</p>
+<p><strong>Impact:</strong> Faster first paint and improved user scan speed.</p>
+<h3 id="d2-drillthrough-first-detail-access">D2. Drillthrough-first detail access<a class="headerlink" href="#d2-drillthrough-first-detail-access" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Aggregated landing pages, detail pages loaded on demand.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/drill_through_page.png">drill_through_page.png</a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/drill_through_page.png" data-desc-position="bottom"><img alt="Drillthrough Design" src="../screenshots/04_powerbi/drill_through_page.png"></a></p>
+<h3 id="d3-mobile-specific-layouts">D3. Mobile-specific layouts<a class="headerlink" href="#d3-mobile-specific-layouts" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Dedicated mobile page composition, not desktop auto-shrink.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/mobile_view.jpeg">mobile_view.jpeg</a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/mobile_view.jpeg" data-desc-position="bottom"><img alt="Mobile Layout" src="../screenshots/04_powerbi/mobile_view.jpeg"></a></p>
+<h3 id="d4-trust-and-ux-instrumentation-patterns">D4. Trust and UX instrumentation patterns<a class="headerlink" href="#d4-trust-and-ux-instrumentation-patterns" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Data-quality and trust affordances exposed in report UX.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/trust_tooltip_ux.png">trust_tooltip_ux.png</a></p>
+<hr>
+<h2 id="section-e-datafinops-cost-optimization">🟧 SECTION E — DataFinOps (Cost Optimization)<a class="headerlink" href="#section-e-datafinops-cost-optimization" title="Permanent link">¶</a></h2>
+<h3 id="e1-compute-cost-controls">E1. Compute cost controls<a class="headerlink" href="#e1-compute-cost-controls" title="Permanent link">¶</a></h3>
+<p><strong>Implemented controls:</strong></p>
+<ul>
+<li>Warehouse auto-suspend policies</li>
+<li>Resource monitor quota and suspend triggers</li>
+<li>Workload tags for attribution</li>
+</ul>
+<p><strong>Primary evidence:</strong></p>
+<ul>
+<li><code>02_snowflake/01_setup/01_infrastructure.sql</code></li>
+<li><a href="../screenshots/02_snowflake/warehouse.png">warehouse.png</a></li>
+</ul>
+<h3 id="e2-storage-cost-controls">E2. Storage cost controls<a class="headerlink" href="#e2-storage-cost-controls" title="Permanent link">¶</a></h3>
+<p><strong>Implemented controls:</strong></p>
+<ul>
+<li>RAW retention = 0 days</li>
+<li>Analytics retention = 1 day</li>
+<li>Transient-first RAW persistence pattern</li>
+</ul>
+<p><strong>Evidence:</strong> <code>02_snowflake/01_setup/01_infrastructure.sql</code> (retention section)</p>
+<h3 id="e3-refresh-cost-optimization">E3. Refresh cost optimization<a class="headerlink" href="#e3-refresh-cost-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Implemented controls:</strong></p>
+<ul>
+<li>Incremental fact processing in dbt</li>
+<li>Incremental refresh in Power BI</li>
+</ul>
+<p><strong>Impact:</strong> Lower recurring scan and transfer volume versus full rebuild/full refresh.</p>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li><a href="../screenshots/03_dbt/incremental_model.png">incremental_model.png</a></li>
+<li><a href="../screenshots/04_powerbi/incremental_refresh.png">incremental_refresh.png</a></li>
+</ul>
+<h3 id="e4-ci-cost-optimization">E4. CI cost optimization<a class="headerlink" href="#e4-ci-cost-optimization" title="Permanent link">¶</a></h3>
+<p><strong>Implemented controls:</strong></p>
+<ul>
+<li>Path-filtered workflow triggers</li>
+<li>Isolated CI schema</li>
+<li>Post-build schema drop</li>
+</ul>
+<p><strong>Evidence:</strong> <code>.github/workflows/ci_dbt_test.yaml</code></p>
+<hr>
+<h2 id="section-f-monitoring-alerting">🟥 SECTION F — Monitoring &amp; Alerting<a class="headerlink" href="#section-f-monitoring-alerting" title="Permanent link">¶</a></h2>
+<h3 id="f1-data-freshness-heartbeat">F1. Data freshness heartbeat<a class="headerlink" href="#f1-data-freshness-heartbeat" title="Permanent link">¶</a></h3>
+<p><strong>Implementation:</strong> <code>meta_project_status</code> singleton table with:</p>
+<ul>
+<li><code>pipeline_last_run_at</code></li>
+<li><code>data_valid_through</code></li>
+</ul>
+<p><strong>Evidence:</strong> <code>03_dbt/models/marts/meta/meta_project_status.sql</code></p>
+<h3 id="f2-ci-quality-gates-and-release-telemetry">F2. CI quality gates and release telemetry<a class="headerlink" href="#f2-ci-quality-gates-and-release-telemetry" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> PR checks enforce lint/build/test gates before merge.</p>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li><a href="../screenshots/05_dataops/ci_dbt_build_pass.png">ci_dbt_build_pass.png</a></li>
+<li><a href="../screenshots/05_dataops/github_pr_checks_pass.png">github_pr_checks_pass.png</a></li>
+<li><a href="../screenshots/05_dataops/sqlfluff_linting_pass.png">sqlfluff_linting_pass.png</a></li>
+</ul>
+<h3 id="f3-bi-runtime-monitoring">F3. BI runtime monitoring<a class="headerlink" href="#f3-bi-runtime-monitoring" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Performance Analyzer traces captured and reviewed as release evidence.</p>
+<p><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/BPA_scan_after.png">BPA_scan_after.png</a></p>
+<h3 id="f4-work-tracking-and-issue-visibility">F4. Work tracking and issue visibility<a class="headerlink" href="#f4-work-tracking-and-issue-visibility" title="Permanent link">¶</a></h3>
+<p><strong>Action:</strong> Optimization work tracked through issue and milestone artifacts.</p>
+<p><strong>Evidence:</strong></p>
+<ul>
+<li><a href="../screenshots/05_dataops/github_issue_tracking.png">github_issue_tracking.png</a></li>
+<li><a href="../screenshots/05_dataops/project_milestones_roadmap.png">project_milestones_roadmap.png</a></li>
+</ul>
+<hr>
+<h2 id="17-performance-comparison-table">17️⃣ Performance Comparison Table<a class="headerlink" href="#17-performance-comparison-table" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Before ❌</th>
+<th>After ✅</th>
+<th>Measured Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard load (portfolio benchmark)</td>
+<td>~4s class experience</td>
+<td>~1.8s class experience</td>
+<td>Meets sub-2s target on benchmark pages</td>
+</tr>
+<tr>
+<td>Power BI refresh</td>
+<td>Full refresh path</td>
+<td>Incremental refresh path</td>
+<td>~79% faster benchmark refresh</td>
+</tr>
+<tr>
+<td>Refresh transfer volume</td>
+<td>Full table transfer</td>
+<td>Partition/window transfer</td>
+<td>Large reduction in transferred rows</td>
+</tr>
+<tr>
+<td>Snowflake idle burn</td>
+<td>Longer active windows</td>
+<td>60s/300s suspend policy</td>
+<td>Significant idle-credit reduction</td>
+</tr>
+<tr>
+<td>dbt processing</td>
+<td>Full-scan tendency</td>
+<td>Incremental fact + env threads</td>
+<td>Lower recurring transform runtime</td>
+</tr>
+<tr>
+<td>Schema drift risk</td>
+<td>Manual detection</td>
+<td>Contract + CI gate + lint</td>
+<td>Faster detection, safer releases</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Benchmark Integrity</p>
+</div>
+<p>Numbers in this table are portfolio benchmark outputs from this repository’s evidence screenshots and docs. They are not presented as universal production constants.</p>
+<hr>
+<h2 id="section-h-production-readiness-checklist">🟦 SECTION H — Production Readiness Checklist<a class="headerlink" href="#section-h-production-readiness-checklist" title="Permanent link">¶</a></h2>
+<h3 id="infrastructure">Infrastructure<a class="headerlink" href="#infrastructure" title="Permanent link">¶</a></h3>
+<ul>
+<li>[x] Warehouses sized and auto-suspend configured</li>
+<li>[x] Resource monitor with hard-stop triggers</li>
+<li>[x] Retention and transient storage policies applied</li>
+<li>[x] Cost attribution tags applied</li>
+</ul>
+<h3 id="dbt-layer">dbt Layer<a class="headerlink" href="#dbt-layer" title="Permanent link">¶</a></h3>
+<ul>
+<li>[x] Layer-wise materialization strategy implemented</li>
+<li>[x] Incremental marts fact implemented</li>
+<li>[x] Query tagging and thread tuning configured</li>
+<li>[x] Contracts/tests/lint in CI gates</li>
+</ul>
+<h3 id="power-bi-layer">Power BI Layer<a class="headerlink" href="#power-bi-layer" title="Permanent link">¶</a></h3>
+<ul>
+<li>[x] Import mode selected and justified</li>
+<li>[x] Incremental refresh configured</li>
+<li>[x] Query folding validated</li>
+<li>[x] Performance Analyzer evidence captured</li>
+</ul>
+<h3 id="monitoring-ops">Monitoring + Ops<a class="headerlink" href="#monitoring-ops" title="Permanent link">¶</a></h3>
+<ul>
+<li>[x] Freshness heartbeat table deployed</li>
+<li>[x] CI pass evidence retained</li>
+<li>[x] Issue/milestone tracking artifacts maintained</li>
+<li>[x] Runbook references in place</li>
+</ul>
+<hr>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Optimization coverage spans warehouse policy, dbt execution design, semantic refresh strategy, UX-level interaction design, and DataFinOps controls. The performance posture is implemented end-to-end with repository-backed evidence, not isolated point fixes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AyanMulaskar223" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
