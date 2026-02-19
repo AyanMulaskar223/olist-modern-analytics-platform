@@ -120,7 +120,7 @@ _End-to-end Modern Data Stack: Azure Blob → Snowflake → dbt → Power BI wit
 <summary><strong>📊 Show Infrastructure Evidence</strong></summary>
 
 ![Azure Blob Storage Structure](docs/screenshots/01_azure_blob_storage/container_structure.png)
-_Azure Blob Storage with 8 parquet files organized for Snowflake ingestion_
+_Azure Blob Storage with 8 source files (CSV, Parquet, JSON) organized for Snowflake ingestion_
 
 ![Lifecycle Management](docs/screenshots/01_azure_blob_storage/lifecycle_policy.png)
 _Automated tier transitions (Hot → Cool → Archive) for cost optimization_
@@ -129,13 +129,13 @@ _Automated tier transitions (Hot → Cool → Archive) for cost optimization_
 
 **Implementation:**
 
-| Component                | Technical Details                                                    |
-| :----------------------- | :------------------------------------------------------------------- |
-| **Storage Format**       | Parquet files in Azure Blob (Hot → Cool → Archive lifecycle)         |
-| **Ingestion Method**     | Snowflake `COPY INTO` with file tracking (idempotent loads)          |
-| **RAW Layer Design**     | Immutable source-of-truth • Zero transformations applied             |
-| **Compute Architecture** | Separation of storage (Azure) and compute (Snowflake)                |
-| **Cost Optimization**    | X-Small warehouse • 60s auto-suspend • Query tagging for attribution |
+| Component                | Technical Details                                                           |
+| :----------------------- | :-------------------------------------------------------------------------- |
+| **Storage Format**       | CSV, Parquet, and JSON files in Azure Blob (Hot → Cool → Archive lifecycle) |
+| **Ingestion Method**     | Snowflake `COPY INTO` with file tracking (idempotent loads)                 |
+| **RAW Layer Design**     | Immutable source-of-truth • Zero transformations applied                    |
+| **Compute Architecture** | Separation of storage (Azure) and compute (Snowflake)                       |
+| **Cost Optimization**    | X-Small warehouse • 60s auto-suspend • Query tagging for attribution        |
 
 ---
 
@@ -241,7 +241,7 @@ _Fail-fast schema validation prevents breaking changes_
 <summary><strong>📊 Show Power BI Implementation</strong></summary>
 
 ![Star Schema Diagram](docs/screenshots/04_powerbi/01_data_model.png)
-_Kimball star schema: 4 fact tables, 6 dimensions, 100% query folding_
+_Kimball star schema: 1 fact table (Sales), 6 dimensions, 100% query folding_
 
 ![DAX Measures Studio](docs/screenshots/04_powerbi/02_dax_measures.png)
 _50+ certified DAX measures with calculation groups for time intelligence_
@@ -258,8 +258,8 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 
 | Component              | Implementation                                                       | Purpose                                           |
 | :--------------------- | :------------------------------------------------------------------- | :------------------------------------------------ |
-| **Star Schema**        | 4 fact tables + 6 dimensions                                         | Kimball methodology for optimal query performance |
-| **Facts**              | orders • items • payments • reviews                                  | Grain: one row per business event                 |
+| **Star Schema**        | 1 fact table + 6 dimensions                                          | Kimball methodology for optimal query performance |
+| **Facts**              | Sales (`fct_order_items`) — 112,650 order line transactions          | Grain: one row per order item                     |
 | **Dimensions**         | customers • products • sellers • dates • geospatial • project_status | Conformed dimensions shared across facts          |
 | **DAX Measures**       | 50+ pre-certified calculations                                       | Single source of truth prevents metric drift      |
 | **Calculation Groups** | YoY • MoM • QoQ time intelligence                                    | Reusable date calculations across all measures    |
@@ -394,7 +394,7 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 **Azure Blob Storage with Cost-Optimized Lifecycle**
 
 ![Azure Container Structure](docs/screenshots/01_azure_blob_storage/container_structure.png)
-_1 parquet and 1 JSON files and other are CSVs organized for Snowflake ingestion_
+_8 source files (CSVs, 1 Parquet, 1 JSON) organized for Snowflake ingestion_
 
 ![Lifecycle Policy](docs/screenshots/01_azure_blob_storage/lifecycle_policy.png)
 _Automated tier transitions (Hot → Cool → Archive) for 60% storage cost reduction_
@@ -463,7 +463,7 @@ _Issues linked to specific code changes for full audit trail_
 
 **GitHub Labels & Project Organization:**
 
-- ✅ **ADLC Phase Labels:** `phase-1-requirements`, `phase-2-ingestion`, `phase-3-dbt`, `phase-4-dataops`, `phase-5-powerbi`
+- ✅ **ADLC Phase Labels:** `phase-1-requirements`, `phase-2-ingestion`, `phase-3-dbt`, `phase-4-powerbi`, `phase-5-dataops`
 - ✅ **Priority Labels:** `priority: high`, `priority: medium`, `priority: low`
 - ✅ **Type Labels:** `bug`, `enhancement`, `documentation`, `performance`
 - ✅ **Status Tracking:** Issues progress through GitHub Projects board with automated workflow
@@ -857,7 +857,7 @@ SelectColumns = Table.SelectColumns(
 
 ### 📊 5. Semantic Layer & Business Intelligence
 
-**Power BI Golden Dataset** — Star schema (4 facts, 6 dimensions), 100% query folding, Self-Service 2.0: analysts certify the semantic layer; AI tools consume governed data.
+**Power BI Golden Dataset** — Star schema (1 fact table, 6 dimensions), 100% query folding, Self-Service 2.0: analysts certify the semantic layer; AI tools consume governed data.
 
 **Power BI Golden Dataset with Star Schema**
 
@@ -867,7 +867,7 @@ SelectColumns = Table.SelectColumns(
 
 **Architecture**
 
-- 4 fact tables (`fct_*`)
+- 1 fact table — Sales (`fct_order_items`)
 - 6 dimension tables (`dim_*`)
 - 50+ centralized DAX measures
 - Calculation groups for time intelligence
@@ -898,7 +898,7 @@ SelectColumns = Table.SelectColumns(
 **Semantic Model Architecture**
 
 ![Semantic Model Structure](docs/screenshots/04_powerbi/semantic_model.png)
-_Star schema: 4 fact tables, 6 dimensions, 50+ DAX measures with descriptions_
+_Star schema: 1 fact table (Sales), 6 dimensions, 50+ DAX measures with descriptions_
 
 ![Semantic Model Documentation](docs/screenshots/04_powerbi/semantic_model_doc.png)
 _Complete model documentation: table/column descriptions, relationships, measures_
