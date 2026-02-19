@@ -1114,13 +1114,13 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 **Why it matters:** Most analytics projects waste 60–70% of early sprint time rebuilding the same foundations — staging patterns, date dimensions, CI setup, test coverage. Investing in reusable architecture once means Project 2 (same domain: orders, customers, products) starts at the mart layer, not the raw layer.
 
-| Asset | Project 2 Benefit (same domain) | Time Saved |
-| :---- | :------------------------------- | :--------- |
-| **Staging models (`stg_*`)** | Orders, customers, products already typed + standardised — extend, don't rewrite | ~**2 days** |
-| **`dim_date`, `dim_customer`, `dim_product`** | Conformed dimensions drop straight in — star schema is already proven for this domain | ~**3 days** |
-| **dbt test + contract layer** | 559 tests + schema YAML re-point to new models — full coverage from day 1 | ~**1 day** |
-| **CI/CD pipeline** | SQLFluff → ephemeral schema → `dbt build` → cleanup — zero reconfiguration needed | ~**1 day** |
-| **Power BI Golden Dataset + RLS** | DAX measures and state-level security template carry over — add new pages, not new logic | ~**2 days** |
+| Asset                                         | Project 2 Benefit (same domain)                                                          | Time Saved  |
+| :-------------------------------------------- | :--------------------------------------------------------------------------------------- | :---------- |
+| **Staging models (`stg_*`)**                  | Orders, customers, products already typed + standardised — extend, don't rewrite         | ~**2 days** |
+| **`dim_date`, `dim_customer`, `dim_product`** | Conformed dimensions drop straight in — star schema is already proven for this domain    | ~**3 days** |
+| **dbt test + contract layer**                 | 559 tests + schema YAML re-point to new models — full coverage from day 1                | ~**1 day**  |
+| **CI/CD pipeline**                            | SQLFluff → ephemeral schema → `dbt build` → cleanup — zero reconfiguration needed        | ~**1 day**  |
+| **Power BI Golden Dataset + RLS**             | DAX measures and state-level security template carry over — add new pages, not new logic | ~**2 days** |
 
 > **~9 days saved on Project 2 — team starts shipping insights on day 1, not day 10.**
 
@@ -1440,25 +1440,25 @@ Comprehensive documentation organized by topic:
 
 <!-- Snowflake Certifications -->
 
-<a href="#"><img src="https://img.shields.io/badge/SnowPro®_Associate-Platform_(SOL--C01)-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white"/></a>
+<a href="https://achieve.snowflake.com/319a985c-70d5-43b0-9eef-7df3d5ca006f" target="_blank"><img src="https://img.shields.io/badge/SnowPro®_Associate-Platform_(SOL--C01)-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white"/></a>
 
 <!-- Microsoft Certifications -->
 
-<a href="#"><img src="https://img.shields.io/badge/Azure_Data_Fundamentals-DP--900-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white"/></a>
-<a href="#"><img src="https://img.shields.io/badge/Power_BI_Data_Analyst-PL--300-F2C811?style=for-the-badge&logo=powerbi&logoColor=black"/></a>
+<a href="https://learn.microsoft.com/api/credentials/share/en-us/AyanMulaskar-5148/53FDAFA544D7E0C9?sharingId=D81FD61C059160D2" target="_blank"><img src="https://img.shields.io/badge/Azure_Data_Fundamentals-DP--900-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white"/></a>
+<a href="https://learn.microsoft.com/api/credentials/share/en-us/AyanMulaskar-5148/28914DC2F743C05A?sharingId=D81FD61C059160D2" target="_blank"><img src="https://img.shields.io/badge/Power_BI_Data_Analyst-PL--300-F2C811?style=for-the-badge&logo=powerbi&logoColor=black"/></a>
 
 <!-- dbt Certification -->
 
-<a href="#"><img src="https://img.shields.io/badge/dbt_Fundamentals-Badge-FF694B?style=for-the-badge&logo=dbt&logoColor=white"/></a>
+<a href="https://credentials.getdbt.com/9112f641-216f-4121-8690-820adfe8bf57" target="_blank"><img src="https://img.shields.io/badge/dbt_Fundamentals-Badge-FF694B?style=for-the-badge&logo=dbt&logoColor=white"/></a>
 
 <!-- GitHub Certifications -->
 
-<a href="#"><img src="https://img.shields.io/badge/GitHub_Foundations-Certified-181717?style=for-the-badge&logo=github&logoColor=white"/></a>
-<a href="#"><img src="https://img.shields.io/badge/GitHub_Copilot-Certified-181717?style=for-the-badge&logo=githubcopilot&logoColor=white"/></a>
+<a href="https://www.credly.com/badges/64e29484-05b6-4d3c-a036-59884b26f7fc/linked_in_profile" target="_blank"><img src="https://img.shields.io/badge/GitHub_Foundations-Certified-181717?style=for-the-badge&logo=github&logoColor=white"/></a>
+<a href="https://www.credly.com/badges/63879d7f-0958-442e-8cd0-fa110d0b7bf6/linked_in_profile" target="_blank"><img src="https://img.shields.io/badge/GitHub_Copilot-Certified-181717?style=for-the-badge&logo=githubcopilot&logoColor=white"/></a>
 
 <!-- Databricks Certifications -->
 
-<a href="#"><img src="https://img.shields.io/badge/Databricks-Generative_AI_Fundamentals-FF3621?style=for-the-badge&logo=databricks&logoColor=white"/></a>
+<a href="https://credentials.databricks.com/f0119afc-98d9-4005-abcd-d9a561fcb9b1#acc.SthaHkXo" target="_blank"><img src="https://img.shields.io/badge/Databricks-Generative_AI_Fundamentals-FF3621?style=for-the-badge&logo=databricks&logoColor=white"/></a>
 
 </p>
 
