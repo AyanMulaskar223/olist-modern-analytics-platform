@@ -3,6 +3,8 @@
 > **Enterprise-Style Analytics Engineering Platform using Snowflake, dbt & Power BI**
 > _Designed with DataOps, DataFinOps, and governance-first BI standards_
 
+> **TL;DR:** End-to-end data pipeline turning **1.55M raw e-commerce records** into executive dashboards — automated testing, CI, incremental processing, and AI-assisted development. Every number in the dashboard is traceable back to a raw database row.
+
 [![View Documentation](https://img.shields.io/badge/📚_Full_Documentation-MkDocs-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/)
 [![License](https://img.shields.io/badge/License-MIT-black?style=for-the-badge)](LICENSE)
 
@@ -40,12 +42,15 @@
 | :--------------------- | :------------------------- | :------------------------------- | :----------------------- |
 | **Query Speed**        | 30-45s SQL queries         | <1.2s dashboard rendering        | **93% faster**           |
 | **Data Freshness**     | Weekly manual exports      | Daily automated @ 06:00 UTC      | **90% faster decisions** |
-| **Test Coverage**      | 0% (manual QA)             | 150+ automated tests             | **100% coverage**        |
+| **Test Coverage**      | 0% (manual QA)             | 559 automated tests              | **100% coverage**        |
 | **Compute Cost**       | Full daily refresh         | Incremental processing           | **42% reduction**        |
 | **Metric Consistency** | Dept-specific logic        | Single source of truth           | **0% drift**             |
 | **Time-to-Insight**    | 3-5 days (analyst backlog) | Self-service (2.0) drag-and-drop | **~40 hours saved/week** |
 
 📊 **[View Full Business Impact Analysis](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/07_analytics_insights/)** • 🏗️ **[Technical Architecture Deep Dive](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/01_architecture/)**
+
+![Executive Dashboard](docs/screenshots/04_powerbi/dashboard.png)
+_Executive Dashboard — Sub-second loads, RLS by region, 50+ DAX measures, Self-Service 2.0_
 
 ---
 
@@ -53,13 +58,10 @@
 
 ### 📐 Project Scope
 
-**Objective:** Architect and implement an **enterprise-grade Modern Data Stack** that demonstrates senior-level analytics engineering patterns by solving real-world data platform challenges faced by scaling e-commerce businesses.
-
-**Context:** Brazilian e-commerce marketplace (Olist) experiencing **rapid growth** (100K+ orders, 3K+ sellers, 35K+ products) struggling with **legacy analytics architecture** that can't support data-driven decision-making at scale.
-
-**Approach:** Full-stack data platform rebuild—from raw data ingestion through transformation to semantic layer consumption—applying **production-grade patterns**: Medallion architecture, automated testing, CI pipelines, incremental processing, governance-by-design, and cost optimization.
-
-**Outcome:** Portfolio-ready demonstration of **7 enterprise capabilities** (Cloud Architecture, DataOps, Dimensional Modeling, Data Quality Engineering, Semantic Layer Design, DataFinOps, AI-Assisted Development) validated through quantified business impact.
+- **Objective:** Enterprise-grade Modern Data Stack demonstrating senior analytics engineering on real Brazilian e-commerce data
+- **Context:** Olist marketplace — 100K+ orders, 3K+ sellers, 35K+ products — breaking under legacy OLTP analytics
+- **Approach:** Full-stack rebuild: Medallion architecture • automated testing • CI pipelines • incremental processing • governance-by-design
+- **Output:** 7 enterprise capabilities validated with quantified impact (Cloud Architecture → DataOps → Modeling → Quality → Semantic Layer → FinOps → AI Dev)
 
 ---
 
@@ -78,14 +80,7 @@ Olist scaled from startup to **100K+ monthly transactions**, but the analytics i
 | **⚙️ Operational Risk**             | Manual overnight batch scripts • Full table refresh • No CI/CD • Changes shipped to prod without testing                   | **45-min refresh windows** • **2.4x cost overrun** • "Works on my machine" failures             |
 | **🔐 Governance Failure**           | DB credentials in Slack • No RBAC • Catalog in analyst's head • LGPD compliance risk                                       | **Failed security audits** • Cannot reconstruct "How was Q3 revenue calculated?"                |
 
-#### **Root Cause: Architectural Debt (Not Tool Failures)**
-
-- **No separation of concerns** → PostgreSQL serving both OLTP transactions + analytical queries (locking production)
-- **No testing culture** → Quality relied on human vigilance; changing one metric broke 15 downstream reports
-- **No version control** → .pbix files with no Git tracking; zero rollback capability on broken deployments
-- **No cost visibility** → Cannot attribute compute spend to business units; wasteful full-refresh pattern
-
-**Verdict:** Incremental patching would perpetuate debt. Required **ground-up rebuild** with modern data engineering principles: **OLAP-optimized warehouse (Snowflake)**, **dbt transformations (version-controlled SQL)**, **semantic layer (governed metrics)**, **CI/CD automation (fail-fast contracts)**.
+**Root Cause:** No OLAP separation • No version control • No testing culture • No cost visibility → Ground-up rebuild required.
 
 ---
 
@@ -94,17 +89,11 @@ Olist scaled from startup to **100K+ monthly transactions**, but the analytics i
 | Legacy Pain Point         | Modern Solution                            | Technology Stack                     | Result                       |
 | :------------------------ | :----------------------------------------- | :----------------------------------- | :--------------------------- |
 | **45-second SQL queries** | Sub-second dashboards                      | Snowflake (Medallion) + Power BI     | **93% faster**               |
-| **Metric drift**          | Single source of truth                     | dbt Core (35+ models, 150+ tests)    | **0% inconsistency**         |
-| **Zero test coverage**    | Automated quality gates                    | 150+ dbt tests + CI automation       | **100% coverage**            |
+| **Metric drift**          | Single source of truth                     | dbt Core (35+ models, 559 tests)     | **0% inconsistency**         |
+| **Zero test coverage**    | Automated quality gates                    | 559 dbt tests + CI automation        | **100% coverage**            |
 | **Breaking changes**      | Fail-fast schema contracts                 | dbt contracts + explicit columns     | **Zero prod breaks**         |
 | **Binary .pbix files**    | Git-tracked semantic model                 | PBIP + TMDL (version-controlled DAX) | **Complete lineage**         |
 | **AI-generated chaos**    | Governed semantic layer (Self-Service 2.0) | Certified metrics + quality flags    | **~40 analyst hrs saved/wk** |
-
-### 📊 Business Impact
-
-**Cost Savings:** 42% compute + 60% storage reduction | **R$1.2M+ revenue risk prevented**
-**Speed:** 93% faster queries (45s → <2s) | 82% faster refreshes (45min → 8min)
-**Governance:** 0% metric drift | 100% test coverage | Zero schema breaks in production
 
 📖 **[Full Technical Architecture →](#2️⃣-architecture-overview)** • **[Detailed Impact Analysis →](#3️⃣-business-impact-snapshot)**
 
@@ -119,17 +108,7 @@ Olist scaled from startup to **100K+ monthly transactions**, but the analytics i
 ![Architecture Hero Diagram](docs/architecture/architecture_hero.png)
 _End-to-end Modern Data Stack: Azure Blob → Snowflake → dbt → Power BI with CI automation_
 
-**Architecture Pattern:** Modern Data Stack with Medallion Architecture
-**Data Flow:** Azure → Snowflake → dbt → Power BI
-**Quality Gates:** 150+ automated tests • CI automation • Schema contracts
-
 📖 **[Complete Architecture Documentation](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/01_architecture/)** • **[Design Decisions Log](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/01_architecture/#2-decision-log-senior-format)**
-
----
-
-### 🔄 Layer-by-Layer Data Flow
-
-This platform implements a **production-grade layered architecture** for scalability, governance, performance, and cost control.
 
 ---
 
@@ -157,15 +136,6 @@ _Automated tier transitions (Hot → Cool → Archive) for cost optimization_
 | **RAW Layer Design**     | Immutable source-of-truth • Zero transformations applied             |
 | **Compute Architecture** | Separation of storage (Azure) and compute (Snowflake)                |
 | **Cost Optimization**    | X-Small warehouse • 60s auto-suspend • Query tagging for attribution |
-
-**Key Benefits:**
-
-| Benefit                 | Impact                                         |
-| :---------------------- | :--------------------------------------------- |
-| ✅ **Idempotent Loads** | Prevents duplicate data ingestion              |
-| ✅ **Audit Trail**      | Complete ingestion history preserved           |
-| ✅ **Time Travel**      | Point-in-time recovery (90-day retention)      |
-| ✅ **Storage Cost**     | 60% reduction via automated lifecycle policies |
 
 ---
 
@@ -195,36 +165,28 @@ _1.55M+ rows loaded across 8 tables with 100% data quality_
 | Database               | Purpose                  | Contains                                                                                                                           | Environment                |
 | :--------------------- | :----------------------- | :--------------------------------------------------------------------------------------------------------------------------------- | :------------------------- |
 | **OLIST_RAW_DB**       | Ingestion & Landing Zone | • 8 RAW tables (TRANSIENT)<br>• External stages (Azure Blob)<br>• File formats (CSV, Parquet, JSON)<br>• COPY INTO history         | Immutable source-of-truth  |
-| **OLIST_DEV_DB**       | Development & Testing    | • STAGING layer (Views)<br>• INTERMEDIATE layer (Tables/Views)<br>• dbt model development<br>• 150+ test validations               | Pre-production workspace   |
+| **OLIST_DEV_DB**       | Development & Testing    | • STAGING layer (Views)<br>• INTERMEDIATE layer (Tables/Views)<br>• dbt model development<br>• 559 test validations                | Pre-production workspace   |
 | **OLIST_ANALYTICS_DB** | Production Consumption   | • MARTS layer (Tables/Incremental)<br>• Star schema (Facts + Dimensions)<br>• Power BI semantic model source<br>• Governed metrics | Production-ready analytics |
-
-**Deployment Workflow:**
-
-| Stage                    | Action                                        | Validation                        | Deployment     |
-| :----------------------- | :-------------------------------------------- | :-------------------------------- | :------------- |
-| **1. Development**       | Analysts build models in OLIST_DEV_DB         | Local testing via `dbt test`      | Feature branch |
-| **2. CI Validation**     | GitHub Actions runs full test suite           | 150+ tests must pass              | Pull request   |
-| **3. Manual Review**     | Senior engineer reviews lineage impact        | Documentation updated             | Approve PR     |
-| **4. Production Deploy** | `dbt run --target prod` to OLIST_ANALYTICS_DB | Zero-downtime incremental refresh | Merge to main  |
 
 **Infrastructure:**
 
-| Component         | Configuration                            | Purpose                                  |
-| :---------------- | :--------------------------------------- | :--------------------------------------- |
-| **Warehouses**    | 4 X-Small compute (60s auto-suspend)     | Cost-optimized query execution           |
-| **RBAC Roles**    | LOADER • ANALYTICS • REPORTER • SYSADMIN | Least-privilege security model           |
-| **Cost Controls** | Resource monitors + query tagging        | Compute attribution by business unit     |
-| **Data Volume**   | 1.55M+ rows across 8 RAW tables          | 100% data quality validated at ingestion |
+| Component         | Configuration                            | Purpose                                          |
+| :---------------- | :--------------------------------------- | :----------------------------------------------- |
+| **Warehouses**    | 4 X-Small compute (60s auto-suspend)     | Cost-optimized query execution                   |
+| **RBAC Roles**    | LOADER • ANALYTICS • REPORTER • SYSADMIN | Least-privilege security model                   |
+| **Cost Controls** | Resource monitors + query tagging        | Compute attribution by business unit             |
+| **Data Volume**   | 1,550,851 rows across 8 RAW tables       | **99.998%** quality score (automated validation) |
 
-**Key Benefits:**
+**Production Schema Organization (`OLIST_ANALYTICS_DB`):**
 
-| Benefit                      | Impact                                                           |
-| :--------------------------- | :--------------------------------------------------------------- |
-| ✅ **Environment Isolation** | Dev changes never impact production • Safe experimentation       |
-| ✅ **CI Gating**             | All code changes validated before production deployment          |
-| ✅ **42% Cost Reduction**    | Compute savings via auto-suspend + right-sizing                  |
-| ✅ **Deployment Safety**     | Manual approval gate prevents breaking changes                   |
-| ✅ **Zero Data Loss**        | 90-day Time Travel on RAW + incremental-only on production marts |
+```
+OLIST_ANALYTICS_DB/
+├── STAGING      → 14 views       (type casting, light cleaning, 1:1 with RAW)
+├── INTERMEDIATE → 4 models       (business logic, identity resolution, joins)
+├── MARTS        → 9 tables       (star schema: facts + dimensions for BI)
+├── OPS          → 1 table        (pipeline metadata & freshness monitoring)
+└── SECURITY     → 2 tables       (RLS mappings for 27 Brazilian states)
+```
 
 ---
 
@@ -239,7 +201,7 @@ _1.55M+ rows loaded across 8 tables with 100% data quality_
 _Complete data lineage from RAW → STAGING → INTERMEDIATE → MARTS with 35+ models_
 
 ![dbt Test Suite](docs/screenshots/03_dbt/test_passed_suite.png)
-_150+ automated tests validating data quality at every layer_
+_559 automated tests validating data quality at every layer_
 
 ![dbt Documentation](docs/screenshots/03_dbt/dbt_docs_site.png)
 _Auto-generated technical documentation with searchable model catalog_
@@ -264,19 +226,10 @@ _Fail-fast schema validation prevents breaking changes_
 
 | Component            | Implementation                                      | Coverage                      |
 | :------------------- | :-------------------------------------------------- | :---------------------------- |
-| **dbt Tests**        | not_null • unique • relationships • accepted_values | 150+ automated tests          |
+| **dbt Tests**        | not_null • unique • relationships • accepted_values | 559 automated tests           |
 | **Schema Contracts** | Enforced data types in YAML                         | Fail-fast on breaking changes |
 | **Data Lineage**     | Auto-generated DAG                                  | Every column traced to source |
 | **Documentation**    | `dbt docs generate`                                 | Searchable model catalog      |
-
-**Key Benefits:**
-
-| Benefit                   | Impact                                                       |
-| :------------------------ | :----------------------------------------------------------- |
-| ✅ **Version Control**    | All SQL transformations Git-tracked with rollback capability |
-| ✅ **100% Test Coverage** | Automated validation prevents bad data reaching dashboards   |
-| ✅ **82% Faster Refresh** | Incremental models process only changed records              |
-| ✅ **Instant Root Cause** | Lineage DAG enables immediate impact analysis                |
 
 ---
 
@@ -321,6 +274,21 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 | ✅ **Self-Service 2.0**   | Users drag-and-drop certified metrics only   | Governed empowerment (not chaos)            |
 | ✅ **Data Contracts**     | Schema changes in dbt break Power BI refresh | Fail-fast prevents silent metric corruption |
 
+**Production App Deployment:**
+
+| Attribute                 | Detail                                                                                                 |
+| :------------------------ | :----------------------------------------------------------------------------------------------------- |
+| **App Name**              | `Olist Analytics [PROD]` — published organizational app                                                |
+| **Scheduled Refresh**     | Daily at **6:15 PM IST** (UTC+05:30) — fully automated                                                 |
+| **Dataset Certification** | Certified dataset — official source of truth endorsement                                               |
+| **Report Subscriptions**  | Automated email distribution configured for leadership                                                 |
+| **BPA Validation**        | Best Practice Analyzer scan → **0 issues** (formatted strings, hidden FKs, RLS)                        |
+| **RLS Scope**             | Dynamic `USERPRINCIPALNAME()` filter; State_Manager role → 27 Brazilian states                         |
+| **Report Pages**          | 4 pages: Executive Sales Overview • Supply Chain & Delivery • Data Quality Audit • Detailed Order View |
+| **Field Parameters**      | Metric selector toggle between **Revenue** and **Orders** (reusable across all visuals)                |
+| **Dev/Prod Workspaces**   | Separate `Olist Analytics [DEV]` → `Olist Analytics [PROD]` workspaces prevent untested changes        |
+| **Delivery Pipeline**     | Snowflake → Semantic Model → Report → Dashboard → `Olist Analytics [PROD]` App                         |
+
 ---
 
 ## 3️⃣ Business Impact Snapshot
@@ -340,7 +308,7 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 
 | Dimension            | Before ❌                         | After ✅                                  | Impact 📈                    |
 | :------------------- | :-------------------------------- | :---------------------------------------- | :--------------------------- |
-| **Test Coverage**    | 0% (manual checks)                | 150+ automated tests (dbt+CI)             | **100% coverage**            |
+| **Test Coverage**    | 0% (manual checks)                | 559 automated tests (dbt+CI)              | **100% coverage**            |
 | **Metric Drift**     | Dept-specific logic               | Single source of truth (semantic layer)   | **0% drift**                 |
 | **Schema Breaks**    | Crashes dashboards (silent fail)  | dbt contracts + explicit Power Query      | **Zero prod breaks**         |
 | **Audit Trail**      | No version control                | Full Git history (SQL+DAX) + lineage DAG  | **Complete traceability**    |
@@ -376,8 +344,6 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 ---
 
 ## 4️⃣ Core Capabilities Demonstrated
-
-This project showcases **end-to-end modern data stack mastery** across 7 enterprise-grade domains, from cloud infrastructure to AI-augmented development.
 
 ### 🏗️ 1. Cloud Data Architecture
 
@@ -451,30 +417,19 @@ _Role-Based Access Control with 4 roles implementing least privilege_
 
 </details>
 
-**Key Achievements:**
-
-- ✅ 3-database separation (RAW • STAGING • MARTS)
-- ✅ X-Small warehouses with 60s auto-suspend
-- ✅ RBAC with 4 roles (least privilege)
-- ✅ Resource monitors prevent runaway costs
-
 ---
 
 ### 🔄 2. DataOps & CI Automation
 
-**TL;DR:** Two-stage GitHub Actions pipeline — fast syntax check on every push, full Snowflake integration test on PRs — with ephemeral per-PR schemas and automatic cleanup. Zero broken code reaches production.
-
 **Two-Stage CI Pipeline (Enterprise Pattern)**
 
-| Stage | Trigger | Runs On | What Happens |
-| :---- | :------ | :------ | :----------- |
-| **Stage 1: Syntax Guard** | Every push to `feat/**` | ubuntu-latest (no DB) | SQLFluff lints all SQL; dbt `parse` validates syntax — fast, no Snowflake cost |
-| **Stage 2: Integration Test** | PR to `main` | ubuntu-latest + Snowflake | Full `dbt build` against isolated `CI_PR_<number>` schema; all 150+ tests must pass; schema auto-cleaned by `drop_ci_schema` macro |
-
-**Why Isolated PR Schemas?** Each PR gets its own ephemeral Snowflake schema (`CI_PR_42`, `CI_PR_43`...). Tests run in complete isolation — no shared state, no PR conflicts, auto-deleted on completion. Same pattern used by Airbnb, GitLab, and enterprise data teams.
+| Stage                         | Trigger                 | Runs On                   | What Happens                                                                                                                      |
+| :---------------------------- | :---------------------- | :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage 1: Syntax Guard**     | Every push to `feat/**` | ubuntu-latest (no DB)     | SQLFluff lints all SQL; dbt `parse` validates syntax — fast, no Snowflake cost                                                    |
+| **Stage 2: Integration Test** | PR to `main`            | ubuntu-latest + Snowflake | Full `dbt build` against isolated `CI_PR_<number>` schema; all 559 tests must pass; schema auto-cleaned by `drop_ci_schema` macro |
 
 ```
-Push → SQLFluff Lint → PR → Ephemeral Schema → dbt build → 150+ Tests → Cleanup → Review → Merge
+Push → SQLFluff Lint → PR → Ephemeral Schema → dbt build → 559 Tests → Cleanup → Review → Merge
            ↓                       ↓                ↓              ↓           ↓
      Syntax fails?         CI_PR_<number>      All pass?     Auto-drop     Manual OK
      Block commit          (isolated)          Proceed       schema        → Prod
@@ -491,7 +446,7 @@ Push → SQLFluff Lint → PR → Ephemeral Schema → dbt build → 150+ Tests 
 _All CI checks must pass before merge: SQLFluff, dbt build, BPA scan_
 
 ![dbt Build CI](docs/screenshots/05_dataops/ci_dbt_build_pass.png)
-_Automated dbt build runs 150+ tests on every pull request_
+_Automated dbt build runs 559 tests on every pull request_
 
 ![SQLFluff Linting](docs/screenshots/05_dataops/sqlfluff_linting_pass.png)
 _SQL code quality enforced via SQLFluff with Snowflake dialect_
@@ -516,71 +471,131 @@ _Issues linked to specific code changes for full audit trail_
 
 **Result:** Clear work organization across 5 ADLC phases with full change history.
 
+</details>
+
 ---
 
-**Power BI Best Practices**
+**🔬 Tabular Editor 3 — Best Practice Analyzer (BPA)**
+
+Industry-standard semantic model scanner — **50+ rules** across formatting, performance, naming, security, and relationship integrity. Runs on every change before PROD publish.
+
+| BPA Rule Category          | What It Validates                                     | Result          |
+| :------------------------- | :---------------------------------------------------- | :-------------- |
+| **Measure Formatting**     | All measures use explicit FORMAT strings              | ✅ 0 violations |
+| **Performance**            | No high-cardinality columns in wrong relationship dir | ✅ 0 violations |
+| **Naming Conventions**     | Hidden foreign keys, consistent measure naming        | ✅ 0 violations |
+| **Relationship Integrity** | No ambiguous paths, inactive relationships flagged    | ✅ 0 violations |
+| **RLS Enforcement**        | Security roles defined, applied, and tested           | ✅ 0 violations |
+| **Overall Score**          | **50+ rules scanned automatically on every change**   | ✅ **0 issues** |
 
 <table>
 <tr>
 <td width="50%">
 
-**Before BPA Optimization**
+**Before: Multiple BPA violations**
 ![BPA Before](docs/screenshots/04_powerbi/BPA_scan_before.png)
 
 </td>
 <td width="50%">
 
-**After BPA Optimization**
+**After: 0 issues — Production certified**
 ![BPA After](docs/screenshots/04_powerbi/BPA_scan_after.png)
 
 </td>
 </tr>
 </table>
 
-_Semantic model passes all Best Practice Analyzer rules after optimization_
+---
 
-![Dev/Prod Strategy](docs/screenshots/04_powerbi/dev_prod_strategy.png)
-_Separate Power BI workspaces (Dev/Prod) prevent untested changes_
+**🚀 Power BI Dev → UAT → Prod Deployment Workflow**
 
-</details>
+```
+Power BI Desktop  ──publish──▶  [DEV] Workspace  ──UAT──▶  [PROD] Workspace  ──publish──▶  Org App
+                                       │                           │
+                               UAT checks run here        Certified Dataset
+                               KPIs must match Marts layer     Scheduled refresh: 6:15 PM IST
+                               RLS role validation        Email subscriptions active
+                               BPA scan: 0 issues ✅      4 reports + Dashboard live
+```
+
+| Stage                   | Tool / Action                                       | Gate                                  |
+| :---------------------- | :-------------------------------------------------- | :------------------------------------ |
+| **1. Build**            | Power BI Desktop — develop semantic model + reports | Local smoke test                      |
+| **2. DEV Deploy**       | Publish from Desktop → `Olist Analytics [DEV]`      | Rapid iteration; not user-facing      |
+| **3. UAT — Finance**    | Revenue reconciliation: PBI vs Snowflake SQL        | ✅ Total matches to penny             |
+| **4. UAT — Security**   | "View as Role: State_Manager" in Power BI Desktop   | ✅ Correct state filter enforced      |
+| **5. BPA Scan**         | Tabular Editor 3 → 50+ rules checked automatically  | ✅ 0 issues before PROD publish       |
+| **6. PROD Deploy**      | Re-publish from Desktop → `Olist Analytics [PROD]`  | Certified dataset; governed           |
+| **7. App & Automation** | Publish Org App + schedule daily refresh            | ✅ Refresh 6:15 PM IST, subscriptions |
+
+<table>
+<tr>
+<td width="50%">
+
+**UAT: Revenue Reconciliation (Finance sign-off)**
+![UAT Revenue Reconciliation](docs/screenshots/04_powerbi/uat_revenue_reconciliation.png)
+
+</td>
+<td width="50%">
+
+**UAT: RLS "View as Role" Validation**
+![RLS Validation](docs/screenshots/04_powerbi/uat_rls_validation.png)
+
+</td>
+</tr>
+</table>
+
+![Dev/Prod Workspace Strategy](docs/screenshots/04_powerbi/dev_prod_strategy.png)
+_DEV workspace for iteration → PROD workspace for certified, governed consumption_
+
+---
 
 **Key Achievements:**
 
-- ✅ **Two-stage CI:** Fast syntax check on push + full Snowflake integration test on PR
-- ✅ **Ephemeral PR schemas:** `CI_PR_<number>` isolated per PR, auto-cleaned after run
-- ✅ **Pre-commit hooks:** SQLFluff auto-fixes SQL before commit
-- ✅ **Blocking gates:** Failed tests prevent merge (100% enforcement)
-- ✅ **BPA validation:** Power BI semantic model scanned for anti-patterns
-- ✅ **Zero downtime:** Dev → UAT → Prod promotion workflow
-- ✅ **Version control:** Power BI Projects (PBIP) enables DAX code reviews
+- ✅ **Two-stage CI:** Fast syntax check on every push + full Snowflake integration test on PR
+- ✅ **Ephemeral PR schemas:** `CI_PR_<number>` isolated per PR, auto-cleaned → zero shared state
+- ✅ **Pre-commit hooks:** SQLFluff auto-fixes SQL before commit (trailing commas, casing, indentation)
+- ✅ **Blocking gates:** Failed tests prevent merge — 100% enforcement, no exceptions
+- ✅ **Source freshness monitoring:** 8 sources, tiered SLA windows (1–30 days) — stale data caught before users
+- ✅ **Tabular Editor 3 BPA:** 50+ rules, 0 issues — semantic model hardened before every prod deploy
+- ✅ **Dev → UAT → Prod:** Finance reconciliation + RLS validation before any report goes live
+- ✅ **Power BI Org App:** `Olist Analytics [PROD]` — certified dataset, scheduled refresh, email subscriptions
 
 ---
 
 ### 🧱 3. Data Modeling & Transformation
 
-**TL;DR:** dbt Core with 35+ models organized in Medallion layers (RAW→STAGING→INTERMEDIATE→MARTS), featuring reusable intermediate models for 50% faster development.
+**dbt Core — Medallion Architecture + Star Schema**
 
-**dbt Core with Medallion Architecture + Star Schema**
+| Layer             | Materialization | Models | Tests | Purpose                                                                       |
+| :---------------- | :-------------- | :----- | :---- | :---------------------------------------------------------------------------- |
+| **STAGING**       | Views           | 9      | 90+   | 1:1 with RAW, type casting                                                    |
+| **INTERMEDIATE**  | Tables/Views    | 3      | 4     | Business logic, identity resolution, reusable joins                           |
+| **MARTS (Facts)** | Tables/Incr     | 1      | 21+   | `fct_order_items` — 112,650 transactions                                      |
+| **MARTS (Dims)**  | Tables          | 6      | 14+   | Customers (96K) • Products (32K) • Sellers (3K) • Date (1,096 days) • RLS (2) |
+| **SEEDS**         | Tables          | 3      | —     | Reference data (category translations, RLS mapping)                           |
+| **META**          | Table           | 1      | —     | Heartbeat table (dual-clock freshness signal)                                 |
 
-| Layer             | Materialization | Models | Tests | Purpose                            |
-| :---------------- | :-------------- | :----- | :---- | :--------------------------------- |
-| **STAGING**       | Views           | 8      | 90+   | 1:1 with RAW, type casting         |
-| **INTERMEDIATE**  | Tables/Views    | 12+    | 40+   | Business logic, reusable joins     |
-| **MARTS (Facts)** | Tables/Incr     | 4      | 20+   | Fact tables (`fct_orders`, etc.)   |
-| **MARTS (Dims)**  | Tables          | 6      | 30+   | Dimensions (`dim_customers`, etc.) |
-| **SEEDS**         | Tables          | 3      | —     | Reference data (category translations, RLS mapping) |
-| **META**          | Table           | 1      | —     | Heartbeat table (dual-clock freshness signal) |
+**Test Coverage Breakdown (559 total):**
+
+| Test Category      | Count   | Scope                                                                         |
+| :----------------- | :------ | :---------------------------------------------------------------------------- |
+| **Source Tests**   | 85      | `not_null`, `unique`, `relationships`, `accepted_values` on RAW source tables |
+| **Generic Tests**  | 456     | Schema tests on all staging + intermediate + mart model columns               |
+| **Singular Tests** | 18      | Custom SQL business-rule assertions (cross-column + domain logic)             |
+| **Total**          | **559** | **100% pass rate** ✅                                                         |
 
 **dbt Ecosystem: 6 Packages**
 
-| Package              | Purpose                                         | Used For                              |
-| :------------------- | :---------------------------------------------- | :------------------------------------ |
-| **dbt_utils**        | Surrogate keys, date spine, cross-DB macros     | `generate_surrogate_key()` on all PKs |
-| **dbt_expectations** | Great Expectations-style row/column assertions  | 40+ statistical quality tests         |
-| **dbt_date**         | Date dimension generation                       | `dim_date` spanning 2016–2028         |
-| **codegen**          | Auto-generates staging YAML boilerplate         | Rapid model scaffolding               |
-| **audit_helper**     | Query output comparison between model versions  | Regression testing before refactors   |
-| **dbt_profiler**     | Column-level data profiling (min/max/nulls)     | Initial data quality assessment       |
+| Package                   | Purpose                                                     | Used For                                                        |
+| :------------------------ | :---------------------------------------------------------- | :-------------------------------------------------------------- |
+| **dbt_utils**             | Surrogate keys, date spine, cross-DB macros                 | `generate_surrogate_key()` on all PKs                           |
+| **dbt_expectations**      | Great Expectations-style row/column assertions              | 40+ statistical quality tests                                   |
+| **dbt_date**              | Date dimension generation                                   | `dim_date` spanning 2016–2028                                   |
+| **codegen**               | Auto-generates staging YAML boilerplate                     | Rapid model scaffolding                                         |
+| **audit_helper**          | Query output comparison between model versions              | Regression testing before refactors                             |
+| **dbt_profiler**          | Column-level data profiling (min/max/nulls)                 | Initial data quality assessment                                 |
+| **dbt_project_evaluator** | Automated best practices audit (DAG, naming, test coverage) | **PASS=76, WARN=5, ERROR=0** — continuous governance validation |
 
 <details>
 <summary><strong>📸 Show dbt Implementation Evidence</strong></summary>
@@ -625,11 +640,7 @@ exposures:
 ---
 
 ![dbt Test Suite](docs/screenshots/03_dbt/test_passed_suite.png)
-_150+ automated tests validating data quality at every layer_
-
----
-
-**Documentation & Quality Controls**
+_559 automated tests validating data quality at every layer_
 
 ![dbt Documentation](docs/screenshots/03_dbt/dbt_docs_site.png)
 _Auto-generated technical documentation with searchable model catalog_
@@ -642,7 +653,12 @@ _Incremental materialization reduces compute by processing only new data_
 
 </details>
 
-**🔄 Reusability Pattern (Intermediate Layer Strategy):**
+**🔄 Reusability Pattern:** Intermediate models define business logic once, reused by 3+ mart models — **50% faster development**, zero duplicate SQL.
+
+<details>
+<summary><strong>📐 Show Code: Without vs With Intermediate Models</strong></summary>
+
+<br>
 
 <table>
 <tr>
@@ -709,21 +725,13 @@ left join orders_agg o using (customer_id)
 </tr>
 </table>
 
-**Key Achievements:**
-
-- ✅ **35+ models** with full lineage traceability
-- ✅ **150+ automated tests** (unique, not_null, relationships, custom business rules)
-- ✅ **Schema contracts** enforce data types (fail-fast on breaking changes)
-- ✅ **Incremental models** reduce refresh time by 82% (45 min → 8 min)
-- ✅ **Auto-generated docs** with searchable catalog
-- ✅ **CTE pattern** (Import → Rename → Transform → Final) for readability
-- ✅ **Reusable intermediate layer:** 12+ models shared across marts (50% faster)
+</details>
 
 ---
 
 ### ✅ 4. Data Quality & Governance
 
-**TL;DR:** "Verified vs Raw" pattern with dual metrics, 150+ automated tests, and transparent quality tooltips surfacing 96.5% verification rate.
+**"Verified vs Raw" pattern** — dual metrics (Total vs Verified Revenue), 559 automated tests, transparent quality tooltips, 96.5% verification rate.
 
 **"Verified vs Raw" Pattern (Trust, Don't Trash)**
 
@@ -731,7 +739,7 @@ left join orders_agg o using (customer_id)
 | :-------------------- | :----------------------------------------------- | :-------------------------------------- |
 | **Master Flag**       | `is_verified` (boolean) on every row             | Dual metrics: Total vs Verified Revenue |
 | **Diagnostic Flag**   | `quality_issue_reason` (text)                    | Actionable correction lists             |
-| **Automated Testing** | 150+ tests in CI pipeline                        | Catches 100% FK violations before merge |
+| **Automated Testing** | 559 tests in CI pipeline                         | Catches 100% FK violations before merge |
 | **Transparent UX**    | Hover tooltips expose verification % in Power BI | Finance reconciles exact penny amounts  |
 | **Proactive Alerts**  | dbt freshness checks + refresh failure alerts    | Issues detected before user impact      |
 
@@ -769,9 +777,20 @@ _Explicit column selection prevents schema drift between Snowflake and Power BI_
 
 **🔒 Data Contracts: Fail-Fast Schema Enforcement**
 
-**TL;DR:** Explicit schema contracts at dbt and Power BI layers prevent silent schema drift and catch breaking changes before production.
+Explicit contracts at both dbt and Power BI layers — build fails on type change, column removal, or schema drift. No silent dashboard breaks.
 
-**Two-Layer Contract Strategy:**
+| Without Contracts                             | With Contracts                    |
+| :-------------------------------------------- | :-------------------------------- |
+| 😰 Column renamed → dashboards break silently | ✅ Build fails → fix before merge |
+| 😰 Data type changed → incorrect calculations | ✅ Contract violation blocked     |
+| 😰 Column removed → NULL values propagate     | ✅ Explicit error message         |
+
+<details>
+<summary><strong>📐 Show Code: dbt + Power BI Contract Implementation</strong></summary>
+
+<br>
+
+**TL;DR:** Explicit schema contracts at dbt and Power BI layers prevent silent schema drift and catch breaking changes before production.
 
 <table>
 <tr>
@@ -830,37 +849,15 @@ SelectColumns = Table.SelectColumns(
 </tr>
 </table>
 
-**Business Impact:**
-
-- ✅ **Zero silent failures:** Schema changes caught immediately, not after dashboard breaks
-- ✅ **Faster debugging:** Clear error messages point to exact contract violation
-- ✅ **Coordinated changes:** Upstream model changes force downstream contract updates
-- ✅ **Documentation enforcement:** Contracts serve as living schema documentation
-
-**Before/After Contracts:**
-
-| Without Contracts                             | With Contracts                    |
-| :-------------------------------------------- | :-------------------------------- |
-| 😰 Column renamed → dashboards break silently | ✅ Build fails → fix before merge |
-| 😰 Data type changed → incorrect calculations | ✅ Contract violation blocked     |
-| 😰 Column removed → NULL values propagate     | ✅ Explicit error message         |
+</details>
 
 📖 **[Complete Data Contracts Guide →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/#5-data-contracts)**
 
 ---
 
-**Key Achievements:**
-
-- ✅ **96.5% verification rate** (3,492 verified vs 3,609 total)
-- ✅ **R$11K+ monthly** at-risk revenue flagged (609 products missing photos)
-- ✅ **100% traceability** from source to KPI
-- ✅ **Zero silent failures** — bad data flagged, not deleted
-
----
-
 ### 📊 5. Semantic Layer & Business Intelligence
 
-**TL;DR:** Power BI Golden Dataset with star schema (4 facts, 6 dimensions), 100% query folding, and Self-Service 2.0 governance solving the "AI-generated metric chaos" problem by shifting analysts to data stewards who certify semantic layers.
+**Power BI Golden Dataset** — Star schema (4 facts, 6 dimensions), 100% query folding, Self-Service 2.0: analysts certify the semantic layer; AI tools consume governed data.
 
 **Power BI Golden Dataset with Star Schema**
 
@@ -944,50 +941,22 @@ _Lineage view: End-to-end traceability from Snowflake tables to Power BI visuals
 
 </details>
 
-**📊 Business Rules Enforced in DAX Measures**
+**📊 Business Rules in DAX: "Delivered Orders Only"**
 
-> **Critical Design Decision:** Business logic for "delivered orders only" is implemented **exclusively in Power BI DAX**, not in dbt transformations. This keeps dbt focused on data quality flags while DAX handles consumption-layer business rules.
+**Decision:** Business logic implemented in **DAX only** — not filtered in dbt. Full data preserved in marts; consumption-layer filters applied at semantic layer.
 
-**Primary Business Rule: "Delivered Orders Only"**
-
-**Definition:** Only orders with `order_status = 'delivered'` count toward metrics. This prevents counting pending/canceled orders as actual revenue.
-
-**Why DAX-Only Implementation?**
-
-| Approach           | Trade-offs                                                                                                                                  | Decision                                                                  |
-| :----------------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------ |
-| **dbt Filtering**  | ❌ Lose orders with other statuses (canceled, pending)<br>❌ Cannot analyze full pipeline                                                   | Rejected: Would delete 5%+ of data                                        |
-| **dbt Flag + DAX** | ⚠️ Adds complexity with dual-layer logic<br>⚠️ Two places to maintain business rules                                                        | Considered but unnecessary for single status filter                       |
-| **DAX-Only** ✅    | ✅ Single source of truth for business rules<br>✅ Full data preserved in dbt marts<br>✅ Flexibility to change filters without dbt rebuild | **Selected:** Clean separation (dbt = data quality, DAX = business rules) |
-
-**Business Impact:**
-
-- ✅ **Finance sees verified revenue** (delivered orders only) via `(Verified)` suffix measures
-- ✅ **Ops sees pipeline revenue** (all orders) via default measures shown on reports
-- ✅ **96.5% verification rate** exposed via tooltips (transparency)
-- ✅ **No data loss** (canceled/pending orders preserved for operational analysis)
-
-📖 **[Complete Business Rules Documentation →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/00_business_requirements/)** • **[Power BI Measures →](04_powerbi/src/olist_analytics.SemanticModel/definition/tables/)**
+| Approach           | Trade-offs                                                       | Decision                                                    |
+| :----------------- | :--------------------------------------------------------------- | :---------------------------------------------------------- |
+| **dbt Filtering**  | ❌ Loses canceled/pending orders; can't analyze full pipeline    | Rejected — deletes 5%+ of data                              |
+| **dbt Flag + DAX** | ⚠️ Dual-layer logic; two places to maintain rules                | Unnecessary for single status filter                        |
+| **DAX-Only** ✅    | ✅ Single truth for business rules • full data in dbt • flexible | **Selected** — clean separation: dbt = quality, DAX = rules |
 
 ---
 
-
 **🔐 Self-Service 2.0: Governed Analytics**
 
-**The Problem with Traditional Self-Service:**
-
-With AI tools (ChatGPT, Power BI Copilot) enabling anyone to generate charts instantly, organizations face a **flood of professional-looking reports with mathematical errors and hallucinated numbers**. Traditional self-service democratization without governance creates **metric chaos** — dozens of "Revenue" definitions, conflicting KPIs, and zero traceability.
-
-**The Solution: Data Stewards > Report Builders**
-
-**Role Evolution:** Analysts shift from "report builders" to **"data guardians"** who certify semantic layers, not individual reports. This project implements **governance-first self-service**:
-
-- ✅ Centralized metric definitions prevent conflicting calculations
-- ✅ Certified semantic layer ensures AI tools consume **correct** data
-- ✅ Quality transparency ("Verified vs Raw") maintains trust
-- ✅ RLS + contracts enforce security and schema integrity
-
-**Result:** Users self-serve with AI acceleration, but **data stewards guarantee accuracy**.
+**Problem:** AI tools (Copilot, ChatGPT) generate professional-looking reports with mathematical errors — 17 "Revenue" definitions, metric chaos, zero traceability.
+**Solution:** Analysts → Data Stewards. Certify the **semantic layer** once; every report and AI tool consumes governed, pre-verified data.
 
 ---
 
@@ -1002,24 +971,32 @@ With AI tools (ChatGPT, Power BI Copilot) enabling anyone to generate charts ins
 | ✅ Drill-through to transaction details    | Row-level security automatically enforced       |
 | ✅ Self-service report creation            | Only certified measures (no custom DAX allowed) |
 
-**Business Impact:**
+**Outcome:** ✅ **~40 hrs/week saved** • ✅ **0 metric conflicts** (single source of truth) • ✅ **AI-safe** (governed data layer) • ✅ **Finance reconciles to the penny**
 
-- ✅ **Analysts evolve to data stewards** (focus on certifying semantic layers, not building individual reports)
-- ✅ **AI-safe analytics** (ChatGPT & Power BI Copilot consume governed data, not raw chaos)
-- ✅ **Analysts get answers in minutes** (not days waiting for IT)
-- ✅ **IT maintains control** (no ungoverned Excel/SQL exports)
-- ✅ **Finance trusts the numbers** (penny-level reconciliation with quality transparency)
-- ✅ **Zero metric conflicts** (single source of truth prevents "17 versions of Revenue")
-- ✅ **~40 analyst hours saved/week** (self-service with guardrails, not metric drift)
+**Architecture:** ✅ **PBIP + TMDL** — Git-tracked DAX, code reviews for semantic model changes • ✅ **Field Parameters** — Revenue/Orders toggle reusable across all visuals • ✅ **BPA: 0 issues** • ✅ **RLS** — dynamic `USERPRINCIPALNAME()` bridge table (27 states)
 
-**Key Achievements:**
+---
 
-- ✅ **Single source of truth:** One semantic model → multiple reports
-- ✅ **BPA validated:** Passes all Best Practice Analyzer rules
-- ✅ **Git-tracked:** PBIP format enables version control + code reviews
-- ✅ **RLS enforced:** Row-Level Security restricts by state/region
-- ✅ **Self-service 2.0:** Governed drag-and-drop saves ~40 hours/week
-- ✅ **Data steward model:** Analysts certify semantic layers, not build individual reports
+**🚀 Production App — `Olist Analytics [PROD]`**
+
+**4 Report Pages Published:**
+
+| Page                                  | Audience            | Key Visuals                                                          |
+| :------------------------------------ | :------------------ | :------------------------------------------------------------------- |
+| **1. Executive Sales Overview**       | C-Suite             | KPI cards, Revenue trend, Top 10 Products, State Treemap             |
+| **2. Supply Chain & Delivery**        | Ops Managers        | Decomposition Tree (root cause), Delay Rate by state/carrier         |
+| **3. Data Quality & Integrity Audit** | Analytics Engineers | Catalog risk visuals, ghost delivery errors, revenue-at-risk metrics |
+| **4. Detailed Order View**            | Analysts            | Transaction-level drill-through table (Order ID granularity)         |
+
+**Dev → UAT → Prod Deployment Pipeline:**
+
+| Stage              | Tool / Workspace                 | Action                                                       | Gate                         |
+| :----------------- | :------------------------------- | :----------------------------------------------------------- | :--------------------------- |
+| **1. Build**       | Power BI Desktop                 | Develop semantic model, reports, DAX measures locally        | Local smoke test             |
+| **2. DEV Deploy**  | `Olist Analytics [DEV]`          | Publish from Desktop — rapid iteration, not user-facing      | —                            |
+| **3. UAT**         | DEV Workspace + Tabular Editor 3 | Revenue reconciliation • RLS "View as Role" • BPA (0 issues) | ✅ Finance sign-off          |
+| **4. PROD Deploy** | `Olist Analytics [PROD]`         | Re-publish from Desktop → dataset certified                  | Certified endorsement active |
+| **5. App & Run**   | Power BI Service                 | Publish Org App + schedule daily refresh (6:15 PM IST)       | Subscriptions + alerts live  |
 
 📖 **[Complete Self-Service 2.0 Framework →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/#6-self-service-analytics-20-governance-focused)**
 
@@ -1027,17 +1004,19 @@ With AI tools (ChatGPT, Power BI Copilot) enabling anyone to generate charts ins
 
 ### 💰 6. DataFinOps & Cost Optimization
 
-**TL;DR:** Cloud-native cost controls achieving 42% compute reduction (X-Small warehouses + auto-suspend) and 60% storage savings (Azure Blob lifecycle).
+**Cloud-native cost controls — 42% compute reduction (X-Small + auto-suspend) • 60% storage savings (Azure lifecycle) • <$50/month all-in.**
 
 **Cloud-Native Cost Controls**
 
-| Cost Strategy           | Implementation                          | Savings               |
-| :---------------------- | :-------------------------------------- | :-------------------- |
-| **Compute**             | X-Small warehouses + 60s auto-suspend   | **42% reduction**     |
-| **Storage**             | Azure Blob lifecycle (Hot→Cool→Archive) | **60% reduction**     |
-| **Refresh**             | Incremental models (process new only)   | **82% faster (8min)** |
-| **Query Attribution**   | Query tagging per model/team            | Cost transparency     |
-| **Resource Monitoring** | Snowflake monitors with spend alerts    | Prevents waste        |
+| Cost Strategy           | Implementation                               | Savings                                                                                   |
+| :---------------------- | :------------------------------------------- | :---------------------------------------------------------------------------------------- |
+| **Compute**             | X-Small warehouses + 60s auto-suspend        | **42% reduction**                                                                         |
+| **Storage**             | Azure Blob lifecycle (Hot→Cool→Archive)      | **60% reduction**                                                                         |
+| **dbt Incremental**     | Merge on `order_item_sk` (new rows only)     | **75% faster** (2 min → 30 sec) • **95% cheaper** ($0.15 → $0.008) • **99.6% fewer rows** |
+| **Power BI Refresh**    | 2-year rolling window, monthly partitions    | **82% faster** (45 min → 8 min)                                                           |
+| **Query Attribution**   | Query tagging per model/team                 | Cost transparency                                                                         |
+| **Resource Monitoring** | Snowflake monitors (100-credit/month cap)    | Prevents cloud bill shock                                                                 |
+| **Total Platform Cost** | X-SMALL warehouses + lifecycle + incremental | **<$50/month** (all-in)                                                                   |
 
 <details>
 <summary><strong>📸 Show Cost Optimization Evidence</strong></summary>
@@ -1065,19 +1044,11 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 </details>
 
-**Key Achievements:**
-
-- ✅ **42% compute cost** reduction via incremental processing
-- ✅ **60% storage cost** savings via automated tier management
-- ✅ **Zero idle waste** (auto-suspend after 60s)
-- ✅ **Cost transparency** (query tagging for attribution)
-- ✅ **Scalable to 10x** data volume without infrastructure changes
-
 ---
 
-### 🤖 7. AI-Assisted Development & Agentic Workflows (Developer Productivity)
+### 🤖 7. AI-Assisted Development & Agentic Workflows
 
-**TL;DR:** AI-augmented development achieving 2x velocity using GitHub Copilot + ChatGPT with structured context management, while maintaining 100% test coverage through human validation gates.
+**2x velocity using GitHub Copilot + ChatGPT with context engineering — 100% test coverage maintained through human validation gates.**
 
 **AI-Powered Developer Productivity with Governed Quality**
 
@@ -1107,7 +1078,7 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 **✅ Humans Validate:**
 
 - ✅ SQLFluff linting (pre-commit enforcement)
-- ✅ 150+ dbt tests (CI blocking gates)
+- ✅ 559 dbt tests (CI blocking gates)
 - ✅ BPA semantic model scans
 - ✅ Manual code review for business logic
 - ✅ Performance Analyzer validation
@@ -1123,58 +1094,49 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 </tr>
 </table>
 
-**🧠 Structured AI Context Management (Agentic Workflow)**
+**🧠 Context Engineering in Practice**
 
-**Philosophy:** Persistent project memory eliminates repetitive context-sharing and ensures consistent AI output quality.
+> **Context Engineering** — the discipline of designing and managing the full information context supplied to an LLM (system prompts, conversation history, retrieved documents, tool outputs) to produce consistent, high-quality results at scale. Goes beyond prompt engineering to treat context as a **first-class engineering artifact**.
 
-| Context Layer                 | Implementation                                                                      | Productivity Gain                                                     |
-| :---------------------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------- |
-| **Project Identity**          | `.github/copilot-instructions.md` (tech stack, business rules, standards)           | Eliminates 15-20 min context re-explanation per session               |
-| **3 Specialized AI Agents**   | `01_Snowflake_Architect` • `02_Analytics_Engineer` • `03_BI_Developer`              | Each agent scoped to its phase — no context leakage across layers     |
-| **Prompt Templates**          | `.github/prompts/*.prompt.md` (reusable intermediate/marts patterns)                | Consistent model generation across development phases                 |
-| **Dedicated ChatGPT Project** | Full project context loaded upfront (architecture + requirements + data dictionary) | 2x development velocity with maintained quality                       |
-
-**Complete AI Story:**
-
-1. **Context Loading:** AI reads project identity from copilot-instructions.md (tech stack, business rules, coding patterns)
-2. **Specialized Agents:** Analytics Engineer persona understands dbt layering, Kimball star schema, and data quality patterns
-3. **Code Generation:** AI drafts staging/intermediate/marts models with proper CTEs, business logic, and test scaffolding
-4. **Human Validation:** SQLFluff auto-fixes formatting → dbt tests validate logic → manual review confirms business accuracy
-5. **CI Enforcement:** GitHub Actions blocks merge if tests fail → zero untested code reaches production
-6. **Continuous Learning:** Prompt templates capture successful patterns for reuse across similar models
-
-**Business Impact:**
-
-- ✅ **2x faster model development** (structured context eliminates restart overhead)
-- ✅ **Zero quality compromise** (all AI outputs pass same validation gates as human code)
-- ✅ **Reduced cognitive load** (AI handles boilerplate, humans focus on business logic)
-- ✅ **Consistent patterns** (AI enforces project standards through persistent context)
-- ✅ **Faster onboarding** (AI teaches patterns through inline suggestions)
-
-**Key Achievements:**
-
-- ✅ **Structured context management:** Persistent AI memory via copilot-instructions.md
-- ✅ **3 specialized AI agents:** Snowflake Architect • Analytics Engineer • BI Developer — each scoped to its phase
-- ✅ **40% faster SQL drafting** with maintained quality standards
-- ✅ **100% test coverage:** All AI code passes human validation gates
-- ✅ **Zero untested deployments:** CI blocks merge on failed tests
-- ✅ **Reusable prompt templates:** Capture successful patterns for consistency
+| Context Layer                    | Artifact                                                                              | Engineering Decision                                                  | Productivity Gain                                        |
+| :------------------------------- | :------------------------------------------------------------------------------------ | :-------------------------------------------------------------------- | :------------------------------------------------------- |
+| **System Prompt / Identity**     | `.github/copilot-instructions.md` (tech stack, business rules, phase-aware standards) | Persistent project memory baked in — never re-explained               | Eliminates 15-20 min context re-explanation per session  |
+| **Agent Scoping**                | `01_Snowflake_Architect` • `02_Analytics_Engineer` • `03_BI_Developer`                | Each agent holds only its layer's context — no cross-layer leakage    | Focused, higher-quality output per phase                 |
+| **Prompt Engineering**           | `.github/prompts/*.prompt.md` — role, task, format, constraints encoded per pattern   | Structured input = deterministic output; reproducible across sessions | Consistent model generation + 40% faster SQL drafting    |
+| **Conversation Context Windows** | Rolling session summaries passed as structured `<context>` blocks                     | LLM sees curated state, not raw chat history — prevents context drift | Coherent multi-session development without regression    |
+| **Retrieval Layer**              | Dedicated ChatGPT Project with architecture + requirements + data dictionary loaded   | Pre-populated retrieval context = zero lookup overhead per query      | 2x velocity + **zero quality drop** across long sessions |
 
 📖 **[Complete AI Engineering Workflow Documentation →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/#5-ai-assisted-development-agentic-analytics-workflows)**
 
 ---
 
+### ♻️ Built to Be Reused
+
+**Why it matters:** Most analytics projects waste 60–70% of early sprint time rebuilding the same foundations — staging patterns, date dimensions, CI setup, test coverage. Investing in reusable architecture once means Project 2 (same domain: orders, customers, products) starts at the mart layer, not the raw layer.
+
+| Asset | Project 2 Benefit (same domain) | Time Saved |
+| :---- | :------------------------------- | :--------- |
+| **Staging models (`stg_*`)** | Orders, customers, products already typed + standardised — extend, don't rewrite | ~**2 days** |
+| **`dim_date`, `dim_customer`, `dim_product`** | Conformed dimensions drop straight in — star schema is already proven for this domain | ~**3 days** |
+| **dbt test + contract layer** | 559 tests + schema YAML re-point to new models — full coverage from day 1 | ~**1 day** |
+| **CI/CD pipeline** | SQLFluff → ephemeral schema → `dbt build` → cleanup — zero reconfiguration needed | ~**1 day** |
+| **Power BI Golden Dataset + RLS** | DAX measures and state-level security template carry over — add new pages, not new logic | ~**2 days** |
+
+> **~9 days saved on Project 2 — team starts shipping insights on day 1, not day 10.**
+
+---
+
 ### 🎯 Summary: 7 Enterprise-Grade Capabilities
 
-| Capability                | Technical Depth                                    | Business Value                             |
-| :------------------------ | :------------------------------------------------- | :----------------------------------------- |
-| **1. Cloud Architecture** | Multi-database Medallion + RBAC + Time Travel      | 90-day recovery + audit-ready security     |
-| **2. DataOps & CI**       | 2-stage GitHub Actions + ephemeral PR schemas + BPA validation | Zero prod breaks + zero untested merges    |
-| **3. Data Modeling**      | dbt + 6 packages + Star Schema + 150+ tests + lineage DAG      | 100% traceability + 0% metric drift        |
-| **4. Data Quality**       | "Verified vs Raw" + automated testing + alerts     | R$11K+ monthly revenue protected           |
-| **5. Semantic Layer**     | Power BI Golden Dataset + Self-Service 2.0         | Governed AI-safe analytics + data stewards |
-| **6. DataFinOps**         | Incremental refresh + auto-suspend + lifecycle     | 42% compute + 60% storage cost savings     |
-| **7. AI Development**     | 3 Copilot agents + prompt templates + CI validation gates      | 2x velocity + 100% quality maintained      |
+| Capability                | Technical Depth                                                                                    | Business Value                             |
+| :------------------------ | :------------------------------------------------------------------------------------------------- | :----------------------------------------- |
+| **1. Cloud Architecture** | Multi-database Medallion + RBAC + Time Travel                                                      | 90-day recovery + audit-ready security     |
+| **2. DataOps & CI**       | 2-stage GitHub Actions + ephemeral PR schemas + **Tabular Editor 3 BPA** (0 issues) + Dev→UAT→Prod | Zero prod breaks + zero untested merges    |
+| **3. Data Modeling**      | dbt + 7 packages + Star Schema + 559 tests + lineage DAG                                           | 100% traceability + 0% metric drift        |
+| **4. Data Quality**       | "Verified vs Raw" + automated testing + alerts                                                     | R$11K+ monthly revenue protected           |
+| **5. Semantic Layer**     | Power BI Golden Dataset + Org App (PROD) + Self-Service 2.0                                        | Governed AI-safe analytics + data stewards |
+| **6. DataFinOps**         | Incremental refresh + auto-suspend + lifecycle                                                     | 42% compute + 60% storage cost savings     |
+| **7. AI Development**     | **Context engineering** (system prompts + agent scoping + conversation windows) + CI gates         | 2x velocity + 100% quality maintained      |
 
 **Result:** Production-ready analytics platform with enterprise-grade automation, AI-augmented development, governance, and performance optimization.
 
@@ -1184,11 +1146,19 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 ## 5️⃣ Key Engineering Decisions
 
-**What separates senior engineers from junior engineers?** The ability to explain **WHY a decision was made**, not just what code was written. Here are 4 critical architectural choices that demonstrate strategic thinking:
+> Senior engineers explain **why**, not just what. Four architectural choices — each with a business problem, technical answer, and quantified impact.
+
+| #   | Decision                | Summary                                                                 | Impact                                                                  |
+| :-- | :---------------------- | :---------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| 1   | **Dual Clock Footer**   | Two timestamps (pipeline + source) enable instant failure triangulation | Eliminates hours of "data or sales problem?" triage                     |
+| 2   | **Verified vs Raw**     | Flag dirty data (`is_verified`), never delete it                        | 100% financial reconciliation + R$11K+ revenue visible                  |
+| 3   | **Self-Service 2.0**    | Certify the semantic layer, not individual reports                      | ~40 hrs/week saved, AI-safe analytics                                   |
+| 4   | **Incremental Refresh** | Process only new/changed rows; 2-year rolling window                    | **95% cheaper** ($0.15→$0.008) • **75% faster** • **<$50/month** all-in |
 
 ---
 
-#### **Decision #1: Dual Clock Footer (Failure Mode Triangulation)**
+<details>
+<summary><strong>🔍 Decision #1: Dual Clock Footer — Failure Mode Triangulation</strong></summary>
 
 <table>
 <tr>
@@ -1232,8 +1202,6 @@ FROM {{ ref('fct_orders') }}
 <td><strong>💡 Why It Matters</strong></td>
 <td>
 
-**Two timestamps triangulate WHERE the failure occurred:**
-
 | Last Refreshed | Data Current Until | Diagnosis                                     |
 | :------------- | :----------------- | :-------------------------------------------- |
 | Today          | Yesterday          | ✅ **Healthy** (both systems working)         |
@@ -1241,35 +1209,30 @@ FROM {{ ref('fct_orders') }}
 | 3 days ago     | Yesterday          | 🚨 **Pipeline Failure** (dbt stopped running) |
 | 3 days ago     | 3 days ago         | 🚨🚨 **Both Failed** (escalate immediately)   |
 
-**Result:** Finance instantly knows _where_ to escalate:
-
-- ✅ **Source failure** → Call IT/POS vendor (data not arriving)
-- ✅ **Pipeline failure** → Call Data Engineering (dbt transformation stopped)
-- ✅ **Both healthy but zero sales** → Investigate business operations
-
-**Stakeholder Impact:** Eliminates hours of "Is this a sales problem or a data problem?" diagnostics — the footer provides instant root cause direction.
+**Stakeholder Impact:** Finance instantly knows _where_ to escalate — eliminates hours of "Is this a sales problem or a data problem?" diagnostics.
 
 </td>
 </tr>
 </table>
 
----
+</details>
 
-#### **Decision #2: "Verified vs Raw" Pattern (Trust, Don't Trash)**
+<details>
+<summary><strong>🔍 Decision #2: "Verified vs Raw" Pattern — Trust, Don't Trash</strong></summary>
 
 <table>
 <tr>
 <td width="30%"><strong>🤔 The Question</strong></td>
 <td>
 
-**Should we filter out "dirty" data (e.g., ghost deliveries, incomplete products) or load everything?**
+**Should we filter out "dirty" data (ghost deliveries, incomplete products) or load everything?**
 
 Analysis revealed specific quality failures:
 
-1. **Logistics:** Orders with invalid timestamps (Ghost Delivery' = Delivery date exists but no shipping date - 'Arrival Before Shipping' = Arrival before shipping timestamp - 'Arrival Before Approval' = Arrival before order approval).
-2. **Product Catalog:** 600+ products missing photos or physical dimensions.
+1. **Logistics:** Invalid timestamps — Ghost Delivery (delivery date exists, no shipping date) • Arrival Before Shipping • Arrival Before Approval
+2. **Product Catalog:** 600+ products missing photos or physical dimensions
 
-_Traditional Approach:_ "Clean" the data by deleting these rows, creating a "Black Box" pipeline that under-reports Revenue and hides Inventory problems.
+_Traditional Approach:_ Delete rows → "Black Box" pipeline that under-reports Revenue and hides Inventory problems.
 
 </td>
 </tr>
@@ -1279,14 +1242,14 @@ _Traditional Approach:_ "Clean" the data by deleting these rows, creating a "Bla
 
 **Strategy: "Flag upstream, Filter downstream."**
 
-Instead of dropping rows, we implemented a **Binary Verification Logic** in dbt (`int` layer):
+Instead of dropping rows, implement **Binary Verification Logic** in dbt (`int` layer):
 
-1. **Flag Generation:** created `is_verified` (1/0) and `quality_issue_reason` columns.
+1. **Flag Generation:** `is_verified` (1/0) + `quality_issue_reason` (text)
    - _If `delivered < shipped`: Flag 'Impossible Timeline'_
    - _If `photos_qty` is NULL: Flag 'Missing Metadata'_
-2. **Dual-Metric Consumption:** Created two layers of measures in Power BI:
-   - **Raw Measures:** Sum of EVERYTHING (Matches Source).
-   - **Verified Measures:** `CALCULATE([Raw], is_verified = 1)` (Matches Operational Truth).
+2. **Dual-Metric Consumption** in Power BI:
+   - **Raw Measures:** Sum of EVERYTHING (matches source system)
+   - **Verified Measures:** `CALCULATE([Raw], is_verified = 1)` (operational truth)
 
 </td>
 </tr>
@@ -1294,21 +1257,21 @@ Instead of dropping rows, we implemented a **Binary Verification Logic** in dbt 
 <td><strong>💡 Why It Matters</strong></td>
 <td>
 
-**Transparency > Deletion.** By loading "Dirty" data, we enabled:
-
-- ✅ **100% Financial Reconciliation:** The "Raw Revenue" matches the ERP system to the penny.
-- ✅ **Actionable Ops Audits:** Marketing gets a list of 610 specific Products missing photos; Logistics sees exact "Ghost Orders" to investigate.
-- ✅ **No Data Loss:** We don't hide R$11K+ monthly revenue; we categorize it as "Revenue at Risk."
-- ✅ **Trust:** Executives know the difference between _Systems Latency_ and _Bad Data_.
+- ✅ **100% Financial Reconciliation:** Raw Revenue matches ERP to the penny
+- ✅ **Actionable Ops Audits:** Marketing gets list of 610 SKUs missing photos; Logistics sees exact Ghost Orders
+- ✅ **No Data Loss:** R$11K+ monthly "Revenue at Risk" categorized, not hidden
+- ✅ **Trust:** Executives know the difference between _Systems Latency_ and _Bad Data_
 
 **Philosophical Shift:** A robust data platform doesn't hide errors; it quantifies the cost of them.
 
 </td>
 </tr>
 </table>
----
 
-#### **Decision #3: Self-Service 2.0 (Governance-First, Not Free-for-All)**
+</details>
+
+<details>
+<summary><strong>🔍 Decision #3: Self-Service 2.0 — Governance-First, Not Free-for-All</strong></summary>
 
 <table>
 <tr>
@@ -1317,7 +1280,7 @@ Instead of dropping rows, we implemented a **Binary Verification Logic** in dbt 
 
 **With AI tools (ChatGPT, Power BI Copilot) enabling anyone to generate charts, how do we prevent "metric chaos" without blocking innovation?**
 
-Traditional self-service democratization led to:
+Traditional self-service led to:
 
 - ❌ 17 different "Revenue" definitions across teams
 - ❌ AI-generated reports with mathematical errors
@@ -1332,7 +1295,7 @@ Traditional self-service democratization led to:
 
 **Role evolution: Analysts → Data Stewards**
 
-**Don't certify individual reports. Certify the semantic layer that AI consumes.**
+Don't certify individual reports. Certify the **semantic layer** that AI consumes.
 
 ```yaml
 # Power BI Golden Dataset (50+ pre-certified measures)
@@ -1343,31 +1306,26 @@ Traditional self-service democratization led to:
 ✅ AI tools consume GOVERNED data, not raw chaos
 ```
 
-**Result:** Self-service with guardrails. Users drag-and-drop with confidence.
-
 </td>
 </tr>
 <tr>
 <td><strong>💡 Why It Matters</strong></td>
 <td>
 
-**AI acceleration without accuracy loss:**
-
-- ✅ ~40 analyst hours/week saved (answers in minutes, not days)
+- ✅ ~40 analyst hours/week saved
 - ✅ Finance trusts the numbers (single source of truth)
-- ✅ IT maintains control (no ungoverned SQL exports)
-- ✅ **AI-safe analytics:** ChatGPT generates correct SQL because it queries certified semantic layer
-- ✅ Analysts focus on insights (not building reports)
-
-**Strategic Positioning:** Ahead of the curve on **governed AI self-service** (not reactive fixes after metric chaos).
+- ✅ **AI-safe analytics:** ChatGPT queries certified semantic layer — correct answers guaranteed
+- ✅ IT maintains control; no ungoverned SQL exports
+- ✅ **Strategic positioning:** Ahead of the curve on governed AI self-service
 
 </td>
 </tr>
 </table>
 
----
+</details>
 
-#### **Decision #4: Incremental Refresh + Lifecycle Management (DataFinOps)**
+<details>
+<summary><strong>🔍 Decision #4: Incremental Refresh + Lifecycle — DataFinOps</strong></summary>
 
 <table>
 <tr>
@@ -1411,19 +1369,17 @@ models:
 <td><strong>💡 Why It Matters</strong></td>
 <td>
 
-**Cost optimization without sacrificing reliability:**
-
-- ✅ **82% faster:** 8 minutes vs 45+ minutes
-- ✅ **42% compute savings:** X-Small warehouse + 60s auto-suspend
-- ✅ **60% storage savings:** Lifecycle management (2-year window)
-- ✅ **Schema protection:** Incremental fails on breaking changes (data contract)
-- ✅ **Production-ready:** Pattern works for live sources (not just historical datasets)
-
-**Business Impact:** $7K+ annual savings + 6-hour monthly time savings
+- ✅ **75% faster dbt runs:** ~2 min → ~30 sec
+- ✅ **95% cheaper:** $0.15 → $0.008 per run (~500 new rows/day vs 112,650 full)
+- ✅ **82% faster Power BI refresh:** 45 min → 8 min
+- ✅ **Schema protection:** Incremental fails on breaking changes
+- ✅ **<$50/month all-in** + $7K+ annual savings vs full-refresh pattern
 
 </td>
 </tr>
 </table>
+
+</details>
 
 ---
 
@@ -1459,8 +1415,8 @@ olist-modern-analytics-platform/
 
 Comprehensive documentation organized by topic:
 
-| Doc                                                                 | Description                                                 |
-| :------------------------------------------------------------------ | :---------------------------------------------------------- |
+| Doc                                                                                                                            | Description                                                 |
+| :----------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------- |
 | **[Business Requirements](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/00_business_requirements/)**       | KPIs, success metrics, business rules                       |
 | **[Architecture](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/01_architecture/)**                         | End-to-end system design, data flow, layer responsibilities |
 | **[Data Dictionary](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/02_data_dictionary/)**                   | Source schema, column definitions, relationships            |
@@ -1469,7 +1425,6 @@ Comprehensive documentation organized by topic:
 | **[Performance Optimization](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/05_performance_optimization/)** | Query folding, incremental refresh, VertiPaq tuning         |
 | **[Engineering Standards](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/)**       | Code conventions, CI automation, naming standards           |
 | **[Business Impact Analysis](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/07_analytics_insights/)**       | Before/after metrics, ROI analysis, key findings            |
-
 
 ---
 
@@ -1485,25 +1440,25 @@ Comprehensive documentation organized by topic:
 
 <!-- Snowflake Certifications -->
 
-<a href="YOUR_CREDLY_SNOWFLAKE_LINK"><img src="https://img.shields.io/badge/SnowPro®_Associate-Platform_(SOL--C01)-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/SnowPro®_Associate-Platform_(SOL--C01)-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white"/></a>
 
 <!-- Microsoft Certifications -->
 
-<a href="YOUR_CREDLY_DP900_LINK"><img src="https://img.shields.io/badge/Azure_Data_Fundamentals-DP--900-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white"/></a>
-<a href="YOUR_CREDLY_PL300_LINK"><img src="https://img.shields.io/badge/Power_BI_Data_Analyst-PL--300-F2C811?style=for-the-badge&logo=powerbi&logoColor=black"/></a>
+<a href="#"><img src="https://img.shields.io/badge/Azure_Data_Fundamentals-DP--900-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/Power_BI_Data_Analyst-PL--300-F2C811?style=for-the-badge&logo=powerbi&logoColor=black"/></a>
 
 <!-- dbt Certification -->
 
-<a href="YOUR_CREDLY_DBT_LINK"><img src="https://img.shields.io/badge/dbt_Fundamentals-Badge-FF694B?style=for-the-badge&logo=dbt&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/dbt_Fundamentals-Badge-FF694B?style=for-the-badge&logo=dbt&logoColor=white"/></a>
 
 <!-- GitHub Certifications -->
 
-<a href="YOUR_CREDLY_GITHUB_FOUNDATIONS_LINK"><img src="https://img.shields.io/badge/GitHub_Foundations-Certified-181717?style=for-the-badge&logo=github&logoColor=white"/></a>
-<a href="YOUR_CREDLY_GITHUB_COPILOT_LINK"><img src="https://img.shields.io/badge/GitHub_Copilot-Certified-181717?style=for-the-badge&logo=githubcopilot&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/GitHub_Foundations-Certified-181717?style=for-the-badge&logo=github&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/GitHub_Copilot-Certified-181717?style=for-the-badge&logo=githubcopilot&logoColor=white"/></a>
 
 <!-- Databricks Certifications -->
 
-<a href="YOUR_DATABRICKS_GENAI_LINK"><img src="https://img.shields.io/badge/Databricks-Generative_AI_Fundamentals-FF3621?style=for-the-badge&logo=databricks&logoColor=white"/></a>
+<a href="#"><img src="https://img.shields.io/badge/Databricks-Generative_AI_Fundamentals-FF3621?style=for-the-badge&logo=databricks&logoColor=white"/></a>
 
 </p>
 
@@ -1520,7 +1475,7 @@ Comprehensive documentation organized by topic:
 | **SnowPro® Associate: Platform Certification (SOL-C01)** | Multi-database architecture, RBAC security model, warehouse optimization, external stages for Azure Blob ingestion                                 |
 | **Azure Data Fundamentals (DP-900)**                     | Blob storage lifecycle policies (Hot→Cool→Archive), cloud cost optimization, storage-compute separation strategy                                   |
 | **Power BI Data Analyst (PL-300)**                       | Star schema semantic model, DAX measures, RLS implementation, Import Mode optimization, 100% query folding validation                              |
-| **dbt Fundamentals**                                     | Medallion architecture (RAW→STAGING→MARTS), 35+ transformation models, 150+ automated tests, schema contracts                                      |
+| **dbt Fundamentals**                                     | Medallion architecture (RAW→STAGING→MARTS), 35+ transformation models, 559 automated tests, schema contracts                                       |
 | **GitHub Foundations**                                   | Version control for analytics code, PR workflows, branch protection, project tracking, issue management                                            |
 | **GitHub Copilot**                                       | AI-assisted development `agent.md` & `prompt.md` with quality gates (SQLFluff + dbt tests), 40% faster SQL drafting, structured context management |
 | **Databricks Generative AI Fundamentals**                | Understanding GenAI applications in data workflows, AI-assisted analytics, LLM integration patterns for business intelligence                      |
