@@ -8,6 +8,24 @@
 [![View Documentation](https://img.shields.io/badge/📚_Full_Documentation-MkDocs-526CFE?style=for-the-badge&logo=materialformkdocs&logoColor=white)](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/)
 [![License](https://img.shields.io/badge/License-MIT-black?style=for-the-badge)](LICENSE)
 
+---
+
+## 📑 Table of Contents
+
+|     | Section                                                                                       |
+| :-- | :-------------------------------------------------------------------------------------------- |
+| 🎯  | [At-a-Glance](#-at-a-glance) — Key impact metrics                                             |
+| 🚀  | [Quick Start](#-quick-start-for-technical-reviewers) — Run locally in 4 steps                 |
+| 1️⃣  | [Executive Summary](#1️⃣-executive-summary) — Problem, solution, scope                         |
+| 2️⃣  | [Architecture Overview](#2️⃣-architecture-overview) — Ingestion → Warehouse → dbt → Power BI   |
+| 3️⃣  | [Business Impact](#3️⃣-business-impact-snapshot) — Performance, governance, ROI                |
+| 4️⃣  | [Core Capabilities](#4️⃣-core-capabilities-demonstrated) — 7 enterprise capabilities deep-dive |
+| 5️⃣  | [Engineering Decisions](#5️⃣-key-engineering-decisions) — Why, not just what                   |
+| 6️⃣  | [Project Structure](#6️⃣-project-structure--documentation-hub) — Repo layout & docs hub        |
+| 7️⃣  | [About & Credentials](#7️⃣-about--credentials) — Certifications & contact                      |
+
+---
+
 ## 🧰 Tech Stack
 
 <p align="left">
@@ -86,16 +104,46 @@ Olist scaled from startup to **100K+ monthly transactions**, but the analytics i
 
 ### ✅ The Solution: Production-Grade Modern Data Stack
 
-| Legacy Pain Point         | Modern Solution                            | Technology Stack                     | Result                       |
-| :------------------------ | :----------------------------------------- | :----------------------------------- | :--------------------------- |
-| **45-second SQL queries** | Sub-second dashboards                      | Snowflake (Medallion) + Power BI     | **93% faster**               |
-| **Metric drift**          | Single source of truth                     | dbt Core (35+ models, 559 tests)     | **0% inconsistency**         |
-| **Zero test coverage**    | Automated quality gates                    | 559 dbt tests + CI automation        | **100% coverage**            |
-| **Breaking changes**      | Fail-fast schema contracts                 | dbt contracts + explicit columns     | **Zero prod breaks**         |
-| **Binary .pbix files**    | Git-tracked semantic model                 | PBIP + TMDL (version-controlled DAX) | **Complete lineage**         |
-| **AI-generated chaos**    | Governed semantic layer (Self-Service 2.0) | Certified metrics + quality flags    | **~40 analyst hrs saved/wk** |
+| Legacy Pain Point         | Modern Solution                            | Technology Stack                                                                          | Result                       |
+| :------------------------ | :----------------------------------------- | :---------------------------------------------------------------------------------------- | :--------------------------- |
+| **45-second SQL queries** | Sub-second dashboards                      | Snowflake (Medallion) + Power BI                                                          | **93% faster**               |
+| **Metric drift**          | Single source of truth                     | dbt Core (35+ models, 559 tests) & Semantic Model                                         | **0% inconsistency**         |
+| **Zero test coverage**    | Automated quality gates                    | 559 dbt tests + CI automation                                                             | **100% coverage**            |
+| **Breaking changes**      | Fail-fast schema contracts                 | dbt contracts + Power BI Data Contract via Explicit `Table.Select.Columns` via PowerQuery | **Zero prod breaks**         |
+| **Binary .pbix files**    | Git-tracked semantic model                 | PBIP + TMDL (version-controlled DAX)                                                      | **Complete lineage**         |
+| **AI-generated chaos**    | Governed semantic layer (Self-Service 2.0) | Certified metrics + quality flags                                                         | **~40 analyst hrs saved/wk** |
 
 📖 **[Full Technical Architecture →](#2️⃣-architecture-overview)** • **[Detailed Impact Analysis →](#3️⃣-business-impact-snapshot)**
+
+---
+
+## 🚀 Quick Start (For Technical Reviewers)
+
+**Prerequisites:** Python 3.11+, dbt-snowflake, Snowflake account, Azure Blob Storage
+
+```bash
+# 1. Clone & set up environment
+git clone https://github.com/AyanMulaskar223/olist-modern-analytics-platform.git
+cd olist-modern-analytics-platform
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2. Configure Snowflake connection
+cp 03_dbt/profiles.yml ~/.dbt/profiles.yml
+# Edit ~/.dbt/profiles.yml with your Snowflake credentials
+
+# 3. Install dbt packages & validate connection
+cd 03_dbt
+dbt deps
+dbt debug
+
+# 4. Run the full pipeline (models + all 559 tests)
+dbt build --target dev
+```
+
+> **Note:** RAW layer data must be pre-loaded via `02_snowflake/02_ingestion/` COPY INTO scripts before running dbt. Power BI file is at `04_powerbi/src/olist_analytics.pbip` — open with Power BI Desktop.
+
+📖 **[Full Setup Guide →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/)**
 
 ---
 
@@ -451,27 +499,16 @@ _Automated dbt build runs 559 tests on every pull request_
 ![SQLFluff Linting](docs/screenshots/05_dataops/sqlfluff_linting_pass.png)
 _SQL code quality enforced via SQLFluff with Snowflake dialect_
 
----
-
-**Project Management & Workflow**
-
-![GitHub Project Tracking](docs/screenshots/05_dataops/project_milestones_roadmap.png)
-_GitHub Projects tracks milestones with clear ADLC phase separation_
-
-![Issue Tracking](docs/screenshots/05_dataops/github_issue_tracking.png)
-_Issues linked to specific code changes for full audit trail_
-
-**GitHub Labels & Project Organization:**
-
-- ✅ **ADLC Phase Labels:** `phase-1-requirements`, `phase-2-ingestion`, `phase-3-dbt`, `phase-4-powerbi`, `phase-5-dataops`
-- ✅ **Priority Labels:** `priority: high`, `priority: medium`, `priority: low`
-- ✅ **Type Labels:** `bug`, `enhancement`, `documentation`, `performance`
-- ✅ **Status Tracking:** Issues progress through GitHub Projects board with automated workflow
-- ✅ **Audit Trail:** Every commit references issue number for complete change traceability
-
-**Result:** Clear work organization across 5 ADLC phases with full change history.
-
 </details>
+
+**Project Governance — Issues • Milestones • Release Tags**
+
+| Tool              | Usage                                                                                                                                     | Outcome                                    |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
+| **GitHub Issues** | Raised before building the Marts layer (#5) and Power BI semantic model & reports (#8) — closed only after CI passes                      | Full intent-to-delivery traceability       |
+| **Milestones**    | 1:1 with ADLC phases — issues roll up to phase milestone; no phase starts until prior milestone is closed                                 | Phase-gate discipline enforced             |
+| **Release Tags**  | Semantic versioning on every delivery: `v0.2.0-phase2` → `v0.3.x-phase-3` → `v1.1.0-phase-5-powerbi` → `v1.2.0-phase-6-business-insights` | Permanent, reproducible platform snapshots |
+| **Labels**        | `phase-1` through `phase-5` • `priority: high/medium/low` • `bug` `enhancement` `documentation`                                           | Instant filtering across 6 phases of work  |
 
 ---
 
