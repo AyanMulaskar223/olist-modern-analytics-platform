@@ -1,6 +1,6 @@
 # 🛍️ Olist Modern Analytics Platform
 
-> **Enterprise-Style Analytics Engineering Platform using Snowflake, dbt & Power BI**
+> **Enterprise-Grade Analytics Engineering Platform using Snowflake, dbt & Power BI**
 > _Designed with DataOps, DataFinOps, and governance-first BI standards_
 
 > **TL;DR:** End-to-end data pipeline turning **1.55M raw e-commerce records** into executive dashboards — automated testing, CI, incremental processing, and AI-assisted development. Every number in the dashboard is traceable back to a raw database row.
