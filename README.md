@@ -354,14 +354,16 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 
 ### 🛡️ Governance & Trust
 
-| Dimension            | Before ❌                         | After ✅                                  | Impact 📈                    |
-| :------------------- | :-------------------------------- | :---------------------------------------- | :--------------------------- |
-| **Test Coverage**    | 0% (manual checks)                | 559 automated tests (dbt+CI)              | **100% coverage**            |
-| **Metric Drift**     | Dept-specific logic               | Single source of truth (semantic layer)   | **0% drift**                 |
-| **Schema Breaks**    | Crashes dashboards (silent fail)  | dbt contracts + explicit Power Query      | **Zero prod breaks**         |
-| **Audit Trail**      | No version control                | Full Git history (SQL+DAX) + lineage DAG  | **Complete traceability**    |
-| **Breaking Changes** | Direct prod edits (no validation) | CI pipeline blocks merge on test failures | **100% pre-prod validation** |
-| **FK Violations**    | Found by users in dashboards      | Caught at CI before merge (dbt tests)     | **100% prevention**          |
+| Dimension            | Before ❌                                              | After ✅                                                                                                                                                               | Impact 📈                                                                               |
+| :------------------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| **Test Coverage**    | 0% (manual checks)                                     | 559 automated tests (dbt+CI)                                                                                                                                           | **100% coverage**                                                                       |
+| **Metric Drift**     | Dept-specific logic                                    | Single source of truth (semantic layer)                                                                                                                                | **0% drift**                                                                            |
+| **Schema Breaks**    | Crashes dashboards (silent fail)                       | dbt contracts + explicit Power Query                                                                                                                                   | **Zero prod breaks**                                                                    |
+| **Audit Trail**      | No version control                                     | Full Git history (SQL+DAX) + lineage DAG                                                                                                                               | **Complete traceability**                                                               |
+| **Breaking Changes** | Direct prod edits (no validation)                      | CI pipeline blocks merge on test failures                                                                                                                              | **100% pre-prod validation**                                                            |
+| **FK Violations**    | Found by users in dashboards                           | Caught at CI before merge (dbt tests)                                                                                                                                  | **100% prevention**                                                                     |
+| **Data Quality**     | Bad rows silently deleted; numbers didn't match source | "Trust, Don't Trash": dbt flags every row — `is_verified` (clean/dirty) + `quality_issue_reason` (e.g., "Ghost Delivery", "Missing Photos", "Arrival Before Approval") | 100% traceability; Finance reconciles to the penny; 609 products flagged for correction |
+| **Security**         | Single SYSADMIN role; shared credentials               | Snowflake RBAC (4 roles: LOADER / ANALYTICS / REPORTER) + Power BI RLS Bridge Table — regional managers see only their State/Region                                    | Audit-ready; least-privilege enforced automatically via login                           |
 
 ### 🎯 Strategic Insights Unlocked
 
@@ -591,7 +593,7 @@ _DEV workspace for iteration → PROD workspace for certified, governed consumpt
 
 - ✅ **Two-stage CI:** Fast syntax check on every push + full Snowflake integration test on PR
 - ✅ **Ephemeral PR schemas:** `CI_PR_<number>` isolated per PR, auto-cleaned → zero shared state
-- ✅ **Pre-commit hooks:** SQLFluff auto-fixes SQL before commit (trailing commas, casing, indentation)
+- ✅ **Pre-commit hooks:** 4-layer guard before every commit — **hygiene** (trailing whitespace, EOF, YAML/JSON validation, 500KB file size limit) → **security** (blocks `.env` files, credential files, private keys, large CSVs) → **SQL quality** (SQLFluff lint + auto-fix on `models/` and Snowflake SQL with Jinja templating) → **docs** (markdownlint auto-fix)
 - ✅ **Blocking gates:** Failed tests prevent merge — 100% enforcement, no exceptions
 - ✅ **Source freshness monitoring:** 8 sources, tiered SLA windows (1–30 days) — stale data caught before users
 - ✅ **Tabular Editor 3 BPA:** 50+ rules, 0 issues — semantic model hardened before every prod deploy
@@ -1114,7 +1116,7 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 **✅ Humans Validate:**
 
-- ✅ SQLFluff linting (pre-commit enforcement)
+- ✅ Pre-commit hooks: 4-layer guard — hygiene → security (blocks `.env`, credentials, private keys) → SQLFluff lint+fix → markdownlint
 - ✅ 559 dbt tests (CI blocking gates)
 - ✅ BPA semantic model scans
 - ✅ Manual code review for business logic
@@ -1156,7 +1158,7 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 | **Staging models (`stg_*`)**                  | Orders, customers, products already typed + standardised — extend, don't rewrite         | ~**2 days** |
 | **`dim_date`, `dim_customer`, `dim_product`** | Conformed dimensions drop straight in — star schema is already proven for this domain    | ~**3 days** |
 | **dbt test + contract layer**                 | 559 tests + schema YAML re-point to new models — full coverage from day 1                | ~**1 day**  |
-| **CI/CD pipeline**                            | SQLFluff → ephemeral schema → `dbt build` → cleanup — zero reconfiguration needed        | ~**1 day**  |
+| **CI pipeline**                               | SQLFluff → ephemeral schema → `dbt build` → cleanup — zero reconfiguration needed        | ~**1 day**  |
 | **Power BI Golden Dataset + RLS**             | DAX measures and state-level security template carry over — add new pages, not new logic | ~**2 days** |
 
 > **~9 days saved on Project 2 — team starts shipping insights on day 1, not day 10.**
