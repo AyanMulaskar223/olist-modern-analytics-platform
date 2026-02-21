@@ -90,7 +90,10 @@ _Azure Blob container structure — source files organized by entity before Snow
 
 ### 4.2 Raw → Staging
 
-!!! abstract "Staging Contract — Three rules that are never broken" - **Type casting only** — `VARCHAR → TIMESTAMP`, `STRING → NUMERIC`, whitespace trimmed, nulls handled - **1:1 mapping to RAW** — one model per source table; no joins, no filters, no business logic - **Materialized as views** — zero storage cost, always fresh from RAW on query
+!!! abstract "Staging Contract — Three rules that are never broken"
+    - **Type casting only** — `VARCHAR → TIMESTAMP`, `STRING → NUMERIC`, whitespace trimmed, nulls handled
+    - **1:1 mapping to RAW** — one model per source table; no joins, no filters, no business logic
+    - **Materialized as views** — zero storage cost, always fresh from RAW on query
 
     MD5 surrogate keys (`dbt_utils.generate_surrogate_key`) are generated here. Natural source keys preserved as secondary columns for audit and reconciliation.
 
