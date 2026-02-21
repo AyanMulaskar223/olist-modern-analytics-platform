@@ -1484,7 +1484,7 @@ Furthermore, a standard single-direction filter means the `USERPRINCIPALNAME()` 
 
 **A Security Bridge Table with Controlled Bi-Directional Filtering.**
 
-I resolved the M:M relationship by introducing `dim_rls_mapping` — a bridge table keyed on `seller_state`. The filter chain flows as:
+I resolved the M:M relationship by introducing `Security Bridge` — a bridge table keyed on `Seller State` Column. The filter chain flows as:
 
 ```
 Security Rules ↔️ Security Bridge ➡️ Seller ➡️ Sales
