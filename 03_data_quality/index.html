@@ -695,10 +695,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-decision-log" class="md-nav__link">
+  <a href="#2-source-data-inventory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Decision Log
+        2. Source Data Inventory
       
     </span>
   </a>
@@ -717,10 +717,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-problem-fix-impact" class="md-nav__link">
+  <a href="#4-known-issues-fix-impact" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Problem → Fix → Impact
+        4. Known Issues → Fix → Impact
       
     </span>
   </a>
@@ -728,10 +728,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-quality-flag-logic" class="md-nav__link">
+  <a href="#5-quality-flag-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Quality Flag Logic
+        5. Quality Flag Implementation
       
     </span>
   </a>
@@ -739,10 +739,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-cicd-quality-gate" class="md-nav__link">
+  <a href="#6-ci-quality-gate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. CI/CD Quality Gate
+        6. CI Quality Gate
       
     </span>
   </a>
@@ -783,21 +783,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#10-quality-framework-completeness" class="md-nav__link">
+  <a href="#10-key-principles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10. Quality Framework Completeness
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#11-key-principles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        11. Key Principles
+        10. Key Principles
       
     </span>
   </a>
@@ -940,147 +929,196 @@
   
 
 
-<h1 id="data-quality-testing-strategy">Data Quality &amp; Testing Strategy<a class="headerlink" href="#data-quality-testing-strategy" title="Permanent link">¶</a></h1>
+<h1 id="data-quality-testing-strategy">🧪 Data Quality &amp; Testing Strategy<a class="headerlink" href="#data-quality-testing-strategy" title="Permanent link">¶</a></h1>
 <p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Tests-559%20Automated-brightgreen?style=for-the-badge" data-desc-position="bottom"><img alt="Tests" src="https://img.shields.io/badge/Tests-559%20Automated-brightgreen?style=for-the-badge"></a>
 <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Coverage-100%25%20PK%2FFK-blue?style=for-the-badge" data-desc-position="bottom"><img alt="Coverage" src="https://img.shields.io/badge/Coverage-100%25%20PK%2FFK-blue?style=for-the-badge"></a>
 <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Revenue%20Quality-99.8%25%20Verified-success?style=for-the-badge" data-desc-position="bottom"><img alt="Revenue Quality" src="https://img.shields.io/badge/Revenue%20Quality-99.8%25%20Verified-success?style=for-the-badge"></a>
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/CI%20Gate-Blocking-critical?style=for-the-badge" data-desc-position="bottom"><img alt="CI Gate" src="https://img.shields.io/badge/CI%20Gate-Blocking-critical?style=for-the-badge"></a></p>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/CI%20Gate-Blocking-critical?style=for-the-badge" data-desc-position="bottom"><img alt="CI Gate" src="https://img.shields.io/badge/CI%20Gate-Blocking-critical?style=for-the-badge"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Source%20Rows-1.55M%20Validated-orange?style=for-the-badge" data-desc-position="bottom"><img alt="Source Rows" src="https://img.shields.io/badge/Source%20Rows-1.55M%20Validated-orange?style=for-the-badge"></a></p>
 <div class="admonition warning">
 <p class="admonition-title">Portfolio Scenario — Data Quality</p>
+<p>⚠️ This document addresses <strong>real data quality issues</strong> found in the public Olist dataset, treated as live business risks in a simulated production environment. Every flag, test, and fix below maps to an actual anomaly in the source data.</p>
 </div>
-<p>⚠️ Portfolio Scenario: This document outlines the requirements for a simulated Digital Transformation project at Olist. It addresses real data quality issues found in the public dataset, treating them as live business risks.</p>
 <blockquote>
-<p><strong>📘 SSOT References</strong></p>
+<p><strong>📘 SSOT Cross-References</strong></p>
 <ul>
-<li><strong>Architecture context:</strong> <a href="../01_architecture/">01_architecture.md</a> (layer responsibilities, data flow)</li>
-<li><strong>Security controls:</strong> Section 6 of architecture doc (RBAC, RLS details)</li>
-<li><strong>Performance optimization:</strong> <a href="../05_performance_optimization/">05_performance_optimization.md</a> (speed = trust analysis)</li>
-<li><strong>Business rules:</strong> <a href="../00_business_requirements/">00_business_requirements.md</a> (KPI definitions)</li>
+<li><strong>Architecture &amp; layer flow:</strong> <a href="../01_architecture/">01_architecture.md</a></li>
+<li><strong>Business KPI definitions:</strong> <a href="../00_business_requirements/">00_business_requirements.md</a></li>
+<li><strong>Performance benchmarks:</strong> <a href="../05_performance_optimization/">05_performance_optimization.md</a></li>
+<li><strong>Engineering standards &amp; CI setup:</strong> <a href="../06_engineering_standards/">06_engineering_standards.md</a></li>
 </ul>
 </blockquote>
 <hr>
 <h2 id="1-quality-framework-at-a-glance">1. Quality Framework at a Glance<a class="headerlink" href="#1-quality-framework-at-a-glance" title="Permanent link">¶</a></h2>
-<p><strong>Strategy:</strong> Flag anomalies, preserve 100% of data, expose dual metrics.</p>
-<p><strong>Evidence:</strong> <a href="#8-evidence-index">Screenshot Index</a> (15 screenshots showing test results, CI enforcement, reconciliation)</p>
+<div class="admonition abstract">
+<p class="admonition-title">Core Strategy — Three principles that never bend</p>
+<ul>
+<li><strong>Flag, don't delete</strong> — 100% of source data preserved; anomalies exposed, not hidden</li>
+<li><strong>Zero-trust validation</strong> — Every layer has explicit tests before downstream consumption</li>
+<li><strong>Fail fast, never silently</strong> — CI blocks merges; schema contracts catch drift at compile time</li>
+</ul>
+</div>
+<p><strong>559 tests. 5 layers. 0 silent failures.</strong></p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Layer</th>
-<th style="text-align: left;">Test Count</th>
-<th style="text-align: left;">Focus Area</th>
-<th style="text-align: left;">Materialization</th>
+<th style="text-align: left;">Tests</th>
+<th style="text-align: left;">Focus</th>
+<th style="text-align: left;">Tool</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>RAW</strong></td>
-<td style="text-align: left;">85 source tests</td>
-<td style="text-align: left;">Freshness, row counts</td>
-<td style="text-align: left;">Transient tables</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">Freshness, row counts, PK checks</td>
+<td style="text-align: left;">dbt <code>sources.yml</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>STAGING</strong></td>
-<td style="text-align: left;">456 generic</td>
-<td style="text-align: left;">PK/FK integrity, enums</td>
-<td style="text-align: left;">Views</td>
+<td style="text-align: left;">456</td>
+<td style="text-align: left;">PK/FK integrity, enums, nulls</td>
+<td style="text-align: left;">dbt generic tests</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>INTERMEDIATE</strong></td>
-<td style="text-align: left;">18 singular</td>
-<td style="text-align: left;">Business rules, flags</td>
-<td style="text-align: left;">Ephemeral/tables</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">Business rules, cross-column logic</td>
+<td style="text-align: left;">dbt singular tests (SQL)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>MARTS</strong></td>
-<td style="text-align: left;">100% FK coverage</td>
-<td style="text-align: left;">Grain enforcement</td>
-<td style="text-align: left;">Tables/incremental</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Grain enforcement, FK coverage</td>
+<td style="text-align: left;">dbt contracts + generic</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Power BI</strong></td>
-<td style="text-align: left;">Schema contracts</td>
-<td style="text-align: left;">Verified metrics</td>
-<td style="text-align: left;">Semantic model</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Column presence, type contracts</td>
+<td style="text-align: left;">Power Query <code>SelectColumns</code></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Quality Flow:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Azure Blob → RAW (Freshness Check) → STAGING (PK/FK Tests) → INTERMEDIATE (Quality Flags) → MARTS (Contract Validation) → Power BI (Verified Measures)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>         ↓              ↓                      ↓                         ↓                        ↓                          ↓
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    85 source      456 generic           18 singular              Grain checks            Schema drift           Dual metrics
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     tests          tests                 tests                   enforcement             protection              exposed
+<p><strong>End-to-end quality pipeline:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Azure Blob → RAW            → STAGING          → INTERMEDIATE      → MARTS             → Power BI
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>             85 source tests   456 generic tests  18 singular tests   Schema contracts    Dual metrics
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>             Freshness SLA     PK/FK integrity    Business rules      Grain enforcement   Verified vs. Total
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>             Row counts        State enums        Flag logic          FK coverage         Trust tooltip UX
 </code></pre></div>
 <hr>
-<h2 id="2-decision-log">2. Decision Log<a class="headerlink" href="#2-decision-log" title="Permanent link">¶</a></h2>
+<h2 id="2-source-data-inventory">2. Source Data Inventory<a class="headerlink" href="#2-source-data-inventory" title="Permanent link">¶</a></h2>
+<blockquote>
+<p>What landed in RAW — known issues documented here, not hidden, not fixed silently.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Decision</th>
-<th style="text-align: left;">Rationale</th>
-<th style="text-align: left;">Trade-off</th>
-<th style="text-align: left;">Evidence</th>
+<th style="text-align: left;">Source Table</th>
+<th style="text-align: left;">Rows</th>
+<th style="text-align: left;">Format</th>
+<th style="text-align: left;">Known Issues</th>
+<th style="text-align: left;">Treatment</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Flag vs. Delete</strong></td>
-<td style="text-align: left;">Finance requires 100% reconciliation with ERP</td>
-<td style="text-align: left;">Slightly more complex DAX (Total vs. Verified)</td>
-<td style="text-align: left;"><a href="#">Revenue reconciliation</a></td>
+<td style="text-align: left;"><code>raw_orders</code></td>
+<td style="text-align: left;">99,441</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">2,965 missing delivery dates (non-delivered orders)</td>
+<td style="text-align: left;">Valid NULLs — status-based filter</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>559 Automated Tests</strong></td>
-<td style="text-align: left;">Zero-trust validation at every layer</td>
-<td style="text-align: left;">5-minute CI runtime (acceptable for quality gate)</td>
-<td style="text-align: left;"><a href="#">CI pass screenshot</a></td>
+<td style="text-align: left;"><code>raw_order_items</code></td>
+<td style="text-align: left;">112,650</td>
+<td style="text-align: left;">Parquet</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Clean ✅</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>dbt Singular Tests</strong></td>
-<td style="text-align: left;">Generic tests can't validate cross-column business rules</td>
-<td style="text-align: left;">Maintenance overhead (18 custom SQL tests)</td>
-<td style="text-align: left;"><a href="#">Business rule tests</a></td>
+<td style="text-align: left;"><code>raw_customers</code></td>
+<td style="text-align: left;">99,441</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;"><code>customer_unique_id</code> not entity-unique (repeat buyers)</td>
+<td style="text-align: left;">Dual key strategy in staging</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Schema Contracts</strong></td>
-<td style="text-align: left;">Fail-fast on breaking changes (not silent errors)</td>
-<td style="text-align: left;">Requires explicit type definitions in YAML</td>
-<td style="text-align: left;"><a href="#">Contract enforcement</a></td>
+<td style="text-align: left;"><code>raw_products</code></td>
+<td style="text-align: left;">32,951</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">610 missing dimensions + 611 NULL categories</td>
+<td style="text-align: left;">Flagged <code>is_missing_dimensions</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Dual Metric Strategy</strong></td>
-<td style="text-align: left;">Stakeholders need both "Total" (audit) and "Verified" (exec)</td>
-<td style="text-align: left;">Dashboard users must understand quality context</td>
-<td style="text-align: left;"><a href="#">Trust tooltip UX</a></td>
+<td style="text-align: left;"><code>raw_sellers</code></td>
+<td style="text-align: left;">3,095</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Clean ✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_order_payments</code></td>
+<td style="text-align: left;">103,886</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Clean ✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_order_reviews</code></td>
+<td style="text-align: left;">99,224</td>
+<td style="text-align: left;">JSON</td>
+<td style="text-align: left;">814 duplicate <code>review_id</code>s (repeat reviews, same order)</td>
+<td style="text-align: left;">Flagged <code>is_duplicate_review</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_geolocation</code></td>
+<td style="text-align: left;">1,000,163</td>
+<td style="text-align: left;">CSV</td>
+<td style="text-align: left;">1M+ rows → 19K unique zip centroids after dedup</td>
+<td style="text-align: left;">Deduplicated in staging</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total</strong></td>
+<td style="text-align: left;"><strong>1,550,851</strong></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><strong>Phase 2 raw quality score: 99.998%</strong></td>
+<td style="text-align: left;">All anomalies flagged, none deleted</td>
 </tr>
 </tbody>
 </table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/row_count.png" data-desc-position="bottom"><img alt="RAW Row Counts" src="../screenshots/02_snowflake/row_count.png"></a>
+<em>Snowflake row count verification across all 8 RAW tables after Phase 2 ingestion</em></p>
 <hr>
 <h2 id="3-test-coverage-matrix">3. Test Coverage Matrix<a class="headerlink" href="#3-test-coverage-matrix" title="Permanent link">¶</a></h2>
 <h3 id="31-test-pyramid">3.1 Test Pyramid<a class="headerlink" href="#31-test-pyramid" title="Permanent link">¶</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>         ▲
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        ╱ ╲        18 Singular Tests (10% of total)
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>       ╱   ╲       • No future order dates
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      ╱     ╲      • Timestamp sequence validation
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     ╱───────╲     • Negative price checks
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ╱         ╲
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>   ╱  456 Generic ╲   Generic Tests (82% of total)
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  ╱   dbt Tests   ╱   • unique, not_null (100% PK coverage)
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a> ╱   (Unit Tests) ╲   • relationships (100% FK coverage)
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>╱─────────────────╲   • accepted_values (enums, states)
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                   ╲
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>               85 Source Tests (15% of total)
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>               • Freshness &lt; 14 days
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>               • Row count validation
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>               ✅ 559 total tests
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>            ▲
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>           ╱ ╲
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>          ╱   ╲      18 Singular Tests  ← Custom SQL business-rule assertions
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>         ╱     ╲       • No future order dates
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        ╱       ╲      • Timestamp sequence: Ordered → Approved → Shipped → Delivered
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>       ╱─────────╲     • Negative price / freight value checks
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>      ╱           ╲    • Delivered orders must have delivery_date
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>     ╱  456 Generic╲
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    ╱   dbt Tests   ╲  ← Unit-level column contracts
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>   ╱   (82% total)   ╲   • `unique` + `not_null` on all 29 PKs
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  ╱                   ╲  • `relationships` on all 17 FKs
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a> ╱─────────────────────╲ • `accepted_values` — 27 BR states, 5 order statuses
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                         \
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>              85 Source Tests        ← Freshness &amp; count gates at ingestion boundary
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>              (15% total)              • Freshness: warn 7d / error 14d
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>                                       • Row count reconciliation vs. Azure Blob
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                                  ✅ 559 total | 100% pass rate
 </code></pre></div>
-<h3 id="32-critical-business-rules">3.2 Critical Business Rules<a class="headerlink" href="#32-critical-business-rules" title="Permanent link">¶</a></h3>
+<h3 id="32-singular-test-register-business-rule-assertions">3.2 Singular Test Register (Business Rule Assertions)<a class="headerlink" href="#32-singular-test-register-business-rule-assertions" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Test Name</th>
+<th style="text-align: left;">Test File</th>
 <th style="text-align: left;">Severity</th>
-<th style="text-align: left;">Rule</th>
-<th style="text-align: left;">Impact</th>
+<th style="text-align: left;">Rule Enforced</th>
+<th style="text-align: left;">Protects</th>
 </tr>
 </thead>
 <tbody>
@@ -1088,25 +1126,37 @@
 <td style="text-align: left;"><code>assert_no_future_order_dates</code></td>
 <td style="text-align: left;">ERROR</td>
 <td style="text-align: left;"><code>order_date &lt;= CURRENT_DATE</code></td>
-<td style="text-align: left;">Prevents timeline corruption</td>
+<td style="text-align: left;">Timeline integrity</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>assert_order_timestamps_logical_sequence</code></td>
 <td style="text-align: left;">WARN</td>
-<td style="text-align: left;">Ordered → Approved → Shipped → Delivered</td>
-<td style="text-align: left;">Detects data quality issues</td>
+<td style="text-align: left;"><code>ordered_at ≤ approved_at ≤ shipped_at ≤ delivered_at</code></td>
+<td style="text-align: left;">SLA calculation accuracy</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>assert_no_negative_prices_or_freight</code></td>
 <td style="text-align: left;">ERROR</td>
-<td style="text-align: left;"><code>price &gt;= 0 AND freight &gt;= 0</code></td>
-<td style="text-align: left;">Protects revenue calculations</td>
+<td style="text-align: left;"><code>price &gt;= 0 AND freight_value &gt;= 0</code></td>
+<td style="text-align: left;">Revenue calculations</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>assert_delivered_orders_have_delivery_date</code></td>
 <td style="text-align: left;">ERROR</td>
-<td style="text-align: left;"><code>status='delivered' → date NOT NULL</code></td>
-<td style="text-align: left;">Ensures SLA accuracy</td>
+<td style="text-align: left;"><code>status = 'delivered' → delivered_at IS NOT NULL</code></td>
+<td style="text-align: left;">Logistics SLA metrics</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>assert_retention_sequence_no_gaps</code></td>
+<td style="text-align: left;">ERROR</td>
+<td style="text-align: left;"><code>order_sequence_number</code> has no skipped integers</td>
+<td style="text-align: left;">Repeat customer classification</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>assert_verified_flag_logic_consistent</code></td>
+<td style="text-align: left;">ERROR</td>
+<td style="text-align: left;"><code>is_verified = FALSE</code> only when at least one flag set</td>
+<td style="text-align: left;">Dual metric integrity</td>
 </tr>
 </tbody>
 </table>
@@ -1116,7 +1166,7 @@
 <tr>
 <th style="text-align: left;">Coverage Type</th>
 <th style="text-align: left;">Target</th>
-<th style="text-align: left;">Actual</th>
+<th style="text-align: left;">Achieved</th>
 <th style="text-align: left;">Status</th>
 </tr>
 </thead>
@@ -1140,9 +1190,15 @@
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>State Enum</strong></td>
+<td style="text-align: left;"><strong>State Enum (BR)</strong></td>
 <td style="text-align: left;">100%</td>
-<td style="text-align: left;">27 BR states</td>
+<td style="text-align: left;">27/27 states</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Order Status Enum</strong></td>
+<td style="text-align: left;">100%</td>
+<td style="text-align: left;">5/5 values</td>
 <td style="text-align: left;">✅</td>
 </tr>
 <tr>
@@ -1151,81 +1207,66 @@
 <td style="text-align: left;">559/559 tests</td>
 <td style="text-align: left;">✅</td>
 </tr>
+<tr>
+<td style="text-align: left;"><strong>Schema Contracts</strong></td>
+<td style="text-align: left;">100%</td>
+<td style="text-align: left;">All MART models</td>
+<td style="text-align: left;">✅</td>
+</tr>
 </tbody>
 </table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/test_passed_suite.png" data-desc-position="bottom"><img alt="dbt Test Suite Pass" src="../screenshots/03_dbt/test_passed_suite.png"></a>
+<em>559/559 tests passing — <code>dbt build</code> output showing full test suite green across all layers</em></p>
 <hr>
-<h2 id="4-problem-fix-impact">4. Problem → Fix → Impact<a class="headerlink" href="#4-problem-fix-impact" title="Permanent link">¶</a></h2>
-<h3 id="problem-1-finance-cant-reconcile-revenue">Problem 1: Finance Can't Reconcile Revenue<a class="headerlink" href="#problem-1-finance-cant-reconcile-revenue" title="Permanent link">¶</a></h3>
-<p><strong>Problem:</strong></p>
-<ul>
-<li>Deleting anomalous orders breaks total reconciliation with source ERP</li>
-<li>3 departments report different "Total Revenue" numbers</li>
-<li>Audit compliance at risk</li>
-</ul>
-<p><strong>Fix:</strong></p>
-<ul>
-<li>Strategy: "Flag, Don't Delete"</li>
-<li>Implementation: Add <code>is_verified</code> column in INTERMEDIATE layer</li>
-<li>Expose dual metrics in Power BI: <code>[Total Revenue]</code> vs. <code>[Verified Revenue]</code></li>
-</ul>
-<p><strong>Impact:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Total Revenue:     R$ 13,591,643  (100% - matches Finance ERP)
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Verified Revenue:  R$ 13,564,851  (99.8% - executive reporting)
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Revenue at Risk:   R$ 26,792      (0.2% - flagged for investigation)
+<h2 id="4-known-issues-fix-impact">4. Known Issues → Fix → Impact<a class="headerlink" href="#4-known-issues-fix-impact" title="Permanent link">¶</a></h2>
+<h3 id="issue-1-finance-cant-reconcile-revenue">Issue 1: Finance Can't Reconcile Revenue<a class="headerlink" href="#issue-1-finance-cant-reconcile-revenue" title="Permanent link">¶</a></h3>
+<p><strong>Root Cause:</strong> 3 departments each had a different "Revenue" definition. Deleting anomalous rows makes Finance ERP reconciliation impossible — the numbers never match.</p>
+<p><strong>Fix:</strong> "Flag, Don't Delete" — add <code>is_verified</code> master flag in <code>int_sales__order_items_joined</code>. Expose <strong>dual metrics</strong> in Power BI side by side.</p>
+<p><strong>Numbers:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Total Revenue:     R$ 13,591,643  ← matches Finance ERP exactly (100%)
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Verified Revenue:  R$ 13,564,851  ← executive reporting (99.8%)
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Revenue at Risk:   R$ 26,792      ← flagged anomalies, visible to Finance (0.2%)
 </code></pre></div>
-<ul>
-<li><strong>Result:</strong> Finance achieves 100% reconciliation, Executives use 99.8% verified subset</li>
-<li><strong>Evidence:</strong> <a href="#">UAT Revenue Reconciliation Screenshot</a></li>
-</ul>
+<p><strong>Before → After:</strong> 4 days/month manual reconciliation → <strong>0 hours</strong> (automated dual-metric match).</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/uat_revenue_reconciliation.png" data-desc-position="bottom"><img alt="UAT Revenue Reconciliation" src="../screenshots/04_powerbi/uat_revenue_reconciliation.png"></a>
+<em>UAT sign-off: Total Revenue matches Finance ERP; Verified Revenue confirmed separately for exec reporting</em></p>
 <hr>
-<h3 id="problem-2-schema-changes-break-dashboards-silently">Problem 2: Schema Changes Break Dashboards Silently<a class="headerlink" href="#problem-2-schema-changes-break-dashboards-silently" title="Permanent link">¶</a></h3>
-<p><strong>Problem:</strong></p>
-<ul>
-<li>Power BI refreshes succeeded despite column renames in dbt</li>
-<li>Visuals showed blank data, no error alerts</li>
-<li>2-day delayed detection by business users</li>
-</ul>
+<h3 id="issue-2-schema-changes-break-dashboards-silently">Issue 2: Schema Changes Break Dashboards Silently<a class="headerlink" href="#issue-2-schema-changes-break-dashboards-silently" title="Permanent link">¶</a></h3>
+<p><strong>Root Cause:</strong> Power BI refreshes succeeded even after dbt column renames. Visuals showed blank data — detected by business users 2 days later, not by the system.</p>
 <p><strong>Fix:</strong></p>
 <ul>
-<li>dbt: <code>contract: enforced: true</code> in MARTS models (compile-time validation)</li>
-<li>Power Query: <code>Table.SelectColumns()</code> explicit selection (fail-fast on missing columns)</li>
+<li><strong>dbt side:</strong> <code>contract: enforced: true</code> in all MART models — CI fails immediately on column drift</li>
+<li><strong>Power BI side:</strong> <code>Table.SelectColumns()</code> in Power Query — refresh errors on any missing column</li>
 </ul>
-<p><strong>Impact:</strong></p>
-<ul>
-<li><strong>Before:</strong> Silent failures → 2-day detection lag</li>
-<li><strong>After:</strong> Immediate CI failure → &lt; 5 minutes detection</li>
-<li><strong>Evidence:</strong> <a href="#">dbt Contract Enforcement Screenshot</a>, <a href="#">Power BI Schema Error</a></li>
-</ul>
+<p><strong>Before → After:</strong> 2-day silent failure → <strong>&lt; 5 minute CI detection</strong>.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/data_contracts.png" data-desc-position="bottom"><img alt="dbt Data Contracts" src="../screenshots/03_dbt/data_contracts.png"></a>
+<em>dbt schema contracts enforced at compile time — breaking column changes fail before hitting Snowflake</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/data_contract.png" data-desc-position="bottom"><img alt="Power BI Data Contract" src="../screenshots/04_powerbi/data_contract.png"></a>
+<em>Power BI explicit column selection — refresh fails fast on any schema mismatch</em></p>
 <hr>
-<h3 id="problem-3-timestamp-violations-corrupt-sla-metrics">Problem 3: Timestamp Violations Corrupt SLA Metrics<a class="headerlink" href="#problem-3-timestamp-violations-corrupt-sla-metrics" title="Permanent link">¶</a></h3>
-<p><strong>Problem:</strong></p>
-<ul>
-<li>127 orders have <code>delivered_at &lt; ordered_at</code> (impossible timeline)</li>
-<li>SLA "Days to Deliver" metric shows <strong>negative values</strong></li>
-<li>Operations team loses trust in dashboard accuracy</li>
-</ul>
-<p><strong>Fix:</strong></p>
-<ul>
-<li>Singular Test: <code>assert_order_timestamps_logical_sequence.sql</code></li>
-<li>Quality Flag: <code>has_timestamp_violation</code> column</li>
-<li>DAX Filter: <code>[SLA Metrics]</code> only use <code>is_verified = TRUE</code> orders</li>
-</ul>
-<p><strong>Impact:</strong></p>
-<ul>
-<li><strong>Before:</strong> Negative SLA values → Dashboard credibility failure</li>
-<li><strong>After:</strong> 99.8% clean SLA metrics → Operations trust restored</li>
-<li><strong>Evidence:</strong> <a href="#">Timestamp Validation Test Results</a></li>
-</ul>
+<h3 id="issue-3-timestamp-violations-corrupt-sla-metrics">Issue 3: Timestamp Violations Corrupt SLA Metrics<a class="headerlink" href="#issue-3-timestamp-violations-corrupt-sla-metrics" title="Permanent link">¶</a></h3>
+<p><strong>Root Cause:</strong> 127 orders have <code>delivered_at &lt; ordered_at</code> — physically impossible. The "Days to Deliver" SLA metric was returning <strong>negative values</strong>, destroying Operations' confidence in the dashboard.</p>
+<p><strong>Fix:</strong> Singular test <code>assert_order_timestamps_logical_sequence</code> blocks future violations. <code>has_timestamp_violation</code> flag isolates the 127 rows. All SLA measures filter on <code>is_verified = TRUE</code>.</p>
+<p><strong>Before → After:</strong> Negative SLA values polluting Operations reports → <strong>99.8% clean metrics</strong>, 127 rows isolated and auditable.</p>
 <hr>
-<h2 id="5-quality-flag-logic">5. Quality Flag Logic<a class="headerlink" href="#5-quality-flag-logic" title="Permanent link">¶</a></h2>
-<p><strong>Implementation Layer:</strong> <code>int_orders_enriched.sql</code> (INTERMEDIATE)</p>
-<p><strong>Flag Columns:</strong></p>
+<h3 id="issue-4-duplicate-customer-ids-break-retention-analysis">Issue 4: Duplicate Customer IDs Break Retention Analysis<a class="headerlink" href="#issue-4-duplicate-customer-ids-break-retention-analysis" title="Permanent link">¶</a></h3>
+<p><strong>Root Cause:</strong> Olist generates a new <code>customer_id</code> per order — the same buyer has dozens of IDs. 0% of repeat buyers are identifiable without resolving this identity fragmentation.</p>
+<p><strong>Fix:</strong> Dual key strategy in staging. <code>user_sk = hash(customer_unique_id)</code> is the persistent person key. <code>int_customers__prep</code> deduplicates via <code>ROW_NUMBER() OVER (PARTITION BY user_sk ORDER BY source_loaded_at DESC)</code>. <code>order_sequence_number = 1</code> → New customer; <code>&gt;= 2</code> → Repeat.</p>
+<p><strong>Before → After:</strong> 0% identifiable repeat buyers → <strong>full retention cohort analysis</strong> across all 100K+ orders.</p>
+<hr>
+<h3 id="issue-5-610-products-missing-english-category">Issue 5: 610 Products Missing English Category<a class="headerlink" href="#issue-5-610-products-missing-english-category" title="Permanent link">¶</a></h3>
+<p><strong>Root Cause:</strong> Olist category names are Portuguese-only. 610 products have no category at all. International BI reporting breaks with blanks or errors.</p>
+<p><strong>Fix:</strong> <code>int_products__enriched</code> applies a 3-tier fallback: <code>COALESCE(english_name, portuguese_name, 'Unknown')</code>. Zero data loss — all 32,951 products present in marts.</p>
+<p><strong>Before → After:</strong> Blank/broken category filters → <strong>100% category coverage</strong> in product dimension.</p>
+<hr>
+<h2 id="5-quality-flag-implementation">5. Quality Flag Implementation<a class="headerlink" href="#5-quality-flag-implementation" title="Permanent link">¶</a></h2>
+<p><strong>Where:</strong> <code>int_sales__order_items_joined.sql</code> (INTERMEDIATE layer — business logic defined once, reused by all downstream marts and Power BI measures)</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Flag Name</th>
-<th style="text-align: left;">Condition</th>
-<th style="text-align: left;">Count</th>
+<th style="text-align: left;">Flag Column</th>
+<th style="text-align: left;">Trigger Condition</th>
+<th style="text-align: left;">Row Count</th>
 <th style="text-align: left;">% of Total</th>
 </tr>
 </thead>
@@ -1249,243 +1290,275 @@
 <td style="text-align: left;">0.1%</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Master Switch</strong></td>
-<td style="text-align: left;"><code>is_verified = ALL FLAGS PASS</code></td>
+<td style="text-align: left;"><code>has_duplicate_review</code></td>
+<td style="text-align: left;">Duplicate <code>review_id</code> per order</td>
+<td style="text-align: left;">814</td>
+<td style="text-align: left;">0.8%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>is_verified</code></strong></td>
+<td style="text-align: left;"><code>TRUE</code> only when ALL four flags above are <code>FALSE</code></td>
 <td style="text-align: left;">98.9%</td>
-<td style="text-align: left;">✅</td>
+<td style="text-align: left;">✅ Master switch</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Data Flow:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- INTERMEDIATE: int_orders_enriched.sql</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">order_id</span><span class="p">,</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">order_total</span><span class="p">,</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="c1">-- Quality flags</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">product_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">has_missing_product</span><span class="p">,</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">order_total</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">has_invalid_price</span><span class="p">,</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">delivered_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ordered_at</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">has_timestamp_violation</span><span class="p">,</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="c1">-- Master flag</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="k">CASE</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">has_missing_product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">         </span><span class="k">AND</span><span class="w"> </span><span class="n">has_invalid_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">         </span><span class="k">AND</span><span class="w"> </span><span class="n">has_timestamp_violation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="k">THEN</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="k">FALSE</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">is_verified</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">FROM</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="k">ref</span><span class="p">(</span><span class="s1">'stg_orders'</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<p><strong>SQL Implementation:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- int_sales__order_items_joined.sql (simplified)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">case</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">product_id</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="w">                          </span><span class="k">then</span><span class="w"> </span><span class="k">false</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">order_total</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">freight_value_brl</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="k">then</span><span class="w"> </span><span class="k">false</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">delivered_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ordered_at</span><span class="w">                   </span><span class="k">then</span><span class="w"> </span><span class="k">false</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">true</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">end</span><span class="w">                                                  </span><span class="k">as</span><span class="w"> </span><span class="n">is_verified</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">case</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">product_id</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="w">        </span><span class="k">then</span><span class="w"> </span><span class="s1">'Missing Product'</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">order_total</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w">          </span><span class="k">then</span><span class="w"> </span><span class="s1">'Invalid Price'</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="n">delivered_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ordered_at</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="s1">'Arrival Before Approval'</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">null</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">end</span><span class="w">                                                  </span><span class="k">as</span><span class="w"> </span><span class="n">quality_issue_reason</span>
 </code></pre></div>
-<p><strong>Power BI Consumption:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Total Revenue (Finance reconciliation)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Total Revenue = SUM(fct_orders[order_total])
+<p><strong>DAX Consumption in Power BI:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">-- Finance reconciliation — always matches ERP</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Total Revenue = SUM(fct_order_items[order_total_brl])
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">// Verified Revenue (Executive reporting)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">-- Executive reporting — clean data only</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Verified Revenue =
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nf">CALCULATE</span><span class="p">(</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nf">SUM</span><span class="p">(</span><span class="na">fct_orders[order_total]</span><span class="p">),</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="na">fct_orders[is_verified]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">TRUE</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="nf">SUM</span><span class="p">(</span><span class="na">fct_order_items[order_total_brl]</span><span class="p">),</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="na">fct_order_items[is_verified]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">TRUE</span>
 <a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">)</span>
 <a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">// Transparency metric</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">-- Risk transparency — never hidden</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>Revenue at Risk = [Total Revenue] - [Verified Revenue]
 </code></pre></div>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/trust_tooltip_ux.png" data-desc-position="bottom"><img alt="Trust Tooltip UX" src="../screenshots/04_powerbi/trust_tooltip_ux.png"></a>
+<em>Trust tooltip — hover reveals Verified %, Revenue at Risk $, and quality reason per data point</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/data_quality_audit.png" data-desc-position="bottom"><img alt="Data Quality Audit View" src="../screenshots/04_powerbi/data_quality_audit.png"></a>
+<em>Dedicated audit view — every flagged row visible to Finance for investigation</em></p>
 <hr>
-<h2 id="6-cicd-quality-gate">6. CI/CD Quality Gate<a class="headerlink" href="#6-cicd-quality-gate" title="Permanent link">¶</a></h2>
-<p><strong>Enforcement Mechanism:</strong> GitHub Actions blocks PRs on test failure.</p>
-<p><strong>Workflow:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Developer Push → CI Trigger → dbt build → Tests Run → [PASS/FAIL]
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                                            ↓
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                                         PASS: ✅ PR approval allowed
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                                         FAIL: ❌ Merge blocked
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>                                               ↓
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                                          Auto-create GitHub Issue
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>                                          Alert #data-quality-alerts
+<h2 id="6-ci-quality-gate">6. CI Quality Gate<a class="headerlink" href="#6-ci-quality-gate" title="Permanent link">¶</a></h2>
+<p><strong>Mechanism:</strong> GitHub Actions blocks PR merge on any test failure. No untested code reaches production.</p>
+<p><strong>Two-Stage Pipeline:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Stage 1 — Push to feat/**                     Stage 2 — PR to main
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>──────────────────────────────────────────    ──────────────────────────────────────────────
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>SQLFluff lint (syntax check)                  dbt build --target ci --full-refresh
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>dbt parse (no Snowflake connection)           559 tests run against ephemeral CI_PR_&lt;n&gt; schema
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>~45 seconds                                   Auto-dropped post-merge (no shared state)
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>Fast feedback before PR opened               ~8–12 min production-equivalent validation
 </code></pre></div>
-<p><strong>Protection Rules:</strong></p>
+<p><strong>Enforcement Controls:</strong></p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Control</th>
 <th style="text-align: left;">Implementation</th>
-<th style="text-align: left;">Impact</th>
+<th style="text-align: left;">Effect</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Cannot merge on failure</strong></td>
-<td style="text-align: left;">GitHub branch protection</td>
+<td style="text-align: left;">Merge block on failure</td>
+<td style="text-align: left;">GitHub branch protection on <code>main</code></td>
 <td style="text-align: left;">0% untested code in production</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>&lt; 5 min feedback</strong></td>
-<td style="text-align: left;">GitHub Actions runtime</td>
-<td style="text-align: left;">Fast iteration cycles</td>
+<td style="text-align: left;">Isolated CI schema</td>
+<td style="text-align: left;"><code>CI_PR_&lt;number&gt;</code> in <code>OLIST_DEV_DB</code></td>
+<td style="text-align: left;">No shared state between concurrent PRs</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Auto-issue creation</strong></td>
-<td style="text-align: left;">Workflow orchestration</td>
-<td style="text-align: left;">Zero manual triage of failures</td>
+<td style="text-align: left;">Auto schema cleanup</td>
+<td style="text-align: left;"><code>drop_ci_schema</code> macro post-merge</td>
+<td style="text-align: left;">Zero schema accumulation in dev</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>100% traceability</strong></td>
-<td style="text-align: left;">Git commit history</td>
-<td style="text-align: left;">Audit-ready change log</td>
+<td style="text-align: left;">&lt; 5 min Stage 1 feedback</td>
+<td style="text-align: left;">Parse + lint only (no DB call)</td>
+<td style="text-align: left;">Fast iteration before opening a PR</td>
+</tr>
+<tr>
+<td style="text-align: left;">Auto GitHub Issue on fail</td>
+<td style="text-align: left;">Workflow creates issue automatically</td>
+<td style="text-align: left;">Zero manual triage of CI failures</td>
 </tr>
 </tbody>
 </table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/ci_dbt_build_pass.png" data-desc-position="bottom"><img alt="CI dbt Build Pass" src="../screenshots/05_dataops/ci_dbt_build_pass.png"></a>
+<em>GitHub Actions: Full <code>dbt build</code> passing across all 559 tests in ephemeral CI schema</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/github_pr_checks_pass.png" data-desc-position="bottom"><img alt="PR Checks Pass" src="../screenshots/05_dataops/github_pr_checks_pass.png"></a>
+<em>PR merge gate — all checks must be green before merge is permitted</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/sqlfluff_linting_pass.png" data-desc-position="bottom"><img alt="SQLFluff Linting Pass" src="../screenshots/05_dataops/sqlfluff_linting_pass.png"></a>
+<em>Stage 1 SQLFluff lint — zero violations required before PR creation</em></p>
 <hr>
 <h2 id="7-monitoring-freshness">7. Monitoring &amp; Freshness<a class="headerlink" href="#7-monitoring-freshness" title="Permanent link">¶</a></h2>
-<blockquote>
-<p><strong>🔗 SSOT Reference</strong>
-Performance monitoring details (dashboard refresh SLA, performance analyzer results) covered in <a href="../05_performance_optimization/">05_performance_optimization.md</a>.</p>
-</blockquote>
-<h3 id="71-dbt-source-freshness">7.1 dbt Source Freshness<a class="headerlink" href="#71-dbt-source-freshness" title="Permanent link">¶</a></h3>
-<p><strong>Configuration:</strong></p>
+<h3 id="71-source-freshness-sla">7.1 Source Freshness SLA<a class="headerlink" href="#71-source-freshness-sla" title="Permanent link">¶</a></h3>
+<p>Configured per-source in <code>_sources.yml</code> with tiered thresholds — critical sources monitored more tightly.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Threshold</th>
-<th style="text-align: left;">Action</th>
-<th style="text-align: left;">Alert Channel</th>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Warn After</th>
+<th style="text-align: left;">Error After</th>
+<th style="text-align: left;">Rationale</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>warn_after: 7d</code></td>
-<td style="text-align: left;">Slack alert</td>
-<td style="text-align: left;">#data-alerts</td>
+<td style="text-align: left;"><code>raw_orders</code></td>
+<td style="text-align: left;">1 day</td>
+<td style="text-align: left;">2 days</td>
+<td style="text-align: left;">Core revenue path — highest priority</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>error_after: 14d</code></td>
-<td style="text-align: left;">Fail dbt build</td>
-<td style="text-align: left;">CI blocks merge</td>
+<td style="text-align: left;"><code>raw_order_items</code></td>
+<td style="text-align: left;">1 day</td>
+<td style="text-align: left;">2 days</td>
+<td style="text-align: left;">Fact grain source</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_customers</code></td>
+<td style="text-align: left;">7 days</td>
+<td style="text-align: left;">14 days</td>
+<td style="text-align: left;">Slower-changing dimension</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_products</code></td>
+<td style="text-align: left;">7 days</td>
+<td style="text-align: left;">14 days</td>
+<td style="text-align: left;">Catalog updated infrequently</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_sellers</code></td>
+<td style="text-align: left;">7 days</td>
+<td style="text-align: left;">14 days</td>
+<td style="text-align: left;">Stable master data</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_order_payments</code></td>
+<td style="text-align: left;">1 day</td>
+<td style="text-align: left;">2 days</td>
+<td style="text-align: left;">Financial data — tightly monitored</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_order_reviews</code></td>
+<td style="text-align: left;">7 days</td>
+<td style="text-align: left;">30 days</td>
+<td style="text-align: left;">Non-critical enrichment</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>raw_geolocation</code></td>
+<td style="text-align: left;">30 days</td>
+<td style="text-align: left;">90 days</td>
+<td style="text-align: left;">Static reference — rarely changes</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Production Status:</strong></p>
-<ul>
-<li>✅ 8/8 RAW tables within SLA</li>
-<li>✅ &lt; 1 hour ingestion latency</li>
-<li>✅ 0 stale data incidents (30 days)</li>
-</ul>
-<h3 id="72-data-currency-indicator">7.2 Data Currency Indicator<a class="headerlink" href="#72-data-currency-indicator" title="Permanent link">¶</a></h3>
-<p><strong>Problem:</strong> Users distrust dashboards without visible "Last Updated" timestamp.</p>
-<p><strong>Fix:</strong></p>
-<p>Multi-Layer Tracking:</p>
+<p><strong>Production Status:</strong> ✅ 8/8 tables within SLA · ✅ &lt; 1 hour ingestion latency · ✅ 0 stale incidents (30 days)</p>
+<h3 id="72-dual-clock-freshness-in-power-bi">7.2 Dual-Clock Freshness in Power BI<a class="headerlink" href="#72-dual-clock-freshness-in-power-bi" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> Business users distrust data without knowing when it was last updated — a single timestamp doesn't tell the full story.</p>
+<p><strong>Solution:</strong> Two independent clocks on every dashboard footer.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Layer</th>
-<th style="text-align: left;">Timestamp Column</th>
-<th style="text-align: left;">Business Purpose</th>
+<th style="text-align: left;">Clock</th>
+<th style="text-align: left;">Source Column</th>
+<th style="text-align: left;">What It Shows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>RAW</strong></td>
-<td style="text-align: left;"><code>_loaded_at</code></td>
-<td style="text-align: left;">Azure → Snowflake ingestion time</td>
+<td style="text-align: left;"><strong>Last Refreshed</strong></td>
+<td style="text-align: left;"><code>_dbt_updated_at</code></td>
+<td style="text-align: left;">When dbt last transformed the marts data</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>MARTS</strong></td>
-<td style="text-align: left;"><code>_dbt_loaded_at</code></td>
-<td style="text-align: left;">dbt transformation completion</td>
+<td style="text-align: left;"><strong>Data Current Until</strong></td>
+<td style="text-align: left;"><code>_source_loaded_at</code></td>
+<td style="text-align: left;">When the source file last landed in RAW</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Power BI Display:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Last Refresh =
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nf">FORMAT</span><span class="p">(</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nf">MAX</span><span class="p">(</span><span class="na">'dim_date'[_dbt_loaded_at]</span><span class="p">),</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="s">"MMMM DD, YYYY @ hh:mm AM/PM"</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">)</span>
+<p>The gap between them surfaces pipeline lag — visible to every consumer without a support ticket.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Last Refreshed =
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="s">"Model refreshed: "</span><span class="w"> </span>&amp; FORMAT(MAX(fct_order_items[_dbt_updated_at]), "DD MMM YYYY @ HH:MM")
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Data Current Until =
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="s">"Source data as of: "</span><span class="w"> </span>&amp; FORMAT(MAX(fct_order_items[_source_loaded_at]), "DD MMM YYYY @ HH:MM")
 </code></pre></div>
-<p><strong>Visual:</strong> Card visual on every dashboard page header.</p>
-<p><strong>Result:</strong> Users trust data because currency is transparent.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/dashboard.png" data-desc-position="bottom"><img alt="Dashboard Footer Timestamps" src="../screenshots/04_powerbi/dashboard.png"></a>
+<em>Dashboard footer — dual timestamps on every page give users full freshness transparency</em></p>
 <hr>
 <h2 id="8-evidence-index">8. Evidence Index<a class="headerlink" href="#8-evidence-index" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Evidence</th>
-<th style="text-align: left;">Location</th>
-<th style="text-align: left;">Shows</th>
+<th style="text-align: left;">Screenshot</th>
+<th style="text-align: left;">What It Proves</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>dbt Test Suite</strong></td>
-<td style="text-align: left;"><code>screenshots/03_dbt/test_passed_suite.png</code></td>
-<td style="text-align: left;">100% pass rate (559 tests)</td>
+<td style="text-align: left;">559 tests passing</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/test_passed_suite.png" data-desc-position="bottom"><img alt="Test Suite" src="../screenshots/03_dbt/test_passed_suite.png"></a></td>
+<td style="text-align: left;">Full <code>dbt build</code> green across all layers</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>dbt Lineage DAG</strong></td>
-<td style="text-align: left;"><code>screenshots/03_dbt/lineage_dag.png</code></td>
-<td style="text-align: left;">Test coverage across layers</td>
+<td style="text-align: left;">dbt schema contracts</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/data_contracts.png" data-desc-position="bottom"><img alt="Data Contracts" src="../screenshots/03_dbt/data_contracts.png"></a></td>
+<td style="text-align: left;">Compile-time column/type enforcement on MART models</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>CI Pipeline Pass</strong></td>
-<td style="text-align: left;"><code>screenshots/05_dataops/ci_dbt_build_pass.png</code></td>
-<td style="text-align: left;">GitHub Actions blocking merge</td>
+<td style="text-align: left;">CI pipeline pass</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/ci_dbt_build_pass.png" data-desc-position="bottom"><img alt="CI Build" src="../screenshots/05_dataops/ci_dbt_build_pass.png"></a></td>
+<td style="text-align: left;">GitHub Actions <code>dbt build</code> full-refresh in CI schema</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>GitHub PR Checks</strong></td>
-<td style="text-align: left;"><code>screenshots/05_dataops/github_pr_checks_pass.png</code></td>
-<td style="text-align: left;">Branch protection rules</td>
+<td style="text-align: left;">PR merge gate</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/github_pr_checks_pass.png" data-desc-position="bottom"><img alt="PR Checks" src="../screenshots/05_dataops/github_pr_checks_pass.png"></a></td>
+<td style="text-align: left;">Branch protection blocking merge on test failure</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>GitHub Issue Tracking</strong></td>
-<td style="text-align: left;"><code>screenshots/05_dataops/github_issue_tracking.png</code></td>
-<td style="text-align: left;">Auto-created issues from test failures</td>
+<td style="text-align: left;">SQLFluff clean</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/05_dataops/sqlfluff_linting_pass.png" data-desc-position="bottom"><img alt="SQL Lint" src="../screenshots/05_dataops/sqlfluff_linting_pass.png"></a></td>
+<td style="text-align: left;">Zero SQL lint violations pre-commit</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Revenue Reconciliation</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/uat_revenue_reconciliation.png</code></td>
-<td style="text-align: left;">Finance 100% match validation</td>
+<td style="text-align: left;">Revenue reconciliation</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/uat_revenue_reconciliation.png" data-desc-position="bottom"><img alt="UAT Revenue" src="../screenshots/04_powerbi/uat_revenue_reconciliation.png"></a></td>
+<td style="text-align: left;">Total Revenue matches Finance ERP; Verified split confirmed</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Trust Tooltip UX</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/trust_tooltip_ux.png</code></td>
-<td style="text-align: left;">Dual metric transparency</td>
+<td style="text-align: left;">Trust tooltip UX</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/trust_tooltip_ux.png" data-desc-position="bottom"><img alt="Tooltip" src="../screenshots/04_powerbi/trust_tooltip_ux.png"></a></td>
+<td style="text-align: left;">Quality reason exposed per data point in Power BI</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Data Quality Dashboard</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/data_quality_audit.png</code></td>
-<td style="text-align: left;">Verified vs. At-Risk breakdown</td>
+<td style="text-align: left;">Data quality audit view</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/data_quality_audit.png" data-desc-position="bottom"><img alt="Audit" src="../screenshots/04_powerbi/data_quality_audit.png"></a></td>
+<td style="text-align: left;">All flagged rows visible for Finance investigation</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>dbt Contracts</strong></td>
-<td style="text-align: left;"><code>screenshots/03_dbt/data_contracts.png</code></td>
-<td style="text-align: left;">Schema drift protection</td>
+<td style="text-align: left;">Power BI schema contract</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/data_contract.png" data-desc-position="bottom"><img alt="PBI Contract" src="../screenshots/04_powerbi/data_contract.png"></a></td>
+<td style="text-align: left;">Explicit column selection — fails fast on schema drift</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Power BI Schema Contract</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/data_contract.png</code></td>
-<td style="text-align: left;">Explicit column selection</td>
+<td style="text-align: left;">Source row counts</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/row_count.png" data-desc-position="bottom"><img alt="Row Counts" src="../screenshots/02_snowflake/row_count.png"></a></td>
+<td style="text-align: left;">1.55M rows validated across 8 RAW tables</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Power BI Query Folding</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/query_folding.png</code></td>
-<td style="text-align: left;">Snowflake pushdown optimization</td>
+<td style="text-align: left;">BPA — 0 issues</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/BPA_scan_after.png" data-desc-position="bottom"><img alt="BPA After" src="../screenshots/04_powerbi/BPA_scan_after.png"></a></td>
+<td style="text-align: left;">Tabular Editor Best Practice Analyzer: 0 violations</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Performance Analyzer</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/performance_analyzer_excutive_page.png</code></td>
-<td style="text-align: left;">&lt; 2s load times</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Snowflake RBAC</strong></td>
-<td style="text-align: left;"><code>screenshots/02_snowflake/RBAC.png</code></td>
-<td style="text-align: left;">Role hierarchy (least privilege)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Power BI RLS Validation</strong></td>
-<td style="text-align: left;"><code>screenshots/04_powerbi/uat_rls_validation.png</code></td>
-<td style="text-align: left;">State-level filtering</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Project Roadmap</strong></td>
-<td style="text-align: left;"><code>screenshots/05_dataops/project_milestones_roadmap.png</code></td>
-<td style="text-align: left;">GitHub Projects SLA tracking</td>
+<td style="text-align: left;">End-to-end lineage</td>
+<td style="text-align: left;"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/lineage_dag.png" data-desc-position="bottom"><img alt="Lineage" src="../screenshots/03_dbt/lineage_dag.png"></a></td>
+<td style="text-align: left;">Full dbt DAG: RAW → STAGING → INTERMEDIATE → MARTS</td>
 </tr>
 </tbody>
 </table>
@@ -1497,54 +1570,76 @@ Performance monitoring details (dashboard refresh SLA, performance analyzer resu
 <tr>
 <th style="text-align: left;">Metric</th>
 <th style="text-align: left;">Result</th>
-<th style="text-align: left;">SLA/Target</th>
+<th style="text-align: left;">Target</th>
+<th style="text-align: left;">Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Test Coverage</strong></td>
-<td style="text-align: left;">100% (559 tests)</td>
+<td style="text-align: left;"><strong>Total Tests</strong></td>
+<td style="text-align: left;">559</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Test Pass Rate</strong></td>
+<td style="text-align: left;">100% (559/559)</td>
 <td style="text-align: left;">100%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Primary Key Coverage</strong></td>
-<td style="text-align: left;">29/29 models</td>
+<td style="text-align: left;">100% (29/29 models)</td>
 <td style="text-align: left;">100%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Foreign Key Coverage</strong></td>
-<td style="text-align: left;">17/17 relationships</td>
+<td style="text-align: left;">100% (17/17 relations)</td>
 <td style="text-align: left;">100%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Test Pass Rate (30d)</strong></td>
+<td style="text-align: left;"><strong>Source Freshness</strong></td>
+<td style="text-align: left;">8/8 within SLA</td>
 <td style="text-align: left;">100%</td>
-<td style="text-align: left;">&gt; 99%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Verified Revenue</strong></td>
-<td style="text-align: left;">99.8% (R$ 13.56M)</td>
+<td style="text-align: left;">R$ 13,564,851 (99.8%)</td>
 <td style="text-align: left;">&gt; 99%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Revenue at Risk</strong></td>
-<td style="text-align: left;">0.2% (R$ 26.7K)</td>
+<td style="text-align: left;">R$ 26,792 (0.2%)</td>
 <td style="text-align: left;">&lt; 1%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>RAW Data Freshness</strong></td>
-<td style="text-align: left;">&lt; 1 hour</td>
-<td style="text-align: left;">&lt; 14 days</td>
+<td style="text-align: left;"><strong>CI Stage 1 Feedback</strong></td>
+<td style="text-align: left;">~45 seconds</td>
+<td style="text-align: left;">&lt; 5 min</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>CI Feedback Loop</strong></td>
-<td style="text-align: left;">&lt; 5 minutes</td>
-<td style="text-align: left;">&lt; 10 min</td>
+<td style="text-align: left;"><strong>CI Full Build</strong></td>
+<td style="text-align: left;">~8–12 min</td>
+<td style="text-align: left;">&lt; 15 min</td>
+<td style="text-align: left;">✅</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Dashboard Load Time</strong></td>
 <td style="text-align: left;">1.8s (95th percentile)</td>
 <td style="text-align: left;">&lt; 2s</td>
+<td style="text-align: left;">✅</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Schema Contract Models</strong></td>
+<td style="text-align: left;">100% of MART models</td>
+<td style="text-align: left;">100%</td>
+<td style="text-align: left;">✅</td>
 </tr>
 </tbody>
 </table>
@@ -1561,106 +1656,54 @@ Performance monitoring details (dashboard refresh SLA, performance analyzer resu
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Finance Reconciliation</strong></td>
-<td style="text-align: left;">4 days/month</td>
+<td style="text-align: left;">4 days/month (manual)</td>
 <td style="text-align: left;">0 hours</td>
-<td style="text-align: left;">100% automation</td>
+<td style="text-align: left;">100% automated</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Ad-hoc SQL Requests</strong></td>
-<td style="text-align: left;">12 hours/week</td>
-<td style="text-align: left;">0 hours</td>
-<td style="text-align: left;">Self-service</td>
+<td style="text-align: left;"><strong>Schema Break Detection</strong></td>
+<td style="text-align: left;">2-day user discovery</td>
+<td style="text-align: left;">&lt; 5 min CI failure</td>
+<td style="text-align: left;">99.7% faster</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Data Quality Triage</strong></td>
+<td style="text-align: left;"><strong>DQ Issue Triage</strong></td>
 <td style="text-align: left;">6 hours/week</td>
 <td style="text-align: left;">2 hours/week</td>
 <td style="text-align: left;">67% reduction</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Dashboard Load Time</strong></td>
-<td style="text-align: left;">No SLA</td>
-<td style="text-align: left;">1.8s (avg)</td>
-<td style="text-align: left;">Performance SLA</td>
+<td style="text-align: left;"><strong>Ad-hoc Revenue Requests</strong></td>
+<td style="text-align: left;">12 hours/week (analyst)</td>
+<td style="text-align: left;">Self-service</td>
+<td style="text-align: left;">~40 hrs/week saved</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Untested Code in Prod</strong></td>
+<td style="text-align: left;">Possible (no gate)</td>
+<td style="text-align: left;">0% (CI blocked)</td>
+<td style="text-align: left;">Zero incidents</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total Time Saved:</strong> 112 hours/month (93% reduction in manual work)</p>
+<p><strong>Total analyst time recovered: ~112 hours/month</strong> from automated quality enforcement replacing manual processes.</p>
 <hr>
-<h2 id="10-quality-framework-completeness">10. Quality Framework Completeness<a class="headerlink" href="#10-quality-framework-completeness" title="Permanent link">¶</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Domain</th>
-<th style="text-align: left;">Coverage</th>
-<th style="text-align: left;">Evidence</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Test Automation</strong></td>
-<td style="text-align: left;">✅ 559 tests, 100% PK/FK</td>
-<td style="text-align: left;">CI screenshots</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Schema Contracts</strong></td>
-<td style="text-align: left;">✅ dbt + Power BI enforced</td>
-<td style="text-align: left;">Contract screenshots</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Business Rules</strong></td>
-<td style="text-align: left;">✅ 18 singular tests</td>
-<td style="text-align: left;">Test result logs</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Dual Metrics</strong></td>
-<td style="text-align: left;">✅ Total vs. Verified exposed</td>
-<td style="text-align: left;">Dashboard UX</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>CI/CD Gate</strong></td>
-<td style="text-align: left;">✅ GitHub Actions blocking</td>
-<td style="text-align: left;">PR check failure demo</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Monitoring</strong></td>
-<td style="text-align: left;">✅ Freshness + refresh SLA</td>
-<td style="text-align: left;">Monitoring dashboards</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Security &amp; Access</strong></td>
-<td style="text-align: left;">✅ RBAC + RLS (see arch doc)</td>
-<td style="text-align: left;">Role matrix</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Performance</strong></td>
-<td style="text-align: left;">✅ &lt; 2s SLA (see perf doc)</td>
-<td style="text-align: left;">Performance Analyzer</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Optional Enhancements (10/10+ Level):</strong></p>
-<ul>
-<li>Data quality dashboard embedded in Power BI (currently screenshots only)</li>
-<li>Automated Slack notifications on test failures (currently GitHub Issues only)</li>
-<li>Historical test failure trend analysis (currently point-in-time only)</li>
-</ul>
+<h2 id="10-key-principles">10. Key Principles<a class="headerlink" href="#10-key-principles" title="Permanent link">¶</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Five principles this framework never violates</p>
+<ol>
+<li><strong>Flag, Don't Delete</strong> — 100% source data preserved; Finance reconciliation always possible regardless of anomalies</li>
+<li><strong>Explicit Over Implicit</strong> — Schema contracts fail at compile time, not at user discovery time two days later</li>
+<li><strong>Trust Through Transparency</strong> — Dual metrics exposed side by side; stakeholders see both clean and at-risk numbers</li>
+<li><strong>Zero-Trust by Layer</strong> — Every layer earns its own gate; downstream trust is never inherited from upstream</li>
+<li><strong>Fail Fast, Fix Early</strong> — &lt; 5 min CI feedback loop; broken code never reaches a stakeholder dashboard</li>
+</ol>
+</div>
 <hr>
-<h2 id="11-key-principles">11. Key Principles<a class="headerlink" href="#11-key-principles" title="Permanent link">¶</a></h2>
-<p><strong>1. Flag, Don't Delete</strong>
-Preserve 100% of source data → Finance reconciliation possible</p>
-<p><strong>2. Explicit Over Implicit</strong>
-Schema contracts fail fast → No silent breaking changes</p>
-<p><strong>3. Trust Through Transparency</strong>
-Dual metrics exposed → Stakeholders understand quality scores</p>
-<p><strong>4. Zero-Trust Validation</strong>
-559 automated tests → Every layer has quality gates</p>
-<p><strong>5. Fail-Fast CI Gate</strong>
-&lt; 5 min feedback → No untested code in production</p>
-<hr>
-<p><strong>Quality is not a feature. It's the foundation of trust.</strong></p>
-<p>Every layer has explicit validation. Every metric has transparent quality scoring. Every change is tested before production.</p>
-<p>This framework demonstrates enterprise-grade data quality engineering.</p>
+<blockquote>
+<p><strong>Quality is not a feature. It's the contract between the data team and the business.</strong></p>
+<p>Every row is accounted for. Every metric has a quality score. Every change is tested before it ships.</p>
+</blockquote>
 
 
 

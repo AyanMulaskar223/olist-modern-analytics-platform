@@ -1102,15 +1102,9 @@
 <em>Azure Blob container structure — source files organized by entity before Snowflake ingestion</em></p>
 <hr>
 <h3 id="42-raw-staging">4.2 Raw → Staging<a class="headerlink" href="#42-raw-staging" title="Permanent link">¶</a></h3>
-<div class="admonition abstract">
-<p class="admonition-title">Staging Contract — Three rules that are never broken</p>
-<ul>
-<li><strong>Type casting only</strong> — <code>VARCHAR → TIMESTAMP</code>, <code>STRING → NUMERIC</code>, whitespace trimmed, nulls handled</li>
-<li><strong>1:1 mapping to RAW</strong> — one model per source table; no joins, no filters, no business logic</li>
-<li><strong>Materialized as views</strong> — zero storage cost, always fresh from RAW on query</li>
-</ul>
-<p>MD5 surrogate keys (<code>dbt_utils.generate_surrogate_key</code>) are generated here. Natural source keys preserved as secondary columns for audit and reconciliation.</p>
-</div>
+<p>!!! abstract "Staging Contract — Three rules that are never broken" - <strong>Type casting only</strong> — <code>VARCHAR → TIMESTAMP</code>, <code>STRING → NUMERIC</code>, whitespace trimmed, nulls handled - <strong>1:1 mapping to RAW</strong> — one model per source table; no joins, no filters, no business logic - <strong>Materialized as views</strong> — zero storage cost, always fresh from RAW on query</p>
+<div class="highlight"><pre><span></span><code>MD5 surrogate keys (`dbt_utils.generate_surrogate_key`) are generated here. Natural source keys preserved as secondary columns for audit and reconciliation.
+</code></pre></div>
 <hr>
 <h3 id="43-staging-intermediate">4.3 Staging → Intermediate<a class="headerlink" href="#43-staging-intermediate" title="Permanent link">¶</a></h3>
 <blockquote>
@@ -1530,7 +1524,7 @@ BI query patterns filter on dimensions and aggregate on facts. Star schema optim
 <td style="text-align: left;">BI-layer control → warehouse access remains strictly read-only for <code>REPORTER_ROLE</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><a href="#adr-06-pbip--tmdl-over-pbix-binary-format">ADR-06</a></td>
+<td style="text-align: left;"><a href="#adr-06-pbip-tmdl-over-pbix-binary-format">ADR-06</a></td>
 <td style="text-align: left;">PBIP + TMDL over <code>.pbix</code> binary</td>
 <td style="text-align: left;">Requires Desktop June 2023+ → enforced in project onboarding docs</td>
 </tr>
