@@ -1487,7 +1487,7 @@ Furthermore, a standard single-direction filter means the `USERPRINCIPALNAME()` 
 I resolved the M:M relationship by introducing `dim_rls_mapping` — a bridge table keyed on `seller_state`. The filter chain flows as:
 
 ```
-Security_Users ↔️ dim_rls_mapping ➡️ dim_sellers ➡️ fct_order_items
+Security Rules ↔️ Security Bridge ➡️ Seller ➡️ Sales
 ```
 
 **The technical override:** I explicitly enabled _"Apply security filter in both directions"_ **only** on the `Security_Users ↔ dim_rls_mapping` relationship. This lets the `USERPRINCIPALNAME()` credential context flow upstream into the bridge and then propagate downstream through the single-direction star schema to filter the fact table automatically.
