@@ -1472,9 +1472,9 @@ models:
 
 **How do we implement dynamic Row-Level Security (RLS) when one manager oversees multiple states, and one state has multiple managers?**
 
-A direct connection between a `Security_Users` table and `dim_sellers` creates a **Many-to-Many (M:M) relationship**. In Power BI, native M:M relationships degrade query performance and create ambiguous filter paths through the Star Schema.
+A direct connection between a `Security Rules` table and `Seller` creates a **Many-to-Many (M:M) relationship**. In Power BI, native M:M relationships degrade query performance and create ambiguous filter paths through the Star Schema.
 
-Furthermore, a standard single-direction filter means the `USERPRINCIPALNAME()` security check **stops at the intermediate table** and never propagates downstream to `fct_order_items` — the actual sales data remains unfiltered and exposed.
+Furthermore, a standard single-direction filter means the `USERPRINCIPALNAME()` security check **stops at the intermediate table** and never propagates downstream to `Sales` — the actual sales data remains unfiltered and exposed.
 
 </td>
 </tr>
@@ -1490,7 +1490,7 @@ I resolved the M:M relationship by introducing `dim_rls_mapping` — a bridge ta
 Security Rules ↔️ Security Bridge ➡️ Seller ➡️ Sales
 ```
 
-**The technical override:** I explicitly enabled _"Apply security filter in both directions"_ **only** on the `Security_Users ↔ dim_rls_mapping` relationship. This lets the `USERPRINCIPALNAME()` credential context flow upstream into the bridge and then propagate downstream through the single-direction star schema to filter the fact table automatically.
+**The technical override:** I explicitly enabled _"Apply security filter in both directions"_ **only** on the `Security Rules` ↔ `Security Bridge` relationship. This lets the `USERPRINCIPALNAME()` credential context flow upstream into the bridge and then propagate downstream through the single-direction star schema to filter the fact table automatically.
 
 </td>
 </tr>
@@ -1498,9 +1498,10 @@ Security Rules ↔️ Security Bridge ➡️ Seller ➡️ Sales
 <td><strong>💡 Why It Matters</strong></td>
 <td>
 
-- ✅ **Star Schema Integrity:** The core reporting relationships (`dim_sellers → fct_order_items`) remain clean 1-to-Many — no ambiguous paths, no performance penalty on reporting queries.
+- ✅ **Star Schema Integrity:** The core reporting relationships (`Seller → Sales`) remain clean 1-to-Many — no ambiguous paths, no performance penalty on reporting queries.
 - ✅ **Scalability:** Manager-to-territory assignments live in a **dbt seed file in Snowflake** — add, remove, or reassign regions with a data change, no DAX rewrites, no reopening Power BI Desktop.
 - ✅ **Performance Isolation:** Bi-directional filtering is notoriously bad for query performance. By strictly isolating it to the two tiny security tables only, we achieve **enterprise-grade dynamic security without sacrificing the <1.2s dashboard rendering time**.
+- ✅ **Enterprise Standard:** This is the Microsoft-recommended architectural pattern for dynamic, multi-tenant organizational security.
 
 </td>
 </tr>
