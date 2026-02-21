@@ -106,7 +106,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#1-architecture-at-a-glance" class="md-skip">
+        <a href="#1-document-purpose-scope" class="md-skip">
           Skip to content
         </a>
       
@@ -603,10 +603,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-architecture-at-a-glance" class="md-nav__link">
+  <a href="#1-document-purpose-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Architecture at a Glance
+        1. Document Purpose &amp; Scope
       
     </span>
   </a>
@@ -614,10 +614,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-decision-log-senior-format" class="md-nav__link">
+  <a href="#2-architectural-principles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Decision Log (Senior Format)
+        2. Architectural Principles
       
     </span>
   </a>
@@ -625,10 +625,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-end-to-end-flow-concise" class="md-nav__link">
+  <a href="#3-high-level-system-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. End-to-End Flow (Concise)
+        3. High-Level System Overview
       
     </span>
   </a>
@@ -636,10 +636,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-layer-responsibilities-no-repetition" class="md-nav__link">
+  <a href="#4-data-flow-walkthrough" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Layer Responsibilities (No Repetition)
+        4. Data Flow Walkthrough
       
     </span>
   </a>
@@ -647,10 +647,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-problem-fix-impact-scan-friendly" class="md-nav__link">
+  <a href="#5-environment-strategy-dev-ci-prod" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Problem → Fix → Impact (Scan-Friendly)
+        5. Environment Strategy (Dev / CI / Prod)
       
     </span>
   </a>
@@ -658,10 +658,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-security-and-access-boundaries" class="md-nav__link">
+  <a href="#6-data-modeling-strategy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Security and Access Boundaries
+        6. Data Modeling Strategy
       
     </span>
   </a>
@@ -669,10 +669,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-cost-and-performance-guardrails" class="md-nav__link">
+  <a href="#7-governance-by-design" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. Cost and Performance Guardrails
+        7. Governance by Design
       
     </span>
   </a>
@@ -680,10 +680,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#9-evidence-index" class="md-nav__link">
+  <a href="#8-performance-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        9. Evidence Index
+        8. Performance Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-cost-aware-architecture-finops-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Cost-Aware Architecture (FinOps View)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-architecture-decision-log-adr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Architecture Decision Log (ADR)
       
     </span>
   </a>
@@ -912,202 +934,652 @@
 <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Layers-RAW%E2%86%92STG%E2%86%92INT%E2%86%92MARTS-059669?style=for-the-badge" data-desc-position="bottom"><img alt="Layers" src="https://img.shields.io/badge/Layers-RAW%E2%86%92STG%E2%86%92INT%E2%86%92MARTS-059669?style=for-the-badge"></a>
 <a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Quality%20Gate-559%20CI%20Tests-7C3AED?style=for-the-badge" data-desc-position="bottom"><img alt="Quality Gate" src="https://img.shields.io/badge/Quality%20Gate-559%20CI%20Tests-7C3AED?style=for-the-badge"></a></p>
 <div class="admonition warning">
-<p class="admonition-title">Portfolio Scenario — Architecture</p>
+<p class="admonition-title">Portfolio Scenario</p>
 </div>
-<p>⚠️ Portfolio Scenario: This architecture describes a simulated Digital Transformation implementation for the Olist public dataset. It documents design decisions and controls as production-style patterns for portfolio demonstration.</p>
+<p>This architecture describes a simulated Digital Transformation on the Olist public dataset. Design decisions and controls are documented as production-style patterns.</p>
 <hr>
-<div class="admonition abstract">
-<p class="admonition-title">Scope</p>
-</div>
-<p>This file defines the <strong>system architecture</strong> and key engineering decisions.</p>
-<div class="admonition tip">
-<p class="admonition-title">Single Source of Truth (SSOT) Rule</p>
-</div>
-<p>Definitions live once, then referenced:</p>
-<div class="highlight"><pre><span></span><code>- Business definitions and KPI rules: [00_business_requirements.md](00_business_requirements.md)
-- Column-level semantics: [02_data_dictionary.md](02_data_dictionary.md)
-- Data quality framework and controls: [03_data_quality.md](03_data_quality.md)
-- Semantic model design and DAX standards: [04_semantic_model.md](04_semantic_model.md)
-- Engineering standards and DataOps controls: [06_engineering_standards.md](06_engineering_standards.md)
-</code></pre></div>
+<h2 id="1-document-purpose-scope">1. Document Purpose &amp; Scope<a class="headerlink" href="#1-document-purpose-scope" title="Permanent link">¶</a></h2>
+<p>This document describes the <strong>end-to-end system architecture</strong> of the Olist Modern Analytics Platform — covering data flow, system boundaries, environment strategy, governance design, and architectural decision rationale.</p>
+<p>It intentionally <strong>does not cover</strong>: column-level semantics (<a href="../02_data_dictionary/">02_data_dictionary.md</a>), business KPI definitions (<a href="../00_business_requirements/">00_business_requirements.md</a>), data quality scores (<a href="../03_data_quality/">03_data_quality.md</a>), DAX measure logic (<a href="../04_semantic_model/">04_semantic_model.md</a>), or performance benchmark numbers (<a href="../05_performance_optimization/">05_performance_optimization.md</a>).</p>
+<p><strong>Target audience:</strong> Analytics Engineers, BI Developers, and technical reviewers evaluating platform design maturity.</p>
 <hr>
-<h2 id="1-architecture-at-a-glance">1. Architecture at a Glance<a class="headerlink" href="#1-architecture-at-a-glance" title="Permanent link">¶</a></h2>
-<p><strong>System Pattern:</strong> Modern Data Stack (Azure Blob → Snowflake → dbt → Power BI).</p>
-<p><strong>Objective:</strong> Provide a trustworthy, low-latency analytics platform with reproducible transformations, explicit quality gates, and governed semantic consumption.</p>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../architecture/architecture_hero.png" data-desc-position="bottom"><img alt="Modern Data Stack Architecture" class="architecture-preview-image" src="../architecture/architecture_hero.png"></a></p>
-<h3 id="evidence">Evidence<a class="headerlink" href="#evidence" title="Permanent link">¶</a></h3>
-<h3 id="system-lineage-dag">System Lineage (DAG)<a class="headerlink" href="#system-lineage-dag" title="Permanent link">¶</a></h3>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/lineage_dag.png" data-desc-position="bottom"><img alt="dbt Lineage DAG" src="../screenshots/03_dbt/lineage_dag.png"></a></p>
-<ul>
-<li>Snowflake schema separation: <a href="../screenshots/02_snowflake/database.png">database.png</a></li>
-<li>Semantic model implementation: <a href="../screenshots/04_powerbi/semantic_model.png">semantic_model.png</a></li>
-</ul>
-<hr>
-<h2 id="2-decision-log-senior-format">2. Decision Log (Senior Format)<a class="headerlink" href="#2-decision-log-senior-format" title="Permanent link">¶</a></h2>
+<h2 id="2-architectural-principles">2. Architectural Principles<a class="headerlink" href="#2-architectural-principles" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Decision</th>
-<th style="text-align: left;">Rationale</th>
-<th style="text-align: left;">Trade-off</th>
-<th style="text-align: left;">Evidence</th>
+<th style="text-align: left;">Principle</th>
+<th style="text-align: left;">Engineering Reason</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Warehouse: Snowflake</strong></td>
-<td style="text-align: left;">Separated compute/storage, zero-copy cloning, strong dbt adapter maturity</td>
-<td style="text-align: left;">Cost discipline required via warehouse sizing and auto-suspend</td>
-<td style="text-align: left;"><a href="../screenshots/02_snowflake/warehouse.png">warehouse.png</a></td>
+<td style="text-align: left;">🔀 <strong>Separation of OLTP and OLAP</strong></td>
+<td style="text-align: left;">Source reads never touch the analytics warehouse — workloads never compete</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Modeling Pattern: Kimball Star Schema</strong></td>
-<td style="text-align: left;">Faster BI queries, clear fact grain, reusable conformed dimensions</td>
-<td style="text-align: left;">More modeling upfront than wide flat-table approach</td>
-<td style="text-align: left;"><a href="../architecture/marts_data_model.png">marts_data_model.png</a></td>
+<td style="text-align: left;">🔒 <strong>Raw data is immutable</strong></td>
+<td style="text-align: left;">Append-only landing zone; full replay and Finance reconciliation always possible</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Transform Engine: dbt Core</strong></td>
-<td style="text-align: left;">SQL-first workflows, test-native framework, lineage auto-generation</td>
-<td style="text-align: left;">Requires strict naming/testing discipline</td>
-<td style="text-align: left;"><a href="../screenshots/03_dbt/test_passed_suite.png">test_passed_suite.png</a></td>
+<td style="text-align: left;">📝 <strong>Version-controlled transforms</strong></td>
+<td style="text-align: left;">Every business rule lives in Git — reviewable, rollback-able, auditable</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Consumption Mode: Power BI Import</strong></td>
-<td style="text-align: left;">Sub-2s dashboard interactions, predictable user experience</td>
-<td style="text-align: left;">Scheduled freshness vs real-time DirectQuery</td>
-<td style="text-align: left;"><a href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png">performance_analyzer_excutive_page.png</a></td>
+<td style="text-align: left;">✅ <strong>Trust is enforced, not assumed</strong></td>
+<td style="text-align: left;">Data quality validated by 559 automated tests before any downstream consumption</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Quality Policy: Blocking CI gates</strong></td>
-<td style="text-align: left;">Prevents bad models/metrics from reaching reports</td>
-<td style="text-align: left;">Slower merges when tests fail</td>
-<td style="text-align: left;"><a href="../screenshots/05_dataops/github_pr_checks_pass.png">github_pr_checks_pass.png</a></td>
+<td style="text-align: left;">🚫 <strong>Fail fast, never silently</strong></td>
+<td style="text-align: left;">CI gates block bad models; no unvalidated code reaches production reports</td>
+</tr>
+<tr>
+<td style="text-align: left;">🔑 <strong>Least-privilege by default</strong></td>
+<td style="text-align: left;">Roles grant minimum access required — no shared credentials, no over-permissive grants</td>
+</tr>
+<tr>
+<td style="text-align: left;">💰 <strong>Cost-awareness by design</strong></td>
+<td style="text-align: left;">Compute sized to workload; auto-suspend + storage tiers minimize waste</td>
+</tr>
+<tr>
+<td style="text-align: left;">🎯 <strong>Single source of truth</strong></td>
+<td style="text-align: left;">Metrics defined once in the semantic layer and reused everywhere — no metric drift</td>
 </tr>
 </tbody>
 </table>
 <hr>
-<h2 id="3-end-to-end-flow-concise">3. End-to-End Flow (Concise)<a class="headerlink" href="#3-end-to-end-flow-concise" title="Permanent link">¶</a></h2>
-<p><strong>Data Flow:</strong> Azure Blob → Snowflake RAW → dbt STAGING/INTERMEDIATE/MARTS → Power BI Semantic Model.</p>
-<h3 id="flow-controls">Flow Controls<a class="headerlink" href="#flow-controls" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Ingestion control:</strong> idempotent load pattern into RAW (<code>FORCE = FALSE</code> policy in ingestion scripts).</li>
-<li><strong>Transformation control:</strong> model dependencies enforced by dbt <code>ref()</code> lineage.</li>
-<li><strong>Quality control:</strong> 559 blocking tests in CI (<code>dbt build --target dev/prod</code>).</li>
-<li><strong>Consumption control:</strong> semantic model connects to MARTS only (no RAW/STAGING exposure).</li>
-</ul>
-<div class="admonition success">
-<p class="admonition-title">Quality Gate</p>
+<h2 id="3-high-level-system-overview">3. High-Level System Overview<a class="headerlink" href="#3-high-level-system-overview" title="Permanent link">¶</a></h2>
+<h3 id="31-logical-architecture">3.1 Logical Architecture<a class="headerlink" href="#31-logical-architecture" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Domain</th>
+<th style="text-align: left;">Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Ingestion</strong></td>
+<td style="text-align: left;">Land raw source files into an immutable warehouse zone</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Storage</strong></td>
+<td style="text-align: left;">Separate compute from storage; enforce schema boundaries</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Transformation</strong></td>
+<td style="text-align: left;">Apply business logic in version-controlled, tested SQL</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Consumption</strong></td>
+<td style="text-align: left;">Serve governed, certified metrics through a semantic layer</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Governance &amp; CI</strong></td>
+<td style="text-align: left;">Enforce quality gates, access control, and deployment rules</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../architecture/architecture_hero.png" data-desc-position="bottom"><img alt="System Architecture" src="../architecture/architecture_hero.png"></a>
+<em>End-to-end Modern Data Stack: Azure Blob → Snowflake → dbt → Power BI</em></p>
+<hr>
+<h3 id="32-physical-architecture">3.2 Physical Architecture<a class="headerlink" href="#32-physical-architecture" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">Technology</th>
+<th style="text-align: left;">Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Ingestion</strong></td>
+<td style="text-align: left;">Azure Blob + <code>COPY INTO</code></td>
+<td style="text-align: left;">Idempotent file landing; multi-format (CSV, Parquet, JSON)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Warehouse</strong></td>
+<td style="text-align: left;">Snowflake (OLAP)</td>
+<td style="text-align: left;">Separated compute/storage; transient RAW + curated MARTS</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Transform</strong></td>
+<td style="text-align: left;">dbt Core</td>
+<td style="text-align: left;">Business logic, testing, lineage, documentation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BI</strong></td>
+<td style="text-align: left;">Power BI (PBIP + TMDL)</td>
+<td style="text-align: left;">Semantic layer, measures, RLS, self-service consumption</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CI/CD</strong></td>
+<td style="text-align: left;">GitHub Actions</td>
+<td style="text-align: left;">Two-stage quality gates: lint on push, full build on PR</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pre-commit</strong></td>
+<td style="text-align: left;">pre-commit hooks</td>
+<td style="text-align: left;">Hygiene → security → SQLFluff → markdownlint enforcement</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/database.png" data-desc-position="bottom"><img alt="Snowflake Schema Separation" src="../screenshots/02_snowflake/database.png"></a>
+<em>Snowflake database separation: RAW_DB (immutable) → ANALYTICS_DB (production) → DEV_DB (sandbox)</em></p>
+<hr>
+<h2 id="4-data-flow-walkthrough">4. Data Flow Walkthrough<a class="headerlink" href="#4-data-flow-walkthrough" title="Permanent link">¶</a></h2>
+<h3 id="41-source-raw-layer">4.1 Source → Raw Layer<a class="headerlink" href="#41-source-raw-layer" title="Permanent link">¶</a></h3>
+<p>Source files are staged in <strong>Azure Blob Storage</strong> and loaded into Snowflake via <code>COPY INTO</code> with <code>FORCE = FALSE</code> — ensuring idempotency; files already loaded are skipped automatically. Connectivity uses <strong>OAuth 2.0 Storage Integration</strong> (not SAS tokens), meaning no credentials are stored in SQL scripts and access is revocable at the Azure IAM level.</p>
+<p>File formats are assigned by data characteristics, not convention:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Entity</th>
+<th style="text-align: left;">Format</th>
+<th style="text-align: left;">Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Orders, Customers, Sellers, Geolocation, Reviews, Payments, Translations</td>
+<td style="text-align: left;"><strong>CSV</strong></td>
+<td style="text-align: left;">Tabular, low-complexity, standard delimiter</td>
+</tr>
+<tr>
+<td style="text-align: left;">Order Items</td>
+<td style="text-align: left;"><strong>Parquet</strong></td>
+<td style="text-align: left;">Highest-volume fact table (112K+ rows); columnar format reduces scan cost</td>
+</tr>
+<tr>
+<td style="text-align: left;">Order Reviews</td>
+<td style="text-align: left;"><strong>JSON</strong></td>
+<td style="text-align: left;">Semi-structured review text; Snowflake's <code>PARSE_JSON</code> handles nesting</td>
+</tr>
+</tbody>
+</table>
+<p>The RAW layer is <strong>immutable by contract</strong>: no transformation, no cleaning, no filtering. Every row lands exactly as received, with three audit columns appended (<code>_loaded_at</code>, <code>_source_file</code>, <code>_load_batch_id</code>). This preserves replay capability and provides a reconciliation baseline. Tables are created as <strong>transient</strong> — no Time Travel overhead on append-only data that can always be re-loaded from source.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/01_azure_blob_storage/container_structure.png" data-desc-position="bottom"><img alt="Azure Container Structure" src="../screenshots/01_azure_blob_storage/container_structure.png"></a>
+<em>Azure Blob container structure — source files organized by entity before Snowflake ingestion</em></p>
+<hr>
+<h3 id="42-raw-staging">4.2 Raw → Staging<a class="headerlink" href="#42-raw-staging" title="Permanent link">¶</a></h3>
+<p>!!! abstract "Staging Contract — Three rules that are never broken" - <strong>Type casting only</strong> — <code>VARCHAR → TIMESTAMP</code>, <code>STRING → NUMERIC</code>, whitespace trimmed, nulls handled - <strong>1:1 mapping to RAW</strong> — one model per source table; no joins, no filters, no business logic - <strong>Materialized as views</strong> — zero storage cost, always fresh from RAW on query</p>
+<div class="highlight"><pre><span></span><code>MD5 surrogate keys (`dbt_utils.generate_surrogate_key`) are generated here. Natural source keys preserved as secondary columns for audit and reconciliation.
+</code></pre></div>
+<hr>
+<h3 id="43-staging-intermediate">4.3 Staging → Intermediate<a class="headerlink" href="#43-staging-intermediate" title="Permanent link">¶</a></h3>
+<blockquote>
+<p><strong>Business logic lives here — not in marts, not in Power BI.</strong> Logic built once, reused everywhere.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Logic Applied</th>
+<th style="text-align: left;">Business Problem</th>
+<th style="text-align: left;">Implementation</th>
+<th style="text-align: left;">Critical Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Identity resolution</strong></td>
+<td style="text-align: left;"><code>customer_id</code> is per-order (ephemeral); repeat analysis impossible</td>
+<td style="text-align: left;">Map → persistent <code>user_sk</code> via <code>ROW_NUMBER()</code> deduplication</td>
+<td style="text-align: left;">Must run before retention sequencing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Retention sequencing</strong></td>
+<td style="text-align: left;">Classify New vs. Repeat at any point-in-time</td>
+<td style="text-align: left;"><code>ROW_NUMBER() OVER (PARTITION BY user_sk ORDER BY ordered_at)</code></td>
+<td style="text-align: left;">Empty orders filtered with <code>INNER JOIN valid_orders_list</code> <em>before</em> ranking — they corrupt sequence numbers if not excluded</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Delivery SLA flag</strong></td>
+<td style="text-align: left;"><code>is_delayed</code> logic would be duplicated across every downstream mart</td>
+<td style="text-align: left;"><code>CASE WHEN delivered_at &gt; estimated_delivery_at THEN 1 ELSE 0</code></td>
+<td style="text-align: left;">Calculated once; reused in all logistics KPIs</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Quality compression</strong></td>
+<td style="text-align: left;">4 boolean flags clutter every downstream schema</td>
+<td style="text-align: left;">Compress to <code>is_verified</code> (1/0) + <code>quality_issue_reason</code> (text)</td>
+<td style="text-align: left;">Reason values: "Ghost Delivery", "Missing Photos", "Arrival Before Approval"</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Product enrichment</strong></td>
+<td style="text-align: left;">Category names in Portuguese only; ~610 missing English translations</td>
+<td style="text-align: left;">LEFT JOIN + <code>COALESCE(English, Portuguese, 'Unknown')</code></td>
+<td style="text-align: left;">Zero data loss; fallback chain preserves all products</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Materialization by model:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Materialization</th>
+<th style="text-align: left;">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>int_sales__order_items_joined</code></td>
+<td style="text-align: left;"><strong>Table</strong></td>
+<td style="text-align: left;">Window functions (<code>ROW_NUMBER</code>, <code>DATEDIFF</code>) are expensive; caching prevents re-execution on every mart build</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>int_customers__prep</code></td>
+<td style="text-align: left;"><strong>Table</strong></td>
+<td style="text-align: left;">Deduplication logic; stable dimension source requires consistent output</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>int_products__enriched</code></td>
+<td style="text-align: left;"><strong>View</strong></td>
+<td style="text-align: left;">Simple LEFT JOIN; no performance benefit from materializing</td>
+</tr>
+</tbody>
+</table>
+<p>Intermediate models are built once and reused; complex JOIN and window function logic is not duplicated in marts.</p>
+<hr>
+<h3 id="44-intermediate-marts">4.4 Intermediate → Marts<a class="headerlink" href="#44-intermediate-marts" title="Permanent link">¶</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Why Star Schema (Kimball) at the Marts layer?</p>
 </div>
-<p><strong>559 automated tests</strong> execute as blocking checks in CI. Failed tests block promotion.</p>
+<p>BI tools filter on <strong>dimensions</strong> and aggregate on <strong>facts</strong>. Star schema is the only modeling pattern that optimizes directly for this access pattern:</p>
+<div class="highlight"><pre><span></span><code>- Surrogate keys pre-calculated — no runtime key lookups in DAX
+- Grain locked at order-line level — any aggregation yields correct results regardless of filter context
+- Conformed dimensions reusable across multiple fact tables
+</code></pre></div>
+<p><strong>Fact:</strong> <code>fct_order_items</code> — <strong>incremental table</strong> (appends new <code>ordered_at</code> partitions only).
+<strong>Dimensions (×6):</strong> <strong>full-refresh tables</strong> (Customers, Products, Sellers, Date, Geolocation, RLS).</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../architecture/marts_data_model.png" data-desc-position="bottom"><img alt="Star Schema Data Model" src="../architecture/marts_data_model.png"></a>
+<em>Kimball Star Schema — fct_order_items at order-line grain surrounded by 6 conformed dimensions</em></p>
 <hr>
-<h2 id="4-layer-responsibilities-no-repetition">4. Layer Responsibilities (No Repetition)<a class="headerlink" href="#4-layer-responsibilities-no-repetition" title="Permanent link">¶</a></h2>
-<p>For detailed naming, columns, and business definitions, use linked SSOT docs. This section only states architectural ownership and contracts.</p>
-<h3 id="41-raw-layer">4.1 RAW Layer<a class="headerlink" href="#41-raw-layer" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Materialization:</strong> Transient tables</li>
-<li><strong>Contract:</strong> Immutable landing zone + audit columns</li>
-<li><strong>Owner:</strong> Loader role</li>
-<li><strong>Purpose:</strong> Preserve source fidelity for replay/audit</li>
-</ul>
-<p>Evidence: <a href="../screenshots/02_snowflake/row_count.png">row_count.png</a></p>
-<h3 id="42-staging-layer">4.2 STAGING Layer<a class="headerlink" href="#42-staging-layer" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Materialization:</strong> Views</li>
-<li><strong>Contract:</strong> Type casting, standardization, no business joins</li>
-<li><strong>Owner:</strong> Analytics role</li>
-<li><strong>Purpose:</strong> Stable technical interface to source data</li>
-</ul>
-<p>Reference details: <a href="../02_data_dictionary/">02_data_dictionary.md</a></p>
-<h3 id="43-intermediate-layer">4.3 INTERMEDIATE Layer<a class="headerlink" href="#43-intermediate-layer" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Materialization:</strong> Ephemeral models</li>
-<li><strong>Contract:</strong> Business transformations and reusable joins</li>
-<li><strong>Owner:</strong> Analytics role</li>
-<li><strong>Purpose:</strong> Reusable business logic before mart serving</li>
-</ul>
-<p>Reference details: <a href="../06_engineering_standards/">06_engineering_standards.md</a></p>
-<h3 id="44-marts-layer">4.4 MARTS Layer<a class="headerlink" href="#44-marts-layer" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Materialization:</strong> Tables + incremental facts</li>
-<li><strong>Contract:</strong> Star schema optimized for BI</li>
-<li><strong>Owner:</strong> Analytics role (write), reporter role (read)</li>
-<li><strong>Purpose:</strong> Trusted analytical interface</li>
-</ul>
-<p>Evidence: <a href="../screenshots/04_powerbi/semantic_model.png">semantic_model.png</a></p>
+<h3 id="45-marts-semantic-layer">4.5 Marts → Semantic Layer<a class="headerlink" href="#45-marts-semantic-layer" title="Permanent link">¶</a></h3>
+<div class="admonition abstract">
+<p class="admonition-title">The Final Governance Boundary</p>
+</div>
+<p>Power BI connects <strong>exclusively to MARTS</strong> via <code>REPORTING_ROLE</code>. RAW and STAGING are never exposed to BI consumers — enforced at the Snowflake RBAC level, not just by convention.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Capability</th>
+<th style="text-align: left;">Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Certified measures</strong></td>
+<td style="text-align: left;">50+ DAX measures in version-controlled TMDL files — one definition, used everywhere</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Verified vs. Raw</strong></td>
+<td style="text-align: left;"><code>is_verified</code> flag surfaces clean revenue separately; Finance reconciles without hiding bad data</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Self-service UX</strong></td>
+<td style="text-align: left;">Columns in Title Case, tooltip overlays (Verified %, At-Risk $), dedicated Documentation page</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Freshness signal</strong></td>
+<td style="text-align: left;">Dual-timestamp footer (<code>_dbt_updated_at</code> + <code>_source_loaded_at</code>); users know exactly how fresh the data is</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/semantic_model.png" data-desc-position="bottom"><img alt="Semantic Model" src="../screenshots/04_powerbi/semantic_model.png"></a>
+<em>Power BI semantic model — relationships, measures, and RLS policy in one governed layer</em></p>
 <hr>
-<h2 id="5-problem-fix-impact-scan-friendly">5. Problem → Fix → Impact (Scan-Friendly)<a class="headerlink" href="#5-problem-fix-impact-scan-friendly" title="Permanent link">¶</a></h2>
-<h3 id="51-dashboard-latency">5.1 Dashboard Latency<a class="headerlink" href="#51-dashboard-latency" title="Permanent link">¶</a></h3>
+<h2 id="5-environment-strategy-dev-ci-prod">5. Environment Strategy (Dev / CI / Prod)<a class="headerlink" href="#5-environment-strategy-dev-ci-prod" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Environment</th>
+<th style="text-align: left;">Purpose</th>
+<th style="text-align: left;">Data</th>
+<th style="text-align: left;">Protection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>DEV</strong></td>
+<td style="text-align: left;">Feature development &amp; iteration</td>
+<td style="text-align: left;"><code>OLIST_DEV_DB</code> (sandboxed)</td>
+<td style="text-align: left;">No business users; full developer access</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CI</strong></td>
+<td style="text-align: left;">Automated PR validation</td>
+<td style="text-align: left;">Ephemeral <code>CI_PR_&lt;n&gt;</code> schemas</td>
+<td style="text-align: left;">Auto-created per PR, auto-dropped post-merge</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PROD</strong></td>
+<td style="text-align: left;">Business consumption</td>
+<td style="text-align: left;"><code>OLIST_ANALYTICS_DB</code></td>
+<td style="text-align: left;">Locked; promotion requires CI pass + sign-off</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CI pipeline is two-stage by design</strong> — balancing speed for developers with rigour for production:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">Trigger</th>
+<th style="text-align: left;">What Runs</th>
+<th style="text-align: left;">Duration</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Stage 1</strong></td>
+<td style="text-align: left;">Push to <code>feat/**</code></td>
+<td style="text-align: left;">SQLFluff lint + <code>dbt parse</code> (no Snowflake connection)</td>
+<td style="text-align: left;">~45s</td>
+<td style="text-align: left;">Fast syntax feedback before PR</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Stage 2</strong></td>
+<td style="text-align: left;">PR to <code>main</code></td>
+<td style="text-align: left;">Full <code>dbt build</code> — all 35+ models + 559 tests against live Snowflake</td>
+<td style="text-align: left;">~8–12 min</td>
+<td style="text-align: left;">Production-equivalent validation</td>
+</tr>
+</tbody>
+</table>
+<p>Stage 2 runs against an <strong>ephemeral <code>CI_PR_&lt;number&gt;</code> schema</strong> created automatically per PR in <code>OLIST_DEV_DB</code> and dropped post-merge, ensuring zero shared state between concurrent PRs.</p>
+<p><strong>Power BI workspace promotion</strong> follows the same discipline: changes are built and validated in <code>Olist Analytics [DEV]</code>; Finance revenue reconciliation and RLS validation are required before promoting to <code>Olist Analytics [PROD]</code> — the certified dataset serving the Org App with scheduled refresh and email subscriptions. No direct editing is permitted in PROD.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/dev_prod_strategy.png" data-desc-position="bottom"><img alt="DEV to PROD Power BI Strategy" src="../screenshots/04_powerbi/dev_prod_strategy.png"></a>
+<em>DEV workspace for iteration → PROD workspace for certified, governed consumption</em></p>
+<hr>
+<h2 id="6-data-modeling-strategy">6. Data Modeling Strategy<a class="headerlink" href="#6-data-modeling-strategy" title="Permanent link">¶</a></h2>
+<p><strong>Why Medallion Architecture?</strong>
+Separating RAW → STAGING → INTERMEDIATE → MARTS enforces a strict contract at each boundary. Business logic is changed in one place (intermediate) without touching source contracts; marts change without affecting raw data replay.</p>
+<p><strong>Why Kimball Star Schema?</strong>
+BI query patterns filter on dimensions and aggregate on facts. Star schema optimizes for this: fewer joins, predictable performance, and a clear grain definition that prevents double-counting.</p>
+<p><strong>Grain consistency:</strong> Every fact row represents exactly one order line item. Any aggregation yields correct results regardless of filter context.</p>
+<p><strong>Surrogate key strategy:</strong> All PKs in staging and marts are MD5 surrogate keys generated via <code>dbt_utils.generate_surrogate_key()</code>. Natural source keys are preserved as secondary columns for audit and reconciliation.</p>
+<p><strong>Slowly Changing Dimensions:</strong> Customer addresses are handled via latest-address selection in the intermediate layer (<code>ROW_NUMBER() + rn = 1</code> filter). No SCD Type 2 — the dataset is historical and static.</p>
+<hr>
+<h2 id="7-governance-by-design">7. Governance by Design<a class="headerlink" href="#7-governance-by-design" title="Permanent link">¶</a></h2>
+<p>Governance is not a retrofit — it is designed into every layer:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">Governance Control</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>RAW</strong></td>
+<td style="text-align: left;">Immutability + audit columns (<code>_loaded_at</code>, <code>_source_file</code>, <code>_load_batch_id</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>dbt Tests</strong></td>
+<td style="text-align: left;">559 blocking tests — <code>not_null</code>, <code>unique</code>, <code>relationships</code>, <code>accepted_values</code>, singular</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>dbt Contracts</strong></td>
+<td style="text-align: left;">Schema contracts enforce column presence and data types — breaking changes fail CI</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CI Gates</strong></td>
+<td style="text-align: left;">Failed tests block PR merge — no unvalidated code reaches production</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Semantic Layer</strong></td>
+<td style="text-align: left;">Metrics defined once in TMDL; <code>[Total Revenue]</code> has one definition reused everywhere</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RLS</strong></td>
+<td style="text-align: left;">Power BI Bridge Table restricts regional managers to their own State/Region at login</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RBAC</strong></td>
+<td style="text-align: left;">Four Snowflake roles (LOADER / ANALYTICS / REPORTER / CI_SERVICE) — least-privilege</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BPA</strong></td>
+<td style="text-align: left;">Tabular Editor BPA — 50+ rules, 0 issues enforced before every PROD deploy</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Source Freshness</strong></td>
+<td style="text-align: left;">8 sources monitored with tiered SLA windows (1–30 days); stale data flagged in CI before users see it</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Heartbeat Table</strong></td>
+<td style="text-align: left;"><code>meta_pipeline_heartbeat</code> — dual-clock freshness signal (<code>_dbt_updated_at</code> + <code>_source_loaded_at</code>); Power BI footer shows both timestamps so users know exactly how fresh the data is</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PBIP + TMDL</strong></td>
+<td style="text-align: left;">Power BI stored in PBIP + TMDL format (plain text, not binary <code>.pbix</code>); every DAX measure change is PR-reviewable, diff-able, and Git-tracked</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/data_contracts.png" data-desc-position="bottom"><img alt="dbt Data Contracts" src="../screenshots/03_dbt/data_contracts.png"></a>
+<em>dbt schema contracts — column presence and type enforcement at model level</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/RBAC.png" data-desc-position="bottom"><img alt="Snowflake RBAC" src="../screenshots/02_snowflake/RBAC.png"></a>
+<em>4-role Snowflake RBAC hierarchy — separation of loading, transformation, and reporting duties</em></p>
+<hr>
+<h2 id="8-performance-architecture">8. Performance Architecture<a class="headerlink" href="#8-performance-architecture" title="Permanent link">¶</a></h2>
+<blockquote>
+<p>Benchmark numbers (load times, visual render times, refresh durations) live in <a href="../05_performance_optimization/">05_performance_optimization.md</a>. This section covers decisions only.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Decision</th>
+<th style="text-align: left;">Problem Solved</th>
+<th style="text-align: left;">Architecture Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Import Mode</strong> over DirectQuery</td>
+<td style="text-align: left;">DirectQuery adds warehouse spin-up + network latency on every filter click</td>
+<td style="text-align: left;">VertiPaq in-memory engine delivers sub-2s interactions, independent of Snowflake state</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Incremental refresh</strong> on <code>fct_order_items</code></td>
+<td style="text-align: left;">Full reload of 112,650 rows = 45+ min refresh windows, blocking hourly schedules</td>
+<td style="text-align: left;">Only new <code>ordered_at</code> partitions appended → 8 min refresh, hourly windows enabled</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Star schema pre-calculation</strong></td>
+<td style="text-align: left;">Flat/denormalized tables force DAX to scan more columns per query</td>
+<td style="text-align: left;">VertiPaq column compression maximized; only referenced columns scanned per query</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Query folding enforced</strong></td>
+<td style="text-align: left;">Un-folded M code re-processes data in Power BI engine during refresh</td>
+<td style="text-align: left;">Fold-compatible transforms push joins and filters back to Snowflake, reducing transfer volume</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/incremental_refresh.png" data-desc-position="bottom"><img alt="Incremental Refresh" src="../screenshots/04_powerbi/incremental_refresh.png"></a>
+<em>Incremental refresh policy — only new partitions processed per refresh cycle</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/04_powerbi/query_folding.png" data-desc-position="bottom"><img alt="Query Folding" src="../screenshots/04_powerbi/query_folding.png"></a>
+<em>Query folding confirmed — transformations pushed to Snowflake during import refresh</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/03_dbt/incremental_model.png" data-desc-position="bottom"><img alt="dbt Incremental Model" src="../screenshots/03_dbt/incremental_model.png"></a>
+<em>dbt incremental materialization — fact table appends new <code>ordered_at</code> partitions only</em></p>
+<hr>
+<h2 id="9-cost-aware-architecture-finops-view">9. Cost-Aware Architecture (FinOps View)<a class="headerlink" href="#9-cost-aware-architecture-finops-view" title="Permanent link">¶</a></h2>
+<p><strong>Three purpose-built warehouses</strong> — each sized and suspended independently; no idle cost cross-contamination between workloads:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Warehouse</th>
+<th style="text-align: left;">Size</th>
+<th style="text-align: left;">Auto-Suspend</th>
+<th style="text-align: left;">Used By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>LOADING_WH_XS</code></td>
+<td style="text-align: left;">X-Small</td>
+<td style="text-align: left;">60 s</td>
+<td style="text-align: left;">Azure → Snowflake <code>COPY INTO</code> ingestion</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>TRANSFORM_WH_XS</code></td>
+<td style="text-align: left;">X-Small</td>
+<td style="text-align: left;">60 s</td>
+<td style="text-align: left;">dbt runs (dev, CI, scheduled prod)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>REPORTING_WH_XS</code></td>
+<td style="text-align: left;">X-Small</td>
+<td style="text-align: left;">60 s</td>
+<td style="text-align: left;">Power BI Import refresh only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>FinOps decision log:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Decision</th>
+<th style="text-align: left;">Implementation</th>
+<th style="text-align: left;">Cost Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Hard spend ceiling</strong></td>
+<td style="text-align: left;">Resource Monitor — 100 credit/month cap, all warehouses combined</td>
+<td style="text-align: left;">Prevents runaway CI or misconfigured refresh schedules</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Transient RAW tables</strong></td>
+<td style="text-align: left;"><code>TRANSIENT</code> = 0 days Time Travel on immutable, re-loadable data</td>
+<td style="text-align: left;">Eliminates Time Travel storage cost on the largest schema</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Standard ANALYTICS/DEV tables</strong></td>
+<td style="text-align: left;">Full Time Travel enabled where data mutation is possible</td>
+<td style="text-align: left;">90-day rollback capability for production and dev environments</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Azure Blob tiering</strong></td>
+<td style="text-align: left;">Hot → Cool → Archive lifecycle policy on last-access time</td>
+<td style="text-align: left;">~60% storage cost reduction on source files</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ELT over ETL</strong></td>
+<td style="text-align: left;">Transform inside Snowflake — no external VM, no Spark cluster</td>
+<td style="text-align: left;">Zero always-on infrastructure cost outside scheduled refresh windows</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>STAGING as views</strong></td>
+<td style="text-align: left;">No storage materialized for the 1:1 interface layer</td>
+<td style="text-align: left;">Only INT and MART tables incur storage, where materialization earns its cost</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/02_snowflake/warehouse.png" data-desc-position="bottom"><img alt="Snowflake Warehouse Config" src="../screenshots/02_snowflake/warehouse.png"></a>
+<em>X-Small warehouses with 60-second auto-suspend — cost discipline at infrastructure level</em></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../screenshots/01_azure_blob_storage/lifecycle_policy.png" data-desc-position="bottom"><img alt="Azure Blob Lifecycle Policy" src="../screenshots/01_azure_blob_storage/lifecycle_policy.png"></a>
+<em>Azure Blob lifecycle policy — Hot → Cool → Archive tiering on source files</em></p>
+<hr>
+<h2 id="10-architecture-decision-log-adr">10. Architecture Decision Log (ADR)<a class="headerlink" href="#10-architecture-decision-log-adr" title="Permanent link">¶</a></h2>
+<div class="admonition info">
+<p class="admonition-title">ADR Overview</p>
+</div>
+<p>Six decisions that define the architecture. Each follows: <strong>Problem → Decision → Alternatives → Trade-offs</strong>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ADR</th>
+<th style="text-align: left;">Decision Made</th>
+<th style="text-align: left;">Key Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#adr-01-snowflake-over-postgres-for-analytical-workloads">ADR-01</a></td>
+<td style="text-align: left;">Snowflake over Postgres</td>
+<td style="text-align: left;">Cost discipline required → mitigated by auto-suspend + Resource Monitors</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#adr-02-dbt-core-over-raw-sql-scripts">ADR-02</a></td>
+<td style="text-align: left;">dbt Core over raw SQL</td>
+<td style="text-align: left;">Naming conventions required → enforced by SQLFluff + CI gates</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#adr-03-power-bi-import-mode-over-directquery">ADR-03</a></td>
+<td style="text-align: left;">Import Mode over DirectQuery</td>
+<td style="text-align: left;">Not real-time → daily refresh acceptable for business reporting cadence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#adr-04-verified-vs-raw-design-trust-dont-trash">ADR-04</a></td>
+<td style="text-align: left;">"Trust, Don't Trash" data quality</td>
+<td style="text-align: left;">Semantic model manages both clean/dirty rows → explicit <code>[Verified Revenue]</code> + <code>[At-Risk Revenue]</code> measures</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#adr-05-power-bi-rls-over-snowflake-row-access-policies">ADR-05</a></td>
+<td style="text-align: left;">RLS in Power BI, not Snowflake</td>
+<td style="text-align: left;">BI-layer control → warehouse access remains strictly read-only for <code>REPORTER_ROLE</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#adr-06-pbip--tmdl-over-pbix-binary-format">ADR-06</a></td>
+<td style="text-align: left;">PBIP + TMDL over <code>.pbix</code> binary</td>
+<td style="text-align: left;">Requires Desktop June 2023+ → enforced in project onboarding docs</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="adr-01-snowflake-over-postgres-for-analytical-workloads">ADR-01: Snowflake over Postgres for Analytical Workloads<a class="headerlink" href="#adr-01-snowflake-over-postgres-for-analytical-workloads" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Problem:</strong> Report interactions exceeded acceptable UX thresholds.</li>
-<li><strong>Fix:</strong> Import mode + star schema + incremental refresh policy.</li>
-<li><strong>Impact:</strong> Dashboard interactions reduced to sub-2s target range.</li>
-<li><strong>Evidence:</strong> <a href="../screenshots/04_powerbi/incremental_refresh.png">incremental_refresh.png</a>, <a href="../screenshots/04_powerbi/performance_analyzer_excutive_page.png">performance_analyzer_excutive_page.png</a></li>
-</ul>
-<h3 id="52-metric-inconsistency-across-stakeholders">5.2 Metric Inconsistency Across Stakeholders<a class="headerlink" href="#52-metric-inconsistency-across-stakeholders" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Problem:</strong> Different report logic produced inconsistent KPI values.</li>
-<li><strong>Fix:</strong> Business logic centralized in dbt marts and semantic measures.</li>
-<li><strong>Impact:</strong> Revenue and core KPI definitions aligned through one governed model.</li>
-<li><strong>Reference:</strong> <a href="../00_business_requirements/">00_business_requirements.md</a>, <a href="../04_semantic_model/">04_semantic_model.md</a></li>
-</ul>
-<h3 id="53-risk-of-broken-production-changes">5.3 Risk of Broken Production Changes<a class="headerlink" href="#53-risk-of-broken-production-changes" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Problem:</strong> Unvalidated model changes can break dashboards.</li>
-<li><strong>Fix:</strong> PR approvals + CI test gates + linting + deployment workflow.</li>
-<li><strong>Impact:</strong> Only validated changes are promoted.</li>
-<li><strong>Evidence:</strong> <a href="../screenshots/05_dataops/ci_dbt_build_pass.png">ci_dbt_build_pass.png</a>, <a href="../screenshots/05_dataops/github_pr_checks_pass.png">github_pr_checks_pass.png</a></li>
+<li><strong>Problem:</strong> The OLTP system (Postgres) could not serve both transactional writes and analytical reads without performance degradation and production risk.</li>
+<li><strong>Decision:</strong> Dedicated Snowflake OLAP warehouse, physically separated from the source system.</li>
+<li><strong>Alternatives considered:</strong> DuckDB (no cloud sharing), BigQuery (no Azure alignment), Redshift (AWS dependency).</li>
+<li><strong>Trade-offs:</strong> Requires cost discipline — warehouse sizing and auto-suspend. Mitigated via Resource Monitors and X-Small defaults.</li>
 </ul>
 <hr>
-<h2 id="6-security-and-access-boundaries">6. Security and Access Boundaries<a class="headerlink" href="#6-security-and-access-boundaries" title="Permanent link">¶</a></h2>
-<h3 id="61-warehouse-security">6.1 Warehouse Security<a class="headerlink" href="#61-warehouse-security" title="Permanent link">¶</a></h3>
+<h3 id="adr-02-dbt-core-over-raw-sql-scripts">ADR-02: dbt Core over Raw SQL Scripts<a class="headerlink" href="#adr-02-dbt-core-over-raw-sql-scripts" title="Permanent link">¶</a></h3>
 <ul>
-<li>Role hierarchy applies least-privilege boundaries between loading, transformation, and reporting responsibilities.</li>
-<li>Production reporting role is read-only on marts.</li>
-</ul>
-<p>Evidence: <a href="../screenshots/02_snowflake/RBAC.png">RBAC.png</a></p>
-<h3 id="62-semantic-security">6.2 Semantic Security<a class="headerlink" href="#62-semantic-security" title="Permanent link">¶</a></h3>
-<ul>
-<li>RLS enforced in semantic layer using mapping table policy.</li>
-<li>Regional access control validated through UAT scenarios.</li>
-</ul>
-<p>Evidence: <a href="../screenshots/04_powerbi/uat_rls_validation.png">uat_rls_validation.png</a></p>
-<hr>
-<h2 id="7-cost-and-performance-guardrails">7. Cost and Performance Guardrails<a class="headerlink" href="#7-cost-and-performance-guardrails" title="Permanent link">¶</a></h2>
-<ul>
-<li><strong>Warehouse sizing:</strong> X-Small defaults with aggressive auto-suspend.</li>
-<li><strong>Storage strategy:</strong> RAW transient + STAGING views to reduce overhead.</li>
-<li><strong>Build strategy:</strong> Incremental facts for shorter refresh windows.</li>
-<li><strong>Monitoring:</strong> Query/runtime checks and CI results reviewed per release.</li>
-</ul>
-<p>Reference details: <a href="../05_performance_optimization/">05_performance_optimization.md</a></p>
-<hr>
-<h2 id="9-evidence-index">9. Evidence Index<a class="headerlink" href="#9-evidence-index" title="Permanent link">¶</a></h2>
-<h3 id="infrastructure">Infrastructure<a class="headerlink" href="#infrastructure" title="Permanent link">¶</a></h3>
-<ul>
-<li>Azure structure: <a href="../screenshots/01_azure_blob_storage/container_structure.png">container_structure.png</a></li>
-<li>Snowflake schemas: <a href="../screenshots/02_snowflake/database.png">database.png</a></li>
-<li>Snowflake warehouses: <a href="../screenshots/02_snowflake/warehouse.png">warehouse.png</a></li>
-</ul>
-<h3 id="transformation-and-quality">Transformation and Quality<a class="headerlink" href="#transformation-and-quality" title="Permanent link">¶</a></h3>
-<ul>
-<li>dbt DAG: <a href="../screenshots/03_dbt/lineage_dag.png">lineage_dag.png</a></li>
-<li>dbt tests: <a href="../screenshots/03_dbt/test_passed_suite.png">test_passed_suite.png</a></li>
-<li>dbt contracts: <a href="../screenshots/03_dbt/data_contracts.png">data_contracts.png</a></li>
-</ul>
-<h3 id="bi-and-governance">BI and Governance<a class="headerlink" href="#bi-and-governance" title="Permanent link">¶</a></h3>
-<ul>
-<li>Semantic model: <a href="../screenshots/04_powerbi/semantic_model.png">semantic_model.png</a></li>
-<li>Incremental refresh: <a href="../screenshots/04_powerbi/incremental_refresh.png">incremental_refresh.png</a></li>
-<li>RLS validation: <a href="../screenshots/04_powerbi/uat_rls_validation.png">uat_rls_validation.png</a></li>
-</ul>
-<h3 id="dataops">DataOps<a class="headerlink" href="#dataops" title="Permanent link">¶</a></h3>
-<ul>
-<li>CI pass: <a href="../screenshots/05_dataops/ci_dbt_build_pass.png">ci_dbt_build_pass.png</a></li>
-<li>PR quality gates: <a href="../screenshots/05_dataops/github_pr_checks_pass.png">github_pr_checks_pass.png</a></li>
-<li>Roadmap tracking: <a href="../screenshots/05_dataops/project_milestones_roadmap.png">project_milestones_roadmap.png</a></li>
+<li><strong>Problem:</strong> Ad-hoc SQL scripts have no dependency management, no testing framework, no lineage, and no documentation output.</li>
+<li><strong>Decision:</strong> dbt Core — SQL-first, test-native, with automatic lineage DAG and <code>dbt docs</code> generation.</li>
+<li><strong>Alternatives considered:</strong> Python + pandas (non-SQL, harder for SQL-native BI teams), Dataform (Google Cloud dependency).</li>
+<li><strong>Trade-offs:</strong> Requires strict naming conventions and testing discipline. Enforced via <code>.sqlfluff</code> config and CI blocking gates.</li>
 </ul>
 <hr>
+<h3 id="adr-03-power-bi-import-mode-over-directquery">ADR-03: Power BI Import Mode over DirectQuery<a class="headerlink" href="#adr-03-power-bi-import-mode-over-directquery" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Problem:</strong> DirectQuery introduces warehouse spin-up latency and network round-trips on every dashboard filter interaction.</li>
+<li><strong>Decision:</strong> Import Mode with incremental refresh on the fact table. Data pre-loaded into VertiPaq; visual interactions render sub-2s.</li>
+<li><strong>Alternatives considered:</strong> DirectQuery (real-time but slow), Composite Models (complex, higher error surface), Python-only dashboards (no self-service).</li>
+<li><strong>Trade-offs:</strong> Data refreshes on a schedule, not real-time. Acceptable for daily business reporting; not appropriate for operational live-data dashboards.</li>
+</ul>
+<hr>
+<h3 id="adr-04-verified-vs-raw-design-trust-dont-trash">ADR-04: Verified vs. Raw Design ("Trust, Don't Trash")<a class="headerlink" href="#adr-04-verified-vs-raw-design-trust-dont-trash" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Problem:</strong> Bad rows (negative prices, impossible dates, missing photos) exist in source data. Silently deleting them destroys auditability and breaks Finance reconciliation.</li>
+<li><strong>Decision:</strong> Flag every row — never delete. Apply <code>is_verified</code> (1/0) and <code>quality_issue_reason</code> in the intermediate layer. Surface both Verified Revenue and Revenue at Risk in the semantic layer.</li>
+<li><strong>Alternatives considered:</strong> Hard-delete bad rows in staging (destroys auditability), filter in Power BI only (silent undercounting), separate clean/dirty tables (doubles maintenance burden).</li>
+<li><strong>Trade-offs:</strong> Semantic model must handle both verified and unverified rows. Mitigated by dedicated measures: <code>[Verified Revenue]</code> and <code>[At-Risk Revenue]</code>.</li>
+</ul>
+<hr>
+<h3 id="adr-05-power-bi-rls-over-snowflake-row-access-policies">ADR-05: Power BI RLS over Snowflake Row Access Policies<a class="headerlink" href="#adr-05-power-bi-rls-over-snowflake-row-access-policies" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Problem:</strong> Regional managers should only see data for their own State — this control could live at the warehouse or the semantic layer.</li>
+<li><strong>Decision:</strong> Power BI RLS via Bridge Table (<code>dim_rls_mapping</code>). Dynamic RLS evaluates <code>USERPRINCIPALNAME()</code> at report load and restricts all visuals automatically.</li>
+<li><strong>Alternatives considered:</strong> Snowflake Row Access Policies (requires per-user warehouse credentials — impractical for a shared Org App dataset), separate reports per region (unsustainable maintenance at scale).</li>
+<li><strong>Trade-offs:</strong> RLS lives in the BI layer, not the warehouse. Mitigated by <code>REPORTER_ROLE</code> being strictly read-only on marts; business users have no direct warehouse access.</li>
+</ul>
+<hr>
+<h3 id="adr-06-pbip-tmdl-over-pbix-binary-format">ADR-06: PBIP + TMDL over <code>.pbix</code> Binary Format<a class="headerlink" href="#adr-06-pbip-tmdl-over-pbix-binary-format" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Problem:</strong> <code>.pbix</code> is a binary format — DAX measure changes, relationship edits, and RLS rule modifications produce unreadable Git diffs. Code review of BI layer changes is impossible.</li>
+<li><strong>Decision:</strong> Power BI stored in <strong>PBIP (Power BI Project) + TMDL (Tabular Model Definition Language)</strong> — plain-text format where every measure, table, and relationship is a reviewable <code>.tmdl</code> file.</li>
+<li><strong>Alternatives considered:</strong> <code>.pbix</code> with binary Git storage (no review capability), keeping DAX only in Power BI Service (no version control at all).</li>
+<li><strong>Trade-offs:</strong> Requires Power BI Desktop (June 2023+) and the TMDL preview feature. All team members on compatible versions — enforced in project docs.</li>
+</ul>
+<hr>
+<p><em>Related docs: <a href="../00_business_requirements/">00_business_requirements.md</a> • <a href="../02_data_dictionary/">02_data_dictionary.md</a> • <a href="../03_data_quality/">03_data_quality.md</a> • <a href="../04_semantic_model/">04_semantic_model.md</a> • <a href="../05_performance_optimization/">05_performance_optimization.md</a> • <a href="../06_engineering_standards/">06_engineering_standards.md</a></em></p>
 
 
 
