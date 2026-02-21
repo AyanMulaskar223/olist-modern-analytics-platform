@@ -90,10 +90,7 @@ _Azure Blob container structure — source files organized by entity before Snow
 
 ### 4.2 Raw → Staging
 
-!!! abstract "Staging Contract — Three rules that are never broken"
-    - **Type casting only** — `VARCHAR → TIMESTAMP`, `STRING → NUMERIC`, whitespace trimmed, nulls handled
-    - **1:1 mapping to RAW** — one model per source table; no joins, no filters, no business logic
-    - **Materialized as views** — zero storage cost, always fresh from RAW on query
+!!! abstract "Staging Contract — Three rules that are never broken" - **Type casting only** — `VARCHAR → TIMESTAMP`, `STRING → NUMERIC`, whitespace trimmed, nulls handled - **1:1 mapping to RAW** — one model per source table; no joins, no filters, no business logic - **Materialized as views** — zero storage cost, always fresh from RAW on query
 
     MD5 surrogate keys (`dbt_utils.generate_surrogate_key`) are generated here. Natural source keys preserved as secondary columns for audit and reconciliation.
 
@@ -286,7 +283,7 @@ Six decisions that define the architecture. Each follows: **Problem → Decision
 | [ADR-03](#adr-03-power-bi-import-mode-over-directquery)            | Import Mode over DirectQuery      | Not real-time → daily refresh acceptable for business reporting cadence                                     |
 | [ADR-04](#adr-04-verified-vs-raw-design-trust-dont-trash)          | "Trust, Don't Trash" data quality | Semantic model manages both clean/dirty rows → explicit `[Verified Revenue]` + `[At-Risk Revenue]` measures |
 | [ADR-05](#adr-05-power-bi-rls-over-snowflake-row-access-policies)  | RLS in Power BI, not Snowflake    | BI-layer control → warehouse access remains strictly read-only for `REPORTER_ROLE`                          |
-| [ADR-06](#adr-06-pbip--tmdl-over-pbix-binary-format)               | PBIP + TMDL over `.pbix` binary   | Requires Desktop June 2023+ → enforced in project onboarding docs                                           |
+| [ADR-06](#adr-06-pbip-tmdl-over-pbix-binary-format)                | PBIP + TMDL over `.pbix` binary   | Requires Desktop June 2023+ → enforced in project onboarding docs                                           |
 
 ---
 

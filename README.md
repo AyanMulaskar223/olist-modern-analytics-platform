@@ -16,7 +16,7 @@
 | :-- | :-------------------------------------------------------------------------------------------- |
 | 🎯  | [At-a-Glance](#-at-a-glance) — Key impact metrics                                             |
 | 🚀  | [Quick Start](#-quick-start-for-technical-reviewers) — Run locally in 4 steps                 |
-| 1️⃣  | [Executive Summary](#1️⃣-executive-summary) — Problem, solution, scope                         |
+| 1️⃣  | [Executive Summary](#1️⃣-executive-summary) — Problem, solution, scope + ADLC framework        |
 | 2️⃣  | [Architecture Overview](#2️⃣-architecture-overview) — Ingestion → Warehouse → dbt → Power BI   |
 | 3️⃣  | [Business Impact](#3️⃣-business-impact-snapshot) — Performance, governance, ROI                |
 | 4️⃣  | [Core Capabilities](#4️⃣-core-capabilities-demonstrated) — 7 enterprise capabilities deep-dive |
@@ -114,6 +114,42 @@ Olist scaled from startup to **100K+ monthly transactions**, but the analytics i
 | **AI-generated chaos**    | Governed semantic layer (Self-Service 2.0) | Certified metrics + quality flags                                                         | **~40 analyst hrs saved/wk** |
 
 📖 **[Full Technical Architecture →](#2️⃣-architecture-overview)** • **[Detailed Impact Analysis →](#3️⃣-business-impact-snapshot)**
+
+---
+
+### 🗂️ Built on ADLC — A Structured End-to-End Workflow
+
+> **Think of ADLC (Analytics Development Life Cycle) as SDLC — but for data.**
+> Where SDLC structures software delivery into Requirements → Design → Build → Test → Deploy,
+> **ADLC structures analytics delivery** into the same discipline: no dashboard ships before the data is validated, no model is built before the business question is defined.
+
+I documented the full ADLC playbook in **Notion** as a personal engineering guide — a phase-by-phase checklist that kept every decision traceable, every deliverable testable, and every stakeholder question answerable before it was asked. The result: **no rework, no silent failures, no metric drift — and it prevents you from getting lost in complex data projects.**
+
+| #     | Phase               | Deliverable                                                            | Quality Gate                                                           |
+| :---- | :------------------ | :--------------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **1** | **Requirements**    | 6 business questions · KPI definitions · grain decisions               | Stakeholder sign-off before any data work starts                       |
+| **2** | **Data Ingestion**  | Azure Blob → Snowflake RAW · 8 tables · 1.55M rows                     | 85 source tests — null checks, uniqueness, row counts                  |
+| **3** | **Transformations** | dbt staging → intermediate → marts · star schema                       | 559 automated tests — relationships, contracts, business rules         |
+| **4** | **DataOps**         | CI/CD pipelines · GitHub Actions · schema contracts · pre-commit hooks | Every PR blocked until lint + `dbt build` passes in isolated CI schema |
+| **5** | **BI Layer**        | Power BI semantic model · 50+ DAX measures · RLS · TMDL                | Tabular Editor BPA — 0 issues enforced before production promote       |
+
+**Why ADLC Worked**
+
+✅ **No Getting Lost:** Clear checklist per phase
+✅ **Quality Gates:** Tests must pass to proceed—catches issues early
+✅ **Traceability:** Every dashboard metric links to Phase 1 business rules
+✅ **Portfolio-Ready:** Structured approach shows project management skills
+
+**Simple Before/After:**
+
+| Without ADLC                         | With ADLC                                            |
+| :----------------------------------- | :--------------------------------------------------- |
+| 😰 Jump between tasks randomly       | ✅ Clear sequence: Requirements → Data → Models → BI |
+| 😰 Fix issues after dashboard breaks | ✅ Catch errors early with automated tests           |
+| 😰 Unclear what's left to do         | ✅ Phase checklists track progress                   |
+| 😰 Hard to explain to recruiters     | ✅ Industry-standard framework (like SDLC)           |
+
+📖 **[Full ADLC & DataOps Standards →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/)**
 
 ---
 
@@ -283,7 +319,7 @@ _Fail-fast schema validation prevents breaking changes_
 
 #### 4️⃣ Business Intelligence Layer
 
-**Power BI Golden Dataset (Governed Semantic Model)**
+**`Olist Semantic Model` — Governed Power BI Semantic Model**
 
 <details>
 <summary><strong>📊 Show Power BI Implementation</strong></summary>
@@ -315,27 +351,32 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 
 **Governance:**
 
-| Governance Control        | Implementation                               | Benefit                                     |
-| :------------------------ | :------------------------------------------- | :------------------------------------------ |
-| ✅ **PBIP Format**        | Git-tracked semantic model (no binary .pbix) | Full version control + code review          |
-| ✅ **100% Query Folding** | All PQ transformations push to Snowflake     | Zero data duplication + optimal performance |
-| ✅ **Self-Service 2.0**   | Users drag-and-drop certified metrics only   | Governed empowerment (not chaos)            |
-| ✅ **Data Contracts**     | Schema changes in dbt break Power BI refresh | Fail-fast prevents silent metric corruption |
+| Governance Control           | Implementation                                                                                   | Benefit                                                                        |
+| :--------------------------- | :----------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| ✅ **PBIP + TMDL (`.pbir`)** | Git-tracked semantic model — `.pbir` (report JSON) + `.tmdl` (model JSON) replace binary `.pbix` | Full DAX + report version control; code-reviewable changes                     |
+| ✅ **Data Dictionary**       | Table/column/measure descriptions in Data Dictionary Table → published to Power BI Service       | Every metric self-documenting; users see descriptions without leaving Power BI |
+| ✅ **100% Query Folding**    | All PQ transformations push to Snowflake                                                         | Zero data duplication + optimal performance                                    |
+| ✅ **Self-Service 2.0**      | Users drag-and-drop certified metrics only                                                       | Governed empowerment (not chaos)                                               |
+| ✅ **Data Contracts**        | Schema changes in dbt break Power BI refresh                                                     | Fail-fast prevents silent metric corruption                                    |
 
-**Production App Deployment:**
+<details>
+<summary><strong>🚀 Production App Deployment Details</strong></summary>
 
-| Attribute                 | Detail                                                                                                 |
-| :------------------------ | :----------------------------------------------------------------------------------------------------- |
-| **App Name**              | `Olist Analytics [PROD]` — published organizational app                                                |
-| **Scheduled Refresh**     | Daily at **6:15 PM IST** (UTC+05:30) — fully automated                                                 |
-| **Dataset Certification** | Certified dataset — official source of truth endorsement                                               |
-| **Report Subscriptions**  | Automated email distribution configured for leadership                                                 |
-| **BPA Validation**        | Best Practice Analyzer scan → **0 issues** (formatted strings, hidden FKs, RLS)                        |
-| **RLS Scope**             | Dynamic `USERPRINCIPALNAME()` filter; State_Manager role → 27 Brazilian states                         |
-| **Report Pages**          | 4 pages: Executive Sales Overview • Supply Chain & Delivery • Data Quality Audit • Detailed Order View |
-| **Field Parameters**      | Metric selector toggle between **Revenue** and **Orders** (reusable across all visuals)                |
-| **Dev/Prod Workspaces**   | Separate `Olist Analytics [DEV]` → `Olist Analytics [PROD]` workspaces prevent untested changes        |
-| **Delivery Pipeline**     | Snowflake → Semantic Model → Report → Dashboard → `Olist Analytics [PROD]` App                         |
+| Attribute                 | Detail                                                                                                            |
+| :------------------------ | :---------------------------------------------------------------------------------------------------------------- |
+| **App Name**              | `Olist Executive Analytics` — published organizational app (Power BI Service)                                     |
+| **Dashboard**             | `Executive Pulse` — pinned KPI dashboard in Power BI Service (real-time at-a-glance view)                         |
+| **Scheduled Refresh**     | Daily at **6:15 PM IST** (UTC+05:30) — fully automated                                                            |
+| **Dataset Certification** | Certified dataset — official source of truth endorsement                                                          |
+| **Report Subscriptions**  | Automated email distribution configured for leadership                                                            |
+| **BPA Validation**        | Best Practice Analyzer scan → **0 issues** (formatted strings, hidden FKs, RLS)                                   |
+| **RLS Scope**             | Dynamic `USERPRINCIPALNAME()` filter; State_Manager role → 27 Brazilian states                                    |
+| **Report Pages**          | 5 pages across 2 reports: **Olist Executive Dashboard** (4 pages) + **Olist Semantic Model** (documentation page) |
+| **Field Parameters**      | Metric selector toggle between **Revenue** and **Orders** (reusable across all visuals)                           |
+| **Dev/Prod Workspaces**   | Separate `Olist Analytics [DEV]` → `Olist Analytics [PROD]` workspaces prevent untested changes                   |
+| **Delivery Pipeline**     | Snowflake → Semantic Model → Reports → `Executive Pulse` Dashboard → `Olist Executive Analytics` App              |
+
+</details>
 
 ---
 
@@ -354,16 +395,16 @@ _PBIP + TMDL format enables Git tracking of DAX and semantic model changes_
 
 ### 🛡️ Governance & Trust
 
-| Dimension            | Before ❌                                                          | After ✅                                                                                                                                                                                                                                                                                         | Impact 📈                                                                                                                                   |
-| :------------------- | :----------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Test Coverage**    | 0% (manual checks)                                                 | 559 automated tests (dbt+CI)                                                                                                                                                                                                                                                                     | **100% coverage**                                                                                                                           |
-| **Metric Drift**     | Dept-specific logic                                                | Single source of truth (semantic layer)                                                                                                                                                                                                                                                          | **0% drift**                                                                                                                                |
-| **Schema Breaks**    | Crashes dashboards (silent fail)                                   | dbt contracts + explicit Power Query                                                                                                                                                                                                                                                             | **Zero prod breaks**                                                                                                                        |
-| **Audit Trail**      | No version control                                                 | Full Git history (SQL+DAX) + lineage DAG                                                                                                                                                                                                                                                         | **Complete traceability**                                                                                                                   |
-| **Breaking Changes** | Direct prod edits (no validation); reports modified without review | CI pipeline blocks merge on test failures + **DEV → PROD Power BI workspace promotion**: all changes built and validated in `Olist Analytics [DEV]`, Finance reconciliation + RLS sign-off required before promoting to `Olist Analytics [PROD]` (certified dataset, scheduled refresh, org app) | **Zero broken reports reach Finance, Ops, or regional managers; promotion gate means errors are caught by the engineer, not the executive** |
-| **FK Violations**    | Found by users in dashboards                                       | Caught at CI before merge (dbt tests)                                                                                                                                                                                                                                                            | **100% prevention**                                                                                                                         |
-| **Data Quality**     | Bad rows silently deleted; numbers didn't match source             | "Trust, Don't Trash": dbt flags every row — `is_verified` (clean/dirty) + `quality_issue_reason` (e.g., "Ghost Delivery", "Missing Photos", "Arrival Before Approval")                                                                                                                           | 100% traceability; Finance reconciles to the penny; 609 products flagged for correction                                                     |
-| **Security**         | Single SYSADMIN role; shared credentials                           | Snowflake RBAC (4 roles: LOADER / ANALYTICS / REPORTER) + Power BI RLS Bridge Table — regional managers see only their State/Region                                                                                                                                                              | Audit-ready; least-privilege enforced automatically via login                                                                               |
+| Dimension            | Before ❌                                              | After ✅                                                                                                         | Impact 📈                                                     |
+| :------------------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------ |
+| **Test Coverage**    | 0% (manual checks)                                     | 559 automated tests (dbt+CI)                                                                                     | **100% coverage**                                             |
+| **Metric Drift**     | Dept-specific logic                                    | Single source of truth (semantic layer)                                                                          | **0% drift**                                                  |
+| **Schema Breaks**    | Crashes dashboards (silent fail)                       | dbt contracts + explicit Power Query                                                                             | **Zero prod breaks**                                          |
+| **Audit Trail**      | No version control                                     | Full Git history (SQL+DAX) + lineage DAG                                                                         | **Complete traceability**                                     |
+| **Breaking Changes** | Direct prod edits; reports modified without review     | CI blocks merge on test failure; DEV → UAT → PROD promotion requires Finance reconciliation + RLS sign-off       | **Zero broken reports reach stakeholders**                    |
+| **FK Violations**    | Found by users in dashboards                           | Caught at CI before merge (dbt tests)                                                                            | **100% prevention**                                           |
+| **Data Quality**     | Bad rows silently deleted; numbers didn't match source | `is_verified` + `quality_issue_reason` flags every row (Ghost Delivery, Missing Photos, Arrival Before Approval) | 100% traceability; 609 SKUs flagged; R$11K+ revenue preserved |
+| **Security**         | Single SYSADMIN role; shared credentials               | Snowflake RBAC (4 roles: LOADER / ANALYTICS / REPORTER) + Power BI RLS bridge table (27 states)                  | Audit-ready; least-privilege enforced by login                |
 
 ### 🎯 Strategic Insights Unlocked
 
@@ -549,23 +590,23 @@ Industry-standard semantic model scanner — **50+ rules** across formatting, pe
 **🚀 Power BI Dev → UAT → Prod Deployment Workflow**
 
 ```
-Power BI Desktop  ──publish──▶  [DEV] Workspace  ──UAT──▶  [PROD] Workspace  ──publish──▶  Org App
+Power BI Desktop  ──publish──▶  [DEV] Workspace  ──UAT──▶  [PROD] Workspace  ──publish──▶  Olist Executive Analytics (App)
                                        │                           │
                                UAT checks run here        Certified Dataset
                                KPIs must match Marts layer     Scheduled refresh: 6:15 PM IST
                                RLS role validation        Email subscriptions active
-                               BPA scan: 0 issues ✅      4 reports + Dashboard live
+                               BPA scan: 0 issues ✅      5 pages (2 reports) + Executive Pulse Dashboard live
 ```
 
-| Stage                   | Tool / Action                                       | Gate                                  |
-| :---------------------- | :-------------------------------------------------- | :------------------------------------ |
-| **1. Build**            | Power BI Desktop — develop semantic model + reports | Local smoke test                      |
-| **2. DEV Deploy**       | Publish from Desktop → `Olist Analytics [DEV]`      | Rapid iteration; not user-facing      |
-| **3. UAT — Finance**    | Revenue reconciliation: PBI vs Snowflake SQL        | ✅ Total matches to penny             |
-| **4. UAT — Security**   | "View as Role: State_Manager" in Power BI Desktop   | ✅ Correct state filter enforced      |
-| **5. BPA Scan**         | Tabular Editor 3 → 50+ rules checked automatically  | ✅ 0 issues before PROD publish       |
-| **6. PROD Deploy**      | Re-publish from Desktop → `Olist Analytics [PROD]`  | Certified dataset; governed           |
-| **7. App & Automation** | Publish Org App + schedule daily refresh            | ✅ Refresh 6:15 PM IST, subscriptions |
+| Stage                  | Tool / Action                                                             | Gate                                  |
+| :--------------------- | :------------------------------------------------------------------------ | :------------------------------------ |
+| **1. Build**           | Power BI Desktop — develop semantic model + reports                       | Local smoke test                      |
+| **2. DEV Deploy**      | Publish from Desktop → `Olist Analytics [DEV]`                            | Rapid iteration; not user-facing      |
+| **3. UAT — Finance**   | Revenue reconciliation: PBI vs Snowflake SQL                              | ✅ Total matches to penny             |
+| **4. UAT — Security**  | "View as Role: State_Manager" in Power BI Desktop                         | ✅ Correct state filter enforced      |
+| **5. BPA Scan**        | Tabular Editor 3 → 50+ rules checked automatically                        | ✅ 0 issues before PROD publish       |
+| **6. PROD Deploy**     | Re-publish from Desktop → `Olist Analytics [PROD]`                        | Certified dataset; governed           |
+| **7. App & Dashboard** | Publish `Olist Executive Analytics` app + pin `Executive Pulse` dashboard | ✅ Refresh 6:15 PM IST, subscriptions |
 
 <table>
 <tr>
@@ -598,7 +639,7 @@ _DEV workspace for iteration → PROD workspace for certified, governed consumpt
 - ✅ **Source freshness monitoring:** 8 sources, tiered SLA windows (1–30 days) — stale data caught before users
 - ✅ **Tabular Editor 3 BPA:** 50+ rules, 0 issues — semantic model hardened before every prod deploy
 - ✅ **Dev → UAT → Prod:** Finance reconciliation + RLS validation before any report goes live
-- ✅ **Power BI Org App:** `Olist Analytics [PROD]` — certified dataset, scheduled refresh, email subscriptions
+- ✅ **Power BI Org App:** `Olist Executive Analytics` — certified dataset, scheduled refresh, email subscriptions, `Executive Pulse` pinned dashboard
 
 ---
 
@@ -896,9 +937,9 @@ SelectColumns = Table.SelectColumns(
 
 ### 📊 5. Semantic Layer & Business Intelligence
 
-**Power BI Golden Dataset** — Star schema (1 fact table, 6 dimensions), 100% query folding, Self-Service 2.0: analysts certify the semantic layer; AI tools consume governed data.
+**`Olist Semantic Model`** — Star schema (1 fact table, 6 dimensions), 100% query folding, Self-Service 2.0: analysts certify the semantic layer; AI tools consume governed data.
 
-**Power BI Golden Dataset with Star Schema**
+**`Olist Semantic Model` — Star Schema**
 
 <table>
 <tr>
@@ -920,10 +961,18 @@ SelectColumns = Table.SelectColumns(
 
 - <2s dashboard load time
 - <1.2s visual rendering (all <1200ms)
+- **DAX queries <30ms** (Performance Analyzer)
 - 100% query folding validated
 - Import Mode (star schema optimized)
 - Incremental refresh on fact tables
 - 82% faster refresh (45min → 8min)
+
+**DAX Optimization Strategy**
+
+- `VAR` for all multi-step calculations — prevents re-evaluation, improves readability
+- No iterator functions (`SUMX`, `FILTER`) on large tables — pre-aggregated in dbt marts
+- Heavy computed columns (delivery days, order sequence, quality flags) built in **dbt/Snowflake**, not Power BI — leverages SQL engine, eliminates VertiPaq overhead
+- All measures validated in Performance Analyzer: DAX query time **<30ms** across all visuals
 
 </td>
 </tr>
@@ -950,7 +999,7 @@ _Complete model documentation: table/column descriptions, relationships, measure
 _100% query folding validated: zero M-code row-by-row processing_
 
 ![Performance Analyzer](docs/screenshots/04_powerbi/performance_analyzer_excutive_page.png)
-_Performance Analyzer: Executive page loads in <2 seconds_
+_Performance Analyzer: DAX queries <30ms — Executive page loads in <2 seconds_
 
 ![Incremental Refresh](docs/screenshots/04_powerbi/incremental_refresh.png)
 _Incremental refresh: 2-year rolling window with monthly partitions (82% faster)_
@@ -1012,30 +1061,22 @@ _Lineage view: End-to-end traceability from Snowflake tables to Power BI visuals
 
 **Outcome:** ✅ **~40 hrs/week saved** • ✅ **0 metric conflicts** (single source of truth) • ✅ **AI-safe** (governed data layer) • ✅ **Finance reconciles to the penny**
 
-**Architecture:** ✅ **PBIP + TMDL** — Git-tracked DAX, code reviews for semantic model changes • ✅ **Field Parameters** — Revenue/Orders toggle reusable across all visuals • ✅ **BPA: 0 issues** • ✅ **RLS** — dynamic `USERPRINCIPALNAME()` bridge table (27 states)
+**Architecture:** ✅ **PBIP + TMDL (`.pbir`)** — Git-tracked DAX + report JSON, code reviews for every semantic model change • ✅ **Data Dictionary** — table/column/measure descriptions in Tabular Editor 3, visible to users in Power BI Service • ✅ **Field Parameters** — Revenue/Orders toggle reusable across all visuals • ✅ **BPA: 0 issues** • ✅ **RLS** — dynamic `USERPRINCIPALNAME()` bridge table (27 states) • ✅ **`Executive Pulse` Dashboard + `Olist Executive Analytics` App** — pinned leadership dashboard + organizational app published in Power BI Service
 
 ---
 
-**🚀 Production App — `Olist Analytics [PROD]`**
+**🚀 Production — `Olist Executive Analytics` App**
 
-**4 Report Pages Published:**
+**2 Reports • 5 Pages • 1 Pinned Dashboard:**
 
-| Page                                  | Audience            | Key Visuals                                                          |
-| :------------------------------------ | :------------------ | :------------------------------------------------------------------- |
-| **1. Executive Sales Overview**       | C-Suite             | KPI cards, Revenue trend, Top 10 Products, State Treemap             |
-| **2. Supply Chain & Delivery**        | Ops Managers        | Decomposition Tree (root cause), Delay Rate by state/carrier         |
-| **3. Data Quality & Integrity Audit** | Analytics Engineers | Catalog risk visuals, ghost delivery errors, revenue-at-risk metrics |
-| **4. Detailed Order View**            | Analysts            | Transaction-level drill-through table (Order ID granularity)         |
-
-**Dev → UAT → Prod Deployment Pipeline:**
-
-| Stage              | Tool / Workspace                 | Action                                                       | Gate                         |
-| :----------------- | :------------------------------- | :----------------------------------------------------------- | :--------------------------- |
-| **1. Build**       | Power BI Desktop                 | Develop semantic model, reports, DAX measures locally        | Local smoke test             |
-| **2. DEV Deploy**  | `Olist Analytics [DEV]`          | Publish from Desktop — rapid iteration, not user-facing      | —                            |
-| **3. UAT**         | DEV Workspace + Tabular Editor 3 | Revenue reconciliation • RLS "View as Role" • BPA (0 issues) | ✅ Finance sign-off          |
-| **4. PROD Deploy** | `Olist Analytics [PROD]`         | Re-publish from Desktop → dataset certified                  | Certified endorsement active |
-| **5. App & Run**   | Power BI Service                 | Publish Org App + schedule daily refresh (6:15 PM IST)       | Subscriptions + alerts live  |
+| Report / Asset                    | Page                              | Audience            | Key Visuals                                                                                        |
+| :-------------------------------- | :-------------------------------- | :------------------ | :------------------------------------------------------------------------------------------------- |
+| **Olist Executive Dashboard**     | 1. Executive Sales Overview       | C-Suite             | KPI cards, YoY trend, Top 10 Products, State Treemap, Revenue/Orders field parameter toggle        |
+| **Olist Executive Dashboard**     | 2. Supply Chain & Delivery        | Ops Managers        | Decomposition Tree (root cause), Delay Rate by state/carrier                                       |
+| **Olist Executive Dashboard**     | 3. Data Quality & Integrity Audit | Analytics Engineers | Verified vs Raw revenue, ghost delivery flags, revenue-at-risk catalog                             |
+| **Olist Executive Dashboard**     | 4. Detailed Order View            | Analysts            | Transaction-level drill-through (Order ID granularity)                                             |
+| **Olist Semantic Model**          | 5. Semantic Model Documentation   | All Users           | Built-in data dictionary: table/column/measure descriptions authored in Tabular Editor 3 + lineage |
+| **Executive Pulse** _(Dashboard)_ | Pinned KPI tiles                  | Leadership          | Revenue, Orders, AOV, Delay Rate — real-time at-a-glance in Power BI Service                       |
 
 📖 **[Complete Self-Service 2.0 Framework →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/#6-self-service-analytics-20-governance-focused)**
 
@@ -1167,15 +1208,15 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 ### 🎯 Summary: 7 Enterprise-Grade Capabilities
 
-| Capability                | Technical Depth                                                                                    | Business Value                             |
-| :------------------------ | :------------------------------------------------------------------------------------------------- | :----------------------------------------- |
-| **1. Cloud Architecture** | Multi-database Medallion + RBAC + Time Travel                                                      | 90-day recovery + audit-ready security     |
-| **2. DataOps & CI**       | 2-stage GitHub Actions + ephemeral PR schemas + **Tabular Editor 3 BPA** (0 issues) + Dev→UAT→Prod | Zero prod breaks + zero untested merges    |
-| **3. Data Modeling**      | dbt + 7 packages + Star Schema + 559 tests + lineage DAG                                           | 100% traceability + 0% metric drift        |
-| **4. Data Quality**       | "Verified vs Raw" + automated testing + alerts                                                     | R$11K+ monthly revenue protected           |
-| **5. Semantic Layer**     | Power BI Golden Dataset + Org App (PROD) + Self-Service 2.0                                        | Governed AI-safe analytics + data stewards |
-| **6. DataFinOps**         | Incremental refresh + auto-suspend + lifecycle                                                     | 42% compute + 60% storage cost savings     |
-| **7. AI Development**     | **Context engineering** (system prompts + agent scoping + conversation windows) + CI gates         | 2x velocity + 100% quality maintained      |
+| Capability                | Technical Depth                                                                                                                                                                         | Business Value                                        |
+| :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------- |
+| **1. Cloud Architecture** | Multi-database Medallion + RBAC + Time Travel                                                                                                                                           | 90-day recovery + audit-ready security                |
+| **2. DataOps & CI**       | 2-stage GitHub Actions + ephemeral PR schemas + **Tabular Editor 3 BPA** (0 issues) + Dev→UAT→Prod                                                                                      | Zero prod breaks + zero untested merges               |
+| **3. Data Modeling**      | dbt + 7 packages + Star Schema + 559 tests + lineage DAG                                                                                                                                | 100% traceability + 0% metric drift                   |
+| **4. Data Quality**       | "Verified vs Raw" + automated testing + alerts                                                                                                                                          | R$11K+ monthly revenue protected                      |
+| **5. Semantic Layer**     | `Olist Executive Dashboard` + `Olist Semantic Model` reports + `Executive Pulse` dashboard + `Olist Executive Analytics` app + Data Dictionary + PBIP (`.pbir`) + DAX optimized (<30ms) | Governed AI-safe analytics + fully documented metrics |
+| **6. DataFinOps**         | Incremental refresh + auto-suspend + lifecycle                                                                                                                                          | 42% compute + 60% storage cost savings                |
+| **7. AI Development**     | **Context engineering** (system prompts + agent scoping + conversation windows) + CI gates                                                                                              | 2x velocity + 100% quality maintained                 |
 
 **Result:** Production-ready analytics platform with enterprise-grade automation, AI-augmented development, governance, and performance optimization.
 
@@ -1185,14 +1226,15 @@ _Incremental refresh with 2-year rolling window: 82% faster (45 min → 8 min)_
 
 ## 5️⃣ Key Engineering Decisions
 
-> Senior engineers explain **why**, not just what. Four architectural choices — each with a business problem, technical answer, and quantified impact.
+> Senior engineers explain **why**, not just what. Five architectural choices — each with a business problem, technical answer, and quantified impact.
 
-| #   | Decision                | Summary                                                                 | Impact                                                                  |
-| :-- | :---------------------- | :---------------------------------------------------------------------- | :---------------------------------------------------------------------- |
-| 1   | **Dual Clock Footer**   | Two timestamps (pipeline + source) enable instant failure triangulation | Eliminates hours of "data or sales problem?" triage                     |
-| 2   | **Verified vs Raw**     | Flag dirty data (`is_verified`), never delete it                        | 100% financial reconciliation + R$11K+ revenue visible                  |
-| 3   | **Self-Service 2.0**    | Certify the semantic layer, not individual reports                      | ~40 hrs/week saved, AI-safe analytics                                   |
-| 4   | **Incremental Refresh** | Process only new/changed rows; 2-year rolling window                    | **95% cheaper** ($0.15→$0.008) • **75% faster** • **<$50/month** all-in |
+| #   | Decision                | Summary                                                                      | Impact                                                                  |
+| :-- | :---------------------- | :--------------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| 1   | **Dual Clock Footer**   | Two timestamps (pipeline + source) enable instant failure triangulation      | Eliminates hours of "data or sales problem?" triage                     |
+| 2   | **Verified vs Raw**     | Flag dirty data (`is_verified`), never delete it                             | 100% financial reconciliation + R$11K+ revenue visible                  |
+| 3   | **Self-Service 2.0**    | Certify the semantic layer, not individual reports                           | ~40 hrs/week saved, AI-safe analytics                                   |
+| 4   | **Incremental Refresh** | Process only new/changed rows; 2-year rolling window                         | **95% cheaper** ($0.15→$0.008) • **75% faster** • **<$50/month** all-in |
+| 5   | **Bi-Directional RLS**  | Bridge table + controlled bi-directional filter for dynamic many-to-many RLS | Scalable territory management + <1.2s performance maintained            |
 
 ---
 
@@ -1419,6 +1461,52 @@ models:
 </table>
 
 </details>
+
+<details>
+<summary><strong>🔍 Decision #5: RLS Bridge Table — Dynamic Many-to-Many Security</strong></summary>
+
+<table>
+<tr>
+<td width="30%"><strong>🤔 The Question</strong></td>
+<td>
+
+**How do we implement dynamic Row-Level Security (RLS) when one manager oversees multiple states, and one state has multiple managers?**
+
+A direct connection between a `Security_Users` table and `dim_sellers` creates a **Many-to-Many (M:M) relationship**. In Power BI, native M:M relationships degrade query performance and create ambiguous filter paths through the Star Schema.
+
+Furthermore, a standard single-direction filter means the `USERPRINCIPALNAME()` security check **stops at the intermediate table** and never propagates downstream to `fct_order_items` — the actual sales data remains unfiltered and exposed.
+
+</td>
+</tr>
+<tr>
+<td><strong>✅ The Answer</strong></td>
+<td>
+
+**A Security Bridge Table with Controlled Bi-Directional Filtering.**
+
+I resolved the M:M relationship by introducing `dim_rls_mapping` — a bridge table keyed on `seller_state`. The filter chain flows as:
+
+```
+Security_Users ↔️ dim_rls_mapping ➡️ dim_sellers ➡️ fct_order_items
+```
+
+**The technical override:** I explicitly enabled _"Apply security filter in both directions"_ **only** on the `Security_Users ↔ dim_rls_mapping` relationship. This lets the `USERPRINCIPALNAME()` credential context flow upstream into the bridge and then propagate downstream through the single-direction star schema to filter the fact table automatically.
+
+</td>
+</tr>
+<tr>
+<td><strong>💡 Why It Matters</strong></td>
+<td>
+
+- ✅ **Star Schema Integrity:** The core reporting relationships (`dim_sellers → fct_order_items`) remain clean 1-to-Many — no ambiguous paths, no performance penalty on reporting queries.
+- ✅ **Scalability:** Manager-to-territory assignments live in a **dbt seed file in Snowflake** — add, remove, or reassign regions with a data change, no DAX rewrites, no reopening Power BI Desktop.
+- ✅ **Performance Isolation:** Bi-directional filtering is notoriously bad for query performance. By strictly isolating it to the two tiny security tables only, we achieve **enterprise-grade dynamic security without sacrificing the <1.2s dashboard rendering time**.
+
+</td>
+</tr>
+</table>
+
+</details></details>
 
 ---
 
