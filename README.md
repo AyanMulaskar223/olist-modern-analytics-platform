@@ -546,18 +546,18 @@ _SQL code quality enforced via SQLFluff with Snowflake dialect_
 
 **Project Governance — Issues • Milestones • Release Tags**
 
-| Tool              | Usage                                                                                                                                     | Outcome                                    |
-| :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
-| **GitHub Issues** | Raised before building the Marts layer (#5) and Power BI semantic model & reports (#8) — closed only after CI passes                      | Full intent-to-delivery traceability       |
-| **Milestones**    | 1:1 with ADLC phases — issues roll up to phase milestone; no phase starts until prior milestone is closed                                 | Phase-gate discipline enforced             |
-| **Release Tags**  | Semantic versioning on every delivery: `v0.2.0-phase2` → `v0.3.x-phase-3` → `v1.1.0-phase-5-powerbi` → `v1.2.0-phase-6-business-insights` | Permanent, reproducible platform snapshots |
-| **Labels**        | `phase-1` through `phase-5` • `priority: high/medium/low` • `bug` `enhancement` `documentation`                                           | Instant filtering across 6 phases of work  |
+| Tool              | What I Did                                                                                                                                                                                                                | Why It Helps                                                                         |
+| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------- |
+| **GitHub Issues** | 2 issues tracking the two largest deliverables: Marts layer (#5) and Power BI semantic model & reporting workflow (#8). Each closed only after the full deliverable was built and verified.                               | Prevents shipping half-built work; every issue is a complete, testable unit of value |
+| **Milestones**    | 2 milestones scoped to the two highest-complexity phases (Phase 3: Marts & Phase 5: BI). Issues are linked to their milestone and remain open until the full layer — models, tests, semantic model, and reports — is done | Keeps scope honest; milestone closure = the whole layer works end-to-end             |
+| **Release Tags**  | Semantic versioning on every delivery: `v0.2.0-phase2` → `v0.3.x-phase-3` → `v1.1.0-phase-5-powerbi` → `v1.2.0-phase-6-business-insights`                                                                                 | Permanent, reproducible snapshots — any phase can be checked out and re-run          |
+| **Labels**        | `dax` • `dbt` • `documentation` • `governance` • `portfolio-ready` • `power-bi` • `schema-design` • `security` • `semantic-model`                                                                                         | Instant cross-cutting view — filter by concern (security, governance) not just phase |
 
 ---
 
 **🔬 Tabular Editor 3 — Best Practice Analyzer (BPA)**
 
-Industry-standard semantic model scanner — **50+ rules** across formatting, performance, naming, security, and relationship integrity. Runs on every change before PROD publish.
+Industry-standard semantic model scanner — **50+ rules** across formatting, performance, naming, security, and relationship integrity. Runs after I build semantic model and then after I build report before PROD publish. Rules loaded via Tabular Editor's **C# scripting interface** from the official **[Microsoft Analysis Services BPA ruleset](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules)** (`BPARules.json`) — the same rule set used by enterprise Power BI teams worldwide.
 
 | BPA Rule Category          | What It Validates                                     | Result          |
 | :------------------------- | :---------------------------------------------------- | :-------------- |
@@ -567,6 +567,9 @@ Industry-standard semantic model scanner — **50+ rules** across formatting, pe
 | **Relationship Integrity** | No ambiguous paths, inactive relationships flagged    | ✅ 0 violations |
 | **RLS Enforcement**        | Security roles defined, applied, and tested           | ✅ 0 violations |
 | **Overall Score**          | **50+ rules scanned automatically on every change**   | ✅ **0 issues** |
+
+<details>
+<summary><strong>📸 Show BPA Scan Evidence (Before → After)</strong></summary>
 
 <table>
 <tr>
@@ -584,6 +587,8 @@ Industry-standard semantic model scanner — **50+ rules** across formatting, pe
 </td>
 </tr>
 </table>
+
+</details>
 
 ---
 
@@ -608,6 +613,9 @@ Power BI Desktop  ──publish──▶  [DEV] Workspace  ──UAT──▶  [
 | **6. PROD Deploy**     | Re-publish from Desktop → `Olist Analytics [PROD]`                        | Certified dataset; governed           |
 | **7. App & Dashboard** | Publish `Olist Executive Analytics` app + pin `Executive Pulse` dashboard | ✅ Refresh 6:15 PM IST, subscriptions |
 
+<details>
+<summary><strong>📸 Show UAT & Deployment Evidence</strong></summary>
+
 <table>
 <tr>
 <td width="50%">
@@ -628,6 +636,8 @@ Power BI Desktop  ──publish──▶  [DEV] Workspace  ──UAT──▶  [
 ![Dev/Prod Workspace Strategy](docs/screenshots/04_powerbi/dev_prod_strategy.png)
 _DEV workspace for iteration → PROD workspace for certified, governed consumption_
 
+</details>
+
 ---
 
 **Key Achievements:**
@@ -640,6 +650,7 @@ _DEV workspace for iteration → PROD workspace for certified, governed consumpt
 - ✅ **Tabular Editor 3 BPA:** 50+ rules, 0 issues — semantic model hardened before every prod deploy
 - ✅ **Dev → UAT → Prod:** Finance reconciliation + RLS validation before any report goes live
 - ✅ **Power BI Org App:** `Olist Executive Analytics` — certified dataset, scheduled refresh, email subscriptions, `Executive Pulse` pinned dashboard
+- ✅ **Power BI Service Lineage View:** Workspace lineage traces the full delivery chain — Snowflake datasource → `Olist Semantic Model` → `Olist Executive Dashboard` report → `Executive Pulse` dashboard → `Olist Executive Analytics` app — every dependency visible and impact-analyzable before any upstream change
 
 ---
 
@@ -665,17 +676,11 @@ _DEV workspace for iteration → PROD workspace for certified, governed consumpt
 | **Singular Tests** | 18      | Custom SQL business-rule assertions (cross-column + domain logic)             |
 | **Total**          | **559** | **100% pass rate** ✅                                                         |
 
-**dbt Ecosystem: 6 Packages**
+**`dbt_project_evaluator` — BPA for dbt Projects**
 
-| Package                   | Purpose                                                     | Used For                                                        |
-| :------------------------ | :---------------------------------------------------------- | :-------------------------------------------------------------- |
-| **dbt_utils**             | Surrogate keys, date spine, cross-DB macros                 | `generate_surrogate_key()` on all PKs                           |
-| **dbt_expectations**      | Great Expectations-style row/column assertions              | 40+ statistical quality tests                                   |
-| **dbt_date**              | Date dimension generation                                   | `dim_date` spanning 2016–2028                                   |
-| **codegen**               | Auto-generates staging YAML boilerplate                     | Rapid model scaffolding                                         |
-| **audit_helper**          | Query output comparison between model versions              | Regression testing before refactors                             |
-| **dbt_profiler**          | Column-level data profiling (min/max/nulls)                 | Initial data quality assessment                                 |
-| **dbt_project_evaluator** | Automated best practices audit (DAG, naming, test coverage) | **PASS=76, WARN=5, ERROR=0** — continuous governance validation |
+> The dbt equivalent of Tabular Editor BPA. While other packages test the **data**, `dbt_project_evaluator` audits the **project itself** — DAG structure, model naming, test coverage gaps, and documentation completeness. Violations surface as queryable SQL rows, not just linter warnings. Result: **PASS=76, WARN=5, ERROR=0** enforced on every CI run.
+
+📖 **[Full package list & usage →](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/06_engineering_standards/)**
 
 <details>
 <summary><strong>📸 Show dbt Implementation Evidence</strong></summary>
