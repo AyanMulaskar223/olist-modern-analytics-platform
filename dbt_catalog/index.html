@@ -3,35 +3,35 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+        <meta name="description" content="Interactive dbt docs — model lineage, column descriptions, test coverage, and data quality flags across all 22 models.">
       
       
         <meta name="author" content="Ayan Mulaskar">
       
       
-        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/">
+        <link rel="canonical" href="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/dbt_catalog/">
       
       
+        <link rel="prev" href="../07_analytics_insights/">
       
-        <link rel="next" href="00_business_requirements/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.svg">
+      <link rel="icon" href="../assets/images/favicon.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
-        <title>Olist Modern Analytics Platform</title>
+        <title>dbt Data Catalog - Olist Modern Analytics Platform</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -50,9 +50,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/extra.css">
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -62,20 +62,20 @@
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Olist Modern Analytics Platform">
-<meta property="og:title" content="Home | Olist Modern Analytics Platform">
-<meta property="og:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
-<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/">
+<meta property="og:title" content="dbt Data Catalog | Olist Modern Analytics Platform">
+<meta property="og:description" content="Interactive dbt docs — model lineage, column descriptions, test coverage, and data quality flags across all 22 models.">
+<meta property="og:url" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/dbt_catalog/">
 
 <meta property="og:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
 
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Home | Olist Modern Analytics Platform">
-<meta name="twitter:description" content="Portfolio-grade analytics engineering documentation (Azure → Snowflake → dbt → Power BI)">
+<meta name="twitter:title" content="dbt Data Catalog | Olist Modern Analytics Platform">
+<meta name="twitter:description" content="Interactive dbt docs — model lineage, column descriptions, test coverage, and data quality flags across all 22 models.">
 
 <meta name="twitter:image" content="https://ayanmulaskar223.github.io/olist-modern-analytics-platform/screenshots/05_dataops/project_milestones_roadmap.png">
  
-  <link href="assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
@@ -104,7 +104,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture-preview" class="md-skip">
+        <a href="#whats-inside" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-header__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
@@ -138,7 +138,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              dbt Data Catalog
             
           </span>
         </div>
@@ -249,11 +249,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -272,7 +270,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="00_business_requirements/" class="md-tabs__link">
+      <a href="../00_business_requirements/" class="md-tabs__link">
         
   
   
@@ -291,7 +289,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="01_architecture/" class="md-tabs__link">
+      <a href="../01_architecture/" class="md-tabs__link">
         
   
   
@@ -310,7 +308,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="designs/003_marts_star_schema/" class="md-tabs__link">
+      <a href="../designs/003_marts_star_schema/" class="md-tabs__link">
         
   
   
@@ -329,7 +327,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="02_data_dictionary/" class="md-tabs__link">
+      <a href="../02_data_dictionary/" class="md-tabs__link">
         
   
   
@@ -348,7 +346,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="03_data_quality/" class="md-tabs__link">
+      <a href="../03_data_quality/" class="md-tabs__link">
         
   
   
@@ -367,7 +365,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="04_semantic_model/" class="md-tabs__link">
+      <a href="../04_semantic_model/" class="md-tabs__link">
         
   
   
@@ -386,7 +384,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="05_performance_optimization/" class="md-tabs__link">
+      <a href="../05_performance_optimization/" class="md-tabs__link">
         
   
   
@@ -405,7 +403,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="06_engineering_standards/" class="md-tabs__link">
+      <a href="../06_engineering_standards/" class="md-tabs__link">
         
   
   
@@ -424,7 +422,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="07_analytics_insights/" class="md-tabs__link">
+      <a href="../07_analytics_insights/" class="md-tabs__link">
         
   
   
@@ -441,9 +439,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="dbt_catalog/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -480,7 +480,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
+    <a href=".." title="Olist Modern Analytics Platform" class="md-nav__button md-logo" aria-label="Olist Modern Analytics Platform" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"></path></svg>
@@ -507,35 +507,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -551,112 +526,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#architecture-preview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🏗️ Architecture Preview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#platform-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📊 Platform Metrics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-this-project-demonstrates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🎯 What This Project Demonstrates
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#technology-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🏗️ Technology Stack
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation-navigator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📚 Documentation Navigator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adlc-5-phase-journey" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🗺️ ADLC 5-Phase Journey
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#key-capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🏆 Key Capabilities
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#external-links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🔗 External Links
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -668,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00_business_requirements/" class="md-nav__link">
+      <a href="../00_business_requirements/" class="md-nav__link">
         
   
   
@@ -695,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01_architecture/" class="md-nav__link">
+      <a href="../01_architecture/" class="md-nav__link">
         
   
   
@@ -722,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="designs/003_marts_star_schema/" class="md-nav__link">
+      <a href="../designs/003_marts_star_schema/" class="md-nav__link">
         
   
   
@@ -749,7 +618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02_data_dictionary/" class="md-nav__link">
+      <a href="../02_data_dictionary/" class="md-nav__link">
         
   
   
@@ -776,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03_data_quality/" class="md-nav__link">
+      <a href="../03_data_quality/" class="md-nav__link">
         
   
   
@@ -803,7 +672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04_semantic_model/" class="md-nav__link">
+      <a href="../04_semantic_model/" class="md-nav__link">
         
   
   
@@ -830,7 +699,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05_performance_optimization/" class="md-nav__link">
+      <a href="../05_performance_optimization/" class="md-nav__link">
         
   
   
@@ -857,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06_engineering_standards/" class="md-nav__link">
+      <a href="../06_engineering_standards/" class="md-nav__link">
         
   
   
@@ -884,7 +753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07_analytics_insights/" class="md-nav__link">
+      <a href="../07_analytics_insights/" class="md-nav__link">
         
   
   
@@ -908,10 +777,35 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="dbt_catalog/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dbt Catalog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -927,6 +821,46 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#whats-inside" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Inside
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-models-to-explore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Models to Explore
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -951,245 +885,85 @@
   
 
 
-<h1 id="olist-modern-analytics-platform">🚀 Olist Modern Analytics Platform<a class="headerlink" href="#olist-modern-analytics-platform" title="Permanent link">¶</a></h1>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Framework-ADLC%205%20Phases-2563EB?style=for-the-badge" data-desc-position="bottom"><img alt="ADLC" src="https://img.shields.io/badge/Framework-ADLC%205%20Phases-2563EB?style=for-the-badge"></a>
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Stack-Modern%20Data%20Stack-16A34A?style=for-the-badge" data-desc-position="bottom"><img alt="Stack" src="https://img.shields.io/badge/Stack-Modern%20Data%20Stack-16A34A?style=for-the-badge"></a>
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Tests-559%20Automated-F59E0B?style=for-the-badge" data-desc-position="bottom"><img alt="Tests" src="https://img.shields.io/badge/Tests-559%20Automated-F59E0B?style=for-the-badge"></a>
-<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://img.shields.io/badge/Quality-100%25-10B981?style=for-the-badge" data-desc-position="bottom"><img alt="Quality" src="https://img.shields.io/badge/Quality-100%25-10B981?style=for-the-badge"></a></p>
-<div class="hero-shell">
-    <p class="hero-kicker">Portfolio Scenario • Modern Data Stack</p>
-    <h1 class="hero-title">Production-Style Analytics Engineering</h1>
-    <p class="hero-subtitle">Azure Blob → Snowflake → dbt → Power BI → GitHub Actions</p>
-    <p class="hero-description">A portfolio platform focused on trust, governance, and measurable delivery quality across ingestion, transformation, semantic modeling, and DataOps.</p>
-    <div class="hero-cta-row">
-        <a class="hero-cta" href="01_architecture/">View Architecture</a>
-        <a class="hero-cta hero-cta--secondary" href="03_data_quality/">View Quality Framework</a>
-    </div>
+<h1 id="dbt-data-catalog">dbt Data Catalog<a class="headerlink" href="#dbt-data-catalog" title="Permanent link">¶</a></h1>
+<div class="dbt-docs-header">
+<p>Interactive model catalog auto-generated by <strong>dbt docs</strong> from production. Browse model lineage, column definitions, test coverage, and data quality rules across all <strong>22 models → 282 tests → 8 sources</strong>.</p>
+<p><a class="md-button md-button--primary" href="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/" target="_blank"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span> Open in Full Screen</a>
+<a class="md-button" href="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/overview?g_v=1" target="_blank"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 17c-.13 0-.26 0-.39.04l-1.61-3.25a2.5 2.5 0 0 0-1.75-4.29c-.13 0-.25 0-.39.04l-1.63-3.25c.48-.45.77-1.08.77-1.79a2.5 2.5 0 0 0-5 0c0 .71.29 1.34.76 1.79L8.64 9.54c-.14-.04-.26-.04-.39-.04a2.5 2.5 0 0 0-1.75 4.29l-1.61 3.25C4.76 17 4.63 17 4.5 17a2.5 2.5 0 0 0 0 5A2.5 2.5 0 0 0 7 19.5c0-.7-.29-1.34-.76-1.79l1.62-3.25c.14.04.26.04.39.04s.25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0A2.5 2.5 0 0 0 12 17c-.13 0-.26 0-.39.04L10 13.79c.46-.45.75-1.08.75-1.79s-.29-1.34-.75-1.79l1.61-3.25c.13.04.26.04.39.04s.26 0 .39-.04L14 10.21c-.45.45-.75 1.09-.75 1.79a2.5 2.5 0 0 0 2.5 2.5c.13 0 .25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0-2.5-2.5"></path></svg></span> View Lineage DAG</a></p>
 </div>
-
-<h2 id="architecture-preview">🏗️ Architecture Preview<a class="headerlink" href="#architecture-preview" title="Permanent link">¶</a></h2>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="architecture/architecture_hero.png" data-desc-position="bottom"><img alt="Modern Data Stack Architecture" class="architecture-preview-image" src="architecture/architecture_hero.png"></a></p>
-<p><a href="01_architecture/">Open full architecture view →</a></p>
-<hr>
-<h2 id="platform-metrics">📊 Platform Metrics<a class="headerlink" href="#platform-metrics" title="Permanent link">¶</a></h2>
-<div class="kpi-grid">
-    <div class="kpi-card">
-        <div class="kpi-label">Automated Tests</div>
-        <div class="kpi-value">559</div>
-        <div class="kpi-desc">dbt + Source Tests</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-label">dbt Models</div>
-        <div class="kpi-value">24</div>
-        <div class="kpi-desc">Staging + Marts</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Data Volume</div>
-        <div class="kpi-value">1.55M</div>
-        <div class="kpi-desc">Rows Processed</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Dashboard Load</div>
-        <div class="kpi-value">&lt; 2s</div>
-        <div class="kpi-desc">Performance SLA</div>
-    </div>
+<div class="dbt-docs-embed">
+  <iframe src="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/" title="dbt Data Catalog" allowfullscreen></iframe>
 </div>
 
 <hr>
-<h2 id="what-this-project-demonstrates">🎯 What This Project Demonstrates<a class="headerlink" href="#what-this-project-demonstrates" title="Permanent link">¶</a></h2>
-<div class="admonition success">
-<p class="admonition-title">Enterprise-Grade Analytics Engineering</p>
-</div>
-<p><strong>End-to-end modern data stack</strong> implementation with production-quality standards:</p>
-<div class="highlight"><pre><span></span><code>✅ **Architecture:** Clear layer boundaries (RAW → STAGING → INTERMEDIATE → MARTS)
-✅ **Quality:** 559 automated tests with 100% data quality score
-✅ **DataOps:** CI/CD pipelines with automated testing and deployment
-✅ **Performance:** Sub-2-second dashboard loads with cost optimization
-✅ **Governance:** Row-level security (RLS), data contracts, semantic layer
-✅ **Documentation:** Comprehensive docs with screenshots and evidence
-</code></pre></div>
-<hr>
-<h2 id="technology-stack">🏗️ Technology Stack<a class="headerlink" href="#technology-stack" title="Permanent link">¶</a></h2>
-<div class="tech-stack-grid">
-    <div class="tech-card">
-        <div class="tech-icon">☁️</div>
-        <div class="tech-title">Azure Blob Storage</div>
-        <div class="tech-desc">Centralized data lake for raw CSV/JSON/Parquet files</div>
-    </div>
-    <div class="tech-card">
-        <div class="tech-icon">❄️</div>
-        <div class="tech-title">Snowflake</div>
-        <div class="tech-desc">Cloud data warehouse with auto-suspend &amp; resource monitors</div>
-    </div>
-    <div class="tech-card">
-        <div class="tech-icon">🔧</div>
-        <div class="tech-title">dbt Core</div>
-        <div class="tech-desc">Data transformation with star schema modeling &amp; testing</div>
-    </div>
-    <div class="tech-card">
-        <div class="tech-icon">📊</div>
-        <div class="tech-title">Power BI</div>
-        <div class="tech-desc">Semantic model with RLS, incremental refresh &amp; BPA validation</div>
-    </div>
-    <div class="tech-card">
-        <div class="tech-icon">🤖</div>
-        <div class="tech-title">GitHub Actions</div>
-        <div class="tech-desc">CI/CD pipelines for dbt tests &amp; SQLFluff linting</div>
-    </div>
-    <div class="tech-card">
-        <div class="tech-icon">🧠</div>
-        <div class="tech-title">AI-Assisted Dev</div>
-        <div class="tech-desc">GitHub Copilot + ChatGPT with human validation</div>
-    </div>
-</div>
-
-<hr>
-<h2 id="documentation-navigator">📚 Documentation Navigator<a class="headerlink" href="#documentation-navigator" title="Permanent link">¶</a></h2>
-<h3 id="core-design-documents">📋 Core Design Documents<a class="headerlink" href="#core-design-documents" title="Permanent link">¶</a></h3>
-<div class="doc-grid">
-    <div class="doc-card">
-        <div class="doc-icon">🎯</div>
-        <div class="doc-title"><a href="00_business_requirements/">Business Requirements</a></div>
-        <div class="doc-desc">KPI definitions, business questions, success criteria</div>
-    </div>
-    <div class="doc-card">
-        <div class="doc-icon">🏛️</div>
-        <div class="doc-title"><a href="01_architecture/">Architecture</a></div>
-        <div class="doc-desc">System design, data flow, layer responsibilities</div>
-    </div>
-    <div class="doc-card">
-        <div class="doc-icon">📖</div>
-        <div class="doc-title"><a href="02_data_dictionary/">Data Dictionary</a></div>
-        <div class="doc-desc">Schema definitions, business rules, grain documentation</div>
-    </div>
-</div>
-
-<h3 id="implementation-quality">✅ Implementation Quality<a class="headerlink" href="#implementation-quality" title="Permanent link">¶</a></h3>
-<div class="doc-grid">
-    <div class="doc-card">
-        <div class="doc-icon">🧪</div>
-        <div class="doc-title"><a href="03_data_quality/">Data Quality Framework</a></div>
-        <div class="doc-desc">559 automated tests, validation strategy, quality gates</div>
-    </div>
-    <div class="doc-card">
-        <div class="doc-icon">⚡</div>
-        <div class="doc-title"><a href="05_performance_optimization/">Performance Optimization</a></div>
-        <div class="doc-desc">Cost controls, incremental refresh, query optimization</div>
-    </div>
-    <div class="doc-card">
-        <div class="doc-icon">🛠️</div>
-        <div class="doc-title"><a href="06_engineering_standards/">Engineering Standards</a></div>
-        <div class="doc-desc">ADLC framework, DataOps, AI-assisted development</div>
-    </div>
-</div>
-
-<h3 id="bi-analytics">📊 BI &amp; Analytics<a class="headerlink" href="#bi-analytics" title="Permanent link">¶</a></h3>
-<div class="doc-grid">
-    <div class="doc-card">
-        <div class="doc-icon">🧠</div>
-        <div class="doc-title"><a href="04_semantic_model/">Semantic Model</a></div>
-        <div class="doc-desc">Power BI measures, RLS implementation, DAX patterns</div>
-    </div>
-    <div class="doc-card">
-        <div class="doc-icon">📈</div>
-        <div class="doc-title"><a href="07_analytics_insights/">Analytics Insights</a></div>
-        <div class="doc-desc">Business findings, KPI analysis, recommendations</div>
-    </div>
-</div>
-
-<hr>
-<h2 id="adlc-5-phase-journey">🗺️ ADLC 5-Phase Journey<a class="headerlink" href="#adlc-5-phase-journey" title="Permanent link">¶</a></h2>
-<div class="admonition tip">
-<p class="admonition-title">Structured Development Lifecycle</p>
-</div>
-<p>This project follows the <strong>Analytics Development Life Cycle (ADLC)</strong> framework for organized, phase-gated delivery:</p>
+<h2 id="whats-inside">What's Inside<a class="headerlink" href="#whats-inside" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Phase</th>
-<th style="text-align: left;">Focus Area</th>
-<th style="text-align: left;">Key Deliverables</th>
-<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">Models</th>
+<th style="text-align: left;">Materialization</th>
+<th style="text-align: left;">Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Phase 1</strong></td>
-<td style="text-align: left;">Requirements &amp; Planning</td>
-<td style="text-align: left;">Business questions, KPI definitions, architecture design</td>
-<td style="text-align: left;">✅ Complete</td>
+<td style="text-align: left;"><strong>Staging</strong></td>
+<td style="text-align: left;">8 views</td>
+<td style="text-align: left;"><code>view</code></td>
+<td style="text-align: left;">1:1 with RAW — type casting, standardisation</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Phase 2</strong></td>
-<td style="text-align: left;">Data Ingestion</td>
-<td style="text-align: left;">Azure Blob setup, Snowflake RAW layer (1.55M rows)</td>
-<td style="text-align: left;">✅ Complete</td>
+<td style="text-align: left;"><strong>Intermediate</strong></td>
+<td style="text-align: left;">4 tables</td>
+<td style="text-align: left;"><code>table</code> / <code>ephemeral</code></td>
+<td style="text-align: left;">Business logic, joins, aggregations</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Phase 3</strong></td>
-<td style="text-align: left;">Transformation</td>
-<td style="text-align: left;">dbt models (staging → marts), star schema</td>
-<td style="text-align: left;">✅ Complete</td>
+<td style="text-align: left;"><strong>Marts — Facts</strong></td>
+<td style="text-align: left;">2 tables</td>
+<td style="text-align: left;"><code>incremental</code></td>
+<td style="text-align: left;"><code>fct_order_items</code>, <code>fct_payments</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Phase 4</strong></td>
-<td style="text-align: left;">DataOps &amp; CI/CD</td>
-<td style="text-align: left;">GitHub Actions, automated testing (559 tests)</td>
-<td style="text-align: left;">✅ Complete</td>
+<td style="text-align: left;"><strong>Marts — Dims</strong></td>
+<td style="text-align: left;">5 tables</td>
+<td style="text-align: left;"><code>table</code></td>
+<td style="text-align: left;">Customers, Products, Sellers, Date, Date Bridge</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Phase 5</strong></td>
-<td style="text-align: left;">BI &amp; Semantic Layer</td>
-<td style="text-align: left;">Power BI semantic model, dashboards, RLS</td>
-<td style="text-align: left;">✅ Complete</td>
+<td style="text-align: left;"><strong>Analytics OBT</strong></td>
+<td style="text-align: left;">1 table</td>
+<td style="text-align: left;"><code>table</code></td>
+<td style="text-align: left;"><code>obt_logistics_diagnostics</code> — Python EDA target</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Governance</strong></td>
+<td style="text-align: left;">2 tables</td>
+<td style="text-align: left;"><code>table</code></td>
+<td style="text-align: left;">RLS security mappings</td>
 </tr>
 </tbody>
 </table>
-<hr>
-<h2 id="key-capabilities">🏆 Key Capabilities<a class="headerlink" href="#key-capabilities" title="Permanent link">¶</a></h2>
-<div class="admonition abstract">
-<p class="admonition-title">What Sets This Project Apart</p>
-<p><strong>🔒 Governance-First Design</strong></p>
+<h2 id="key-models-to-explore">Key Models to Explore<a class="headerlink" href="#key-models-to-explore" title="Permanent link">¶</a></h2>
 <ul>
-<li>Row-level security (RLS) with dynamic bridge pattern</li>
-<li>Data contracts enforce schema validation</li>
-<li>Certified semantic layer prevents metric chaos</li>
+<li><strong><a href="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.obt_logistics_diagnostics" target="_blank"><code>obt_logistics_diagnostics</code></a></strong> — One Big Table for Python EDA (18 columns, 35 tests)</li>
+<li><strong><a href="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.fct_order_items" target="_blank"><code>fct_order_items</code></a></strong> — Core fact table (112K delivered order line items)</li>
+<li><strong><a href="https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_customers" target="_blank"><code>dim_customers</code></a></strong> — Customer dimension with repeat-purchase flags</li>
 </ul>
-<p><strong>🧪 Quality-Driven Development</strong></p>
-<ul>
-<li>559 automated tests (85 source + 474 model tests)</li>
-<li>100% data quality score validated</li>
-<li>CI gates prevent bad data from reaching production</li>
-</ul>
-<p><strong>💰 Cost-Optimized Architecture</strong></p>
-<ul>
-<li>Snowflake auto-suspend (60s/300s) saves compute costs</li>
-<li>Power BI incremental refresh reduces load times</li>
-<li>Query tagging enables cost attribution</li>
-</ul>
-<p><strong>🤖 AI-Accelerated Development</strong></p>
-<ul>
-<li>GitHub Copilot integration with custom instructions</li>
-<li>ChatGPT project with full context management</li>
-<li>Human validation for all AI-generated code</li>
-</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip — Navigate Lineage</p>
+<p>Click any model in the catalog → then click <strong>"See Lineage"</strong> to see its full upstream/downstream dependency graph.</p>
 </div>
-<hr>
-<h2 id="external-links">🔗 External Links<a class="headerlink" href="#external-links" title="Permanent link">¶</a></h2>
-<ul>
-<li><strong>GitHub Repository:</strong> <a href="https://github.com/AyanMulaskar223/olist-modern-analytics-platform">AyanMulaskar223/olist-modern-analytics-platform</a></li>
-<li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/ayan-mulaskar/">Connect with Ayan Mulaskar</a></li>
-</ul>
-<hr>
-<p style="text-align: center; color: #666; margin-top: 3rem;">
-Built with ❤️ using the Modern Data Stack • February 2026
-</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -1257,10 +1031,10 @@ Built with ❤️ using the Modern Data Stack • February 2026
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "toc.integrate", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   
