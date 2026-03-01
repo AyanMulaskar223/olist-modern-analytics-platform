@@ -82,19 +82,20 @@ jobs:
           cp target/index.html    ../dbt-docs-site/index.html
           cp target/catalog.json  ../dbt-docs-site/catalog.json
           cp target/manifest.json ../dbt-docs-site/manifest.json
-          # Required so GitHub Pages serves the JSON files correctly
-          echo "User-agent: *" > ../dbt-docs-site/robots.txt
+          # Needed: GitHub Pages ignores folders starting with _ by default
+          touch ../dbt-docs-site/.nojekyll
 
       # ── 8. Deploy to ecommerce-logistics-diagnostics gh-pages ────────────
+      # Site will be live at:
+      # https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          # PAT with repo scope — add as secret GH_PAT in this repo's settings
+          # PAT with repo scope — stored as secret GH_PAT in this repo's settings
           personal_token: ${{ secrets.GH_PAT }}
           publish_dir: ./dbt-docs-site
           external_repository: AyanMulaskar223/ecommerce-logistics-diagnostics
           publish_branch: gh-pages
-          destination_dir: dbt-docs
           commit_message: "docs: deploy dbt docs from ${{ github.sha }}"
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
