@@ -381,3 +381,25 @@ body {
         max-height: calc(100vh - 5.6rem);
     }
 }
+
+/* ── dbt Docs Iframe Embed ─────────────────────────────────────────── */
+.dbt-docs-header {
+    margin-bottom: 1.5rem;
+}
+
+.dbt-docs-embed {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    margin-bottom: 2rem;
+}
+
+.dbt-docs-embed iframe {
+    width: 100%;
+    height: 82vh;
+    min-height: 600px;
+    border: none;
+    display: block;
+}

@@ -97,3 +97,4 @@ nav:
   - Perf Optimization: 05_performance_optimization.md
   - Eng Standards: 06_engineering_standards.md
   - Analytics Insights: 07_analytics_insights.md
+  - dbt Catalog: dbt_catalog.md
