@@ -1,0 +1,100 @@
+name: Deploy dbt Docs → GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "03_dbt/models/**"
+      - "03_dbt/dbt_project.yml"
+      - "03_dbt/packages.yml"
+      - ".github/workflows/deploy_dbt_docs.yml"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+concurrency:
+  group: dbt-docs-deploy
+  cancel-in-progress: true
+
+env:
+  SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+  SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+  SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+  SNOWFLAKE_ROLE: ANALYTICS_ROLE
+  SNOWFLAKE_WAREHOUSE: TRANSFORM_WH_XS
+  SNOWFLAKE_DATABASE: OLIST_ANALYTICS_DB
+  SNOWFLAKE_SCHEMA: MARTS
+
+jobs:
+  generate-and-deploy:
+    name: Generate dbt Docs & Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./03_dbt
+
+    steps:
+      # ── 1. Checkout this repo ─────────────────────────────────────────────
+      - name: Checkout olist-modern-analytics-platform
+        uses: actions/checkout@v4
+
+      # ── 2. Python + pip cache ─────────────────────────────────────────────
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      # ── 3. Install dbt ────────────────────────────────────────────────────
+      - name: Install dbt-snowflake
+        run: pip install -r ../requirements.txt
+
+      # ── 4. Create profiles.yml pointing to prod ───────────────────────────
+      - name: Create profiles.yml
+        run: |
+          cat > profiles.yml << EOF
+          olist_snowflake:
+            target: prod
+            outputs:
+              prod:
+                type: snowflake
+                account: $SNOWFLAKE_ACCOUNT
+                user: $SNOWFLAKE_USER
+                password: $SNOWFLAKE_PASSWORD
+                role: $SNOWFLAKE_ROLE
+                warehouse: $SNOWFLAKE_WAREHOUSE
+                database: $SNOWFLAKE_DATABASE
+                schema: $SNOWFLAKE_SCHEMA
+                threads: 4
+          EOF
+
+      # ── 5. Install dbt packages ───────────────────────────────────────────
+      - name: dbt deps
+        run: dbt deps --profiles-dir .
+
+      # ── 6. Generate catalog + manifest ───────────────────────────────────
+      # Compiles models, reads prod schema metadata, writes catalog.json + manifest.json
+      - name: dbt docs generate
+        run: dbt docs generate --target prod --profiles-dir .
+
+      # ── 7. Stage docs artifacts into a clean folder ───────────────────────
+      - name: Prepare docs folder
+        run: |
+          mkdir -p ../dbt-docs-site
+          cp target/index.html    ../dbt-docs-site/index.html
+          cp target/catalog.json  ../dbt-docs-site/catalog.json
+          cp target/manifest.json ../dbt-docs-site/manifest.json
+          # Required so GitHub Pages serves the JSON files correctly
+          echo "User-agent: *" > ../dbt-docs-site/robots.txt
+
+      # ── 8. Deploy to ecommerce-logistics-diagnostics gh-pages ────────────
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # PAT with repo scope — add as secret GH_PAT in this repo's settings
+          personal_token: ${{ secrets.GH_PAT }}
+          publish_dir: ./dbt-docs-site
+          external_repository: AyanMulaskar223/ecommerce-logistics-diagnostics
+          publish_branch: gh-pages
+          destination_dir: dbt-docs
+          commit_message: "docs: deploy dbt docs from ${{ github.sha }}"
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
