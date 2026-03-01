@@ -7,29 +7,29 @@ description: Interactive dbt docs — model lineage, column definitions, and 282
 
 <div class="grid cards" markdown>
 
--   :material-layers-triple:{ .lg .middle } **Medallion Architecture**
+- :material-layers-triple:{ .lg .middle } **Medallion Architecture**
 
-    ---
+  ***
 
-    RAW → Staging → Intermediate → Marts — every transformation fully documented and tested.
+  RAW → Staging → Intermediate → Marts — every transformation fully documented and tested.
 
--   :material-graph:{ .lg .middle } **22 Models**
+- :material-graph:{ .lg .middle } **22 Models**
 
-    ---
+  ***
 
-    9 staging views · 4 intermediate tables · 1 fact table · 5 dimensions · 3 seeds
+  9 staging views · 4 intermediate tables · 1 fact table · 5 dimensions · 3 seeds
 
--   :material-test-tube:{ .lg .middle } **282 Automated Tests**
+- :material-test-tube:{ .lg .middle } **282 Automated Tests**
 
-    ---
+  ***
 
-    `not_null` · `unique` · `relationships` · `accepted_values` · singular business-rule assertions
+  `not_null` · `unique` · `relationships` · `accepted_values` · singular business-rule assertions
 
--   :material-database-arrow-right:{ .lg .middle } **8 Source Tables**
+- :material-database-arrow-right:{ .lg .middle } **8 Source Tables**
 
-    ---
+  ***
 
-    1.55M raw rows ingested from Azure Blob Storage via Snowflake `COPY INTO`
+  1.55M raw rows ingested from Azure Blob Storage via Snowflake `COPY INTO`
 
 </div>
 
@@ -37,8 +37,8 @@ description: Interactive dbt docs — model lineage, column definitions, and 282
 
 <div class="dbt-docs-header" markdown>
 
-[:material-open-in-new: Open in Full Screen](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/){ .md-button .md-button--primary target="_blank" }
-[:material-graph-outline: Explore Lineage DAG](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/overview?g_v=1){ .md-button target="_blank" }
+[:material-open-in-new: Open in Full Screen](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/){ .md-button .md-button--primary target="\_blank" }
+[:material-graph-outline: Explore Lineage DAG](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/overview?g_v=1){ .md-button target="\_blank" }
 
 </div>
 
@@ -107,47 +107,77 @@ description: Interactive dbt docs — model lineage, column definitions, and 282
 
     **Schema:** `MARTS` · **Database:** `OLIST_ANALYTICS_DB`
 
+=== ":material-flask-outline: Analytics · Phase 2"
+
+    Pre-joined, pre-filtered tables purpose-built for **Python EDA and data science workflows** — avoids complex Pandas merges downstream.
+
+    | Model | Grain | Columns | Tests | Purpose |
+    |:------|:------|:--------|:------|:--------|
+    | `obt_logistics_diagnostics` | One row per delivered order item | 18 | 35 | Root-cause logistics EDA — delivery delays, freight costs, review correlations |
+
+    !!! info "Phase 2 — Python EDA"
+        This layer is consumed by the **[ecommerce-logistics-diagnostics](https://github.com/AyanMulaskar223/ecommerce-logistics-diagnostics){ target="_blank" }** Python notebook project, which investigates the Amazonas 66.7% delivery delay anomaly using Pandera data contracts and cohort analysis.
+
+    **Materialization:** `table` · **Schema:** `MARTS` · **Database:** `OLIST_ANALYTICS_DB`
+
 ---
 
 ## :material-magnify: Key Models to Explore
 
 <div class="grid cards" markdown>
 
--   :material-table-star:{ .lg .middle } **`fct_order_items`**
+- :material-table-star:{ .lg .middle } **`fct_order_items`**
 
-    ---
+  ***
 
-    Core fact table. Grain: one row per delivered order line item. Pre-calculated measures: `order_total`, `freight_value`, `is_delayed`, `days_to_deliver`. Joins to all 5 dimensions.
+  Core fact table. Grain: one row per delivered order line item. Pre-calculated measures: `order_total`, `freight_value`, `is_delayed`, `days_to_deliver`. Joins to all 5 dimensions.
 
-    [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.fct_order_items){ target="_blank" }
+  [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.fct_order_items){ target="\_blank" }
 
--   :material-account-group:{ .lg .middle } **`dim_customers`**
+- :material-account-group:{ .lg .middle } **`dim_customers`**
 
-    ---
+  ***
 
-    Customer dimension with `customer_unique_id` for cross-order identity resolution. Includes `is_repeat_customer` flag (≥ 2 delivered orders).
+  Customer dimension with `customer_unique_id` for cross-order identity resolution. Includes `is_repeat_customer` flag (≥ 2 delivered orders).
 
-    [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_customers){ target="_blank" }
+  [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_customers){ target="\_blank" }
 
--   :material-package-variant:{ .lg .middle } **`dim_products`**
+- :material-package-variant:{ .lg .middle } **`dim_products`**
 
-    ---
+  ***
 
-    Product catalog enriched with English category translations. Includes `is_verified` quality flag for products with complete dimensions and photos.
+  Product catalog enriched with English category translations. Includes `is_verified` quality flag for products with complete dimensions and photos.
 
-    [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_products){ target="_blank" }
+  [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_products){ target="\_blank" }
 
--   :material-calendar:{ .lg .middle } **`dim_date`**
+- :material-calendar:{ .lg .middle } **`dim_date`**
 
-    ---
+  ***
 
-    Full calendar spine covering 2016–2018. Includes day-of-week, week, month, quarter, and year columns for Power BI time intelligence.
+  Full calendar spine covering 2016–2018. Includes day-of-week, week, month, quarter, and year columns for Power BI time intelligence.
 
-    [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_date){ target="_blank" }
+  [:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.dim_date){ target="\_blank" }
 
 </div>
 
 ---
 
 !!! tip "Navigating the Lineage DAG"
-    In the catalog, click any model name → then click **"See Lineage"** to see its full upstream/downstream dependency graph. Use `+model_name` syntax in the search to select a model with all its parents highlighted.
+In the catalog, click any model name → then click **"See Lineage"** to see its full upstream/downstream dependency graph. Use `+model_name` syntax in the search to select a model with all its parents highlighted.
+---
+
+## :material-flask-outline: Phase 2 — Analytics Layer
+
+`obt_logistics_diagnostics` is a One Big Table purpose-built as the single data source for the Python EDA project. It pre-joins 7 upstream models so no Pandas merges are required in the notebook.
+
+| Dimension | Detail |
+|:----------|:-------|
+| **Grain** | One row per delivered order item (`order_id` + `order_item_id`) |
+| **Columns** | 18 — identifiers, timestamps, financials, geography, product specs, review score, DQ flags |
+| **Tests** | 35 — generic + 3 singular business-rule assertions |
+| **Upstream deps** | `fct_order_items` · `stg_olist__orders` · `stg_olist__order_items` · `int_products__enriched` · `dim_customers` · `dim_sellers` · `int_order_reviews` |
+| **Key rule** | `WHERE order_status = 'DELIVERED'` — only logistically clean records |
+| **DQ flags** | `is_valid_logistics` + `is_valid_product` — must filter `= 1` before computing transit time stats |
+
+[:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.obt_logistics_diagnostics){ .md-button target="_blank" }
+[:material-github: Python EDA Repo](https://github.com/AyanMulaskar223/ecommerce-logistics-diagnostics){ .md-button target="_blank" }
