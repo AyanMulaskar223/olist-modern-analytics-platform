@@ -1,0 +1,341 @@
+version: 2
+
+models:
+  - name: obt_logistics_diagnostics
+    description: >
+      One Big Table (OBT) built specifically for Python Exploratory Data Analysis (Project 2).
+      Pre-joined and filtered strictly for 'delivered' orders to analyze physical logistics performance,
+      delivery delays, and customer review correlations without complex Pandas merges.
+
+      GRAIN: One row per unique order item (order_id + order_item_id).
+      BUSINESS RULE: Only 'delivered' orders are included — enforced in the WHERE clause upstream.
+      OWNER: Analytics Team
+      DEPENDENCIES: fct_order_items, stg_olist__orders, stg_olist__order_items, int_products__enriched, dim_customers, dim_sellers, int_order_reviews
+
+    config:
+      contract:
+        enforced: true
+      tags:
+        - analytics
+        - python_eda
+
+    # --- GRAIN PROTECTION ---
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_id
+              - order_item_id
+      # Cross-column assertion: delivered cannot precede purchase (excludes nulls via Snowflake NULL semantics)
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "order_delivered_customer_date >= order_purchase_timestamp or order_delivered_customer_date is null"
+          name: delivered_after_purchased
+
+    columns:
+      # ─────────────────────────────────────────────
+      #  1. IDENTIFIERS (Grain)
+      # ─────────────────────────────────────────────
+      - name: order_id
+        data_type: varchar
+        description: >
+          Primary Key component 1. Foreign key to fct_order_items.
+          Every row must belong to a valid delivered order.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_order_items')
+                field: order_id
+
+      - name: order_item_id
+        data_type: number
+        description: >
+          Primary Key component 2. Sequential integer (1-based) representing the position
+          of this item within the order basket. Combined with order_id forms the grain.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 1"
+
+      - name: obt_sk
+        data_type: varchar
+        description: >
+          MD5 surrogate key carried from fct_order_items (generated from order_id + order_item_id).
+          Unique per row by definition of the grain. Use this to join back to fct_order_items
+          in Power BI or any downstream model without re-hashing.
+        tests:
+          - not_null
+          - unique
+
+      - name: product_id
+        data_type: varchar
+        description: "Natural key identifying which product was purchased. Foreign key to dim_products."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+
+      - name: customer_unique_id
+        data_type: varchar
+        description: >
+          Deduplication key for customers across multiple orders. Crucial for calculating
+          Customer Lifetime Value (CLV) and the 3.0% Repeat Purchase Rate kPI.
+        tests:
+          - not_null
+
+      # ─────────────────────────────────────────────
+      #  2. TIMESTAMPS
+      # ─────────────────────────────────────────────
+      - name: order_purchase_timestamp
+        data_type: timestamp_ntz
+        description: >
+          Exact datetime the customer placed the order. Baseline anchor for all timeline
+          calculations (days_to_ship, days_in_transit, total_delivery_days).
+        tests:
+          - not_null
+
+      - name: order_estimated_delivery_date
+        data_type: timestamp_ntz
+        description: >
+          The SLA date promised to the customer at checkout. Used in Python as the
+          threshold for classifying an order as delayed (actual > estimated).
+        tests:
+          - not_null
+
+      - name: order_delivered_customer_date
+        data_type: timestamp_ntz
+        description: >
+          Actual physical delivery date confirmed by the carrier. Populated for most
+          delivered orders but may be NULL for ghost deliveries (is_valid_logistics = 0).
+          Used to compute On-Time Delivery Rate (OTDR) and days_delayed. Always filter
+          by is_valid_logistics = 1 before computing transit time statistics in Python.
+
+      # ─────────────────────────────────────────────
+      #  3. FINANCIALS
+      # ─────────────────────────────────────────────
+      - name: price
+        data_type: number
+        description: >
+          Unit price of the product in BRL. Used to calculate Revenue at Risk for
+          delayed/flagged orders. Outliers (high-value items) are flagged, not filtered.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+              name: price_is_non_negative
+
+      - name: freight_value
+        data_type: number
+        description: >
+          Shipping cost in BRL paid by the customer for this item. Used in Python to
+          compute the Freight Ratio (freight_value / price) to identify cost bottlenecks.
+          A high ratio in Amazonas correlates with the 66.7% delay rate hypothesis.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+              name: freight_value_is_non_negative
+
+      # ─────────────────────────────────────────────
+      #  4. GEOGRAPHY
+      # ─────────────────────────────────────────────
+      - name: customer_state
+        data_type: varchar
+        description: >
+          Brazilian state (2-letter code) where the customer is located.
+          Destination geography for delivery — crucial for diagnosing the Amazonas (AM)
+          66.7% delay anomaly and mapping regional logistics performance.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - AC
+                  - AL
+                  - AM
+                  - AP
+                  - BA
+                  - CE
+                  - DF
+                  - ES
+                  - GO
+                  - MA
+                  - MG
+                  - MS
+                  - MT
+                  - PA
+                  - PB
+                  - PE
+                  - PI
+                  - PR
+                  - RJ
+                  - RN
+                  - RO
+                  - RR
+                  - RS
+                  - SC
+                  - SE
+                  - SP
+                  - TO
+
+      - name: seller_state
+        data_type: varchar
+        description: >
+          Brazilian state (2-letter code) where the seller/warehouse is located.
+          Origin geography — used to calculate inter-state shipping routes and identify
+          whether AM delays stem from origin complexity vs. last-mile issues.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - AC
+                  - AL
+                  - AM
+                  - AP
+                  - BA
+                  - CE
+                  - DF
+                  - ES
+                  - GO
+                  - MA
+                  - MG
+                  - MS
+                  - MT
+                  - PA
+                  - PB
+                  - PE
+                  - PI
+                  - PR
+                  - RJ
+                  - RN
+                  - RO
+                  - RR
+                  - RS
+                  - SC
+                  - SE
+                  - SP
+                  - TO
+
+      # ─────────────────────────────────────────────
+      #  5. PRODUCT SPECS
+      #  Only weight retained — Q2 asks "too heavy?", not "too bulky?"
+      # ─────────────────────────────────────────────
+      - name: product_weight_g
+        data_type: number
+        description: >
+          Product weight in grams. Primary physical driver of freight_value and
+          the key variable for Business Question 2 ("Are packages too heavy?").
+          Nullable for products with missing catalog data (is_valid_product = 0).
+        tests:
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "> 0"
+              name: weight_is_positive_when_present
+              config:
+                severity: warn
+
+      # ─────────────────────────────────────────────
+      #  6. CUSTOMER FEEDBACK
+      #  Score only — Q3/Q4 care about 1-star blast radius, not submission count
+      # ─────────────────────────────────────────────
+      - name: review_score
+        data_type: number
+        description: >
+          Customer satisfaction score (1 = worst, 5 = best). Pre-aggregated in
+          int_order_reviews via GROUP BY to guarantee one row per order — no fan-out risk.
+          Nullable: not all delivered orders receive a review.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                quote: false
+
+      # ─────────────────────────────────────────────
+      #  7. DATA QUALITY FLAGS
+      # ─────────────────────────────────────────────
+      - name: is_valid_logistics
+        data_type: number
+        description: >
+          Boolean integrity flag derived from fct_order_items (int_sales__order_items_joined).
+          1 = Logistically clean record. 0 = Math-breaking anomaly present.
+          MUST be used in Python to filter the baseline before computing averages
+          (e.g., transit time means become negative without this filter).
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 0
+                  - 1
+                quote: false
+
+      - name: logistics_issue_reason
+        data_type: varchar
+        description: >
+          Human-readable category explaining WHY is_valid_logistics = 0.
+          Derived from 3 upstream DQ flags in int_sales__order_items_joined.
+          Nullable when is_valid_logistics = 1 (clean record).
+
+          Possible values:
+            - 'Ghost Delivery'        — delivered_date < purchase_timestamp (impossible)
+            - 'Arrival Before Shipping' — delivered_date < shipped_date
+            - 'Arrival Before Approval' — delivered_date < approved_date
+            - 'Zero Value Item'       — item price <= 0 (data entry error)
+            - null                    — no issue (record is clean)
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Ghost Delivery
+                  - Arrival Before Shipping
+                  - Arrival Before Approval
+                  - Zero Value Item
+              # null is valid (clean records), quote_values enabled by default
+
+      - name: is_valid_product
+        data_type: number
+        description: >
+          Boolean integrity flag derived from dim_products (int_products__enriched).
+          1 = Product catalog is complete. 0 = Catalog data is incomplete or corrupt.
+          Use in Python to investigate whether poor catalog quality causes 1-star reviews
+          or inflates freight costs (missing weight → carrier estimation errors).
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 0
+                  - 1
+                quote: false
+
+      - name: product_issue_reason
+        data_type: varchar
+        description: >
+          Human-readable category explaining WHY is_valid_product = 0.
+          Derived from quality checks in int_products__enriched.
+          Nullable when is_valid_product = 1 (clean product record).
+
+          Possible values:
+            - 'Missing Photos'      — product has no images in catalog
+            - 'Missing Dimensions'  — length/height/width/weight are null
+            - 'Missing Category'    — product_category_name_pt is null
+            - null                  — no issue (product record is complete)
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Missing Photos
+                  - Missing Dimensions
+                  - Missing Category
