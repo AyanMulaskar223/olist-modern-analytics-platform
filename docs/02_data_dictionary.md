@@ -239,7 +239,7 @@ Data type standards:
 - Money: `numeric(10,2)`
 - Flags: integer `0/1` in marts (cast to boolean in semantic layer where needed)
 - Dates: `date`
-- Datetimes/audit: `timestamp_ltz` (project uses `timestamp_lptz` in `dim_security_rls` implementation)
+- Datetimes/audit: `timestamp_ntz` (Snowflake standard for audit columns, no timezone required)
 
 ---
 

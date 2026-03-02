@@ -164,20 +164,21 @@ description: Interactive dbt docs — model lineage, column definitions, and 282
 
 !!! tip "Navigating the Lineage DAG"
 In the catalog, click any model name → then click **"See Lineage"** to see its full upstream/downstream dependency graph. Use `+model_name` syntax in the search to select a model with all its parents highlighted.
+
 ---
 
 ## :material-flask-outline: Phase 2 — Analytics Layer
 
 `obt_logistics_diagnostics` is a One Big Table purpose-built as the single data source for the Python EDA project. It pre-joins 7 upstream models so no Pandas merges are required in the notebook.
 
-| Dimension | Detail |
-|:----------|:-------|
-| **Grain** | One row per delivered order item (`order_id` + `order_item_id`) |
-| **Columns** | 18 — identifiers, timestamps, financials, geography, product specs, review score, DQ flags |
-| **Tests** | 35 — generic + 3 singular business-rule assertions |
+| Dimension         | Detail                                                                                                                                                |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Grain**         | One row per delivered order item (`order_id` + `order_item_id`)                                                                                       |
+| **Columns**       | 18 — identifiers, timestamps, financials, geography, product specs, review score, DQ flags                                                            |
+| **Tests**         | 35 — generic + 3 singular business-rule assertions                                                                                                    |
 | **Upstream deps** | `fct_order_items` · `stg_olist__orders` · `stg_olist__order_items` · `int_products__enriched` · `dim_customers` · `dim_sellers` · `int_order_reviews` |
-| **Key rule** | `WHERE order_status = 'DELIVERED'` — only logistically clean records |
-| **DQ flags** | `is_valid_logistics` + `is_valid_product` — must filter `= 1` before computing transit time stats |
+| **Key rule**      | `WHERE order_status = 'DELIVERED'` — only logistically clean records                                                                                  |
+| **DQ flags**      | `is_valid_logistics` + `is_valid_product` — must filter `= 1` before computing transit time stats                                                     |
 
-[:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.obt_logistics_diagnostics){ .md-button target="_blank" }
-[:material-github: Python EDA Repo](https://github.com/AyanMulaskar223/ecommerce-logistics-diagnostics){ .md-button target="_blank" }
+[:material-open-in-new: View in catalog](https://ayanmulaskar223.github.io/ecommerce-logistics-diagnostics/#!/model/model.olist_analytics.obt_logistics_diagnostics){ .md-button target="\_blank" }
+[:material-github: Python EDA Repo](https://github.com/AyanMulaskar223/ecommerce-logistics-diagnostics){ .md-button target="\_blank" }
