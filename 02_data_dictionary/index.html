@@ -1425,7 +1425,7 @@
 <li>Money: <code>numeric(10,2)</code></li>
 <li>Flags: integer <code>0/1</code> in marts (cast to boolean in semantic layer where needed)</li>
 <li>Dates: <code>date</code></li>
-<li>Datetimes/audit: <code>timestamp_ltz</code> (project uses <code>timestamp_lptz</code> in <code>dim_security_rls</code> implementation)</li>
+<li>Datetimes/audit: <code>timestamp_ntz</code> (Snowflake standard for audit columns, no timezone required)</li>
 </ul>
 <hr>
 <h2 id="10-surrogate-keys-relationships">10. Surrogate Keys &amp; Relationships<a class="headerlink" href="#10-surrogate-keys-relationships" title="Permanent link">¶</a></h2>
