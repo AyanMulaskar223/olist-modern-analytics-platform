@@ -1546,7 +1546,8 @@ olist-modern-analytics-platform/
 
 📖 **[Detailed Structure Guide](https://ayanmulaskar223.github.io/olist-modern-analytics-platform/)**
 
-Comprehensive documentation organized by topic:
+✍️ **The Business ROI & Architecture:** Read the full architectural breakdown and executive case study on my [Medium Profile](https://medium.com/@ayanmulaskar).
+Comprehensive documentation organized by topic
 
 | Doc                                                                                                                            | Description                                                 |
 | :----------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------- |
